@@ -6,9 +6,24 @@ import { useRouter, useSearchParams } from "next/navigation";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
+import { motion } from "framer-motion";
 import { authClient } from "@/lib/auth-client";
 import { ProtectedRoute } from "@/components/auth/protected-route";
-import { Loader2, UserPlus, AlertCircle, CheckCircle2, ShieldCheck, Mail, Lock, User } from "lucide-react";
+import {
+  Loader2,
+  UserPlus,
+  AlertCircle,
+  CheckCircle2,
+  Activity,
+  Mail,
+  Lock,
+  User,
+  ShieldCheck,
+  Zap,
+  Layers,
+  Radio,
+  Terminal,
+} from "lucide-react";
 import { useAuth } from "@/hooks/use-auth";
 
 const registerSchema = z
@@ -30,8 +45,8 @@ export default function RegisterPage() {
     <ProtectedRoute requireAuth={false}>
       <Suspense
         fallback={
-          <div className="flex min-h-screen items-center justify-center bg-zinc-950 text-white">
-            <Loader2 className="h-8 w-8 animate-spin text-indigo-500" />
+          <div className="flex min-h-screen items-center justify-center bg-[#050608] text-white font-mono text-xs">
+            <Loader2 className="h-5 w-5 animate-spin text-zinc-400" />
           </div>
         }
       >
@@ -95,141 +110,275 @@ function RegisterFormContent() {
   };
 
   return (
-    <div className="flex min-h-screen flex-col justify-center items-center px-4 py-12 bg-zinc-950 text-zinc-100">
-      <div className="w-full max-w-md space-y-8 bg-zinc-900/80 p-8 rounded-2xl border border-zinc-800 shadow-2xl backdrop-blur-md">
-        {/* Header */}
-        <div className="text-center space-y-2">
-          <div className="inline-flex items-center justify-center w-12 h-12 rounded-xl bg-indigo-600/20 text-indigo-400 mb-2 border border-indigo-500/30">
-            <ShieldCheck className="w-6 h-6" />
-          </div>
-          <h1 className="text-2xl font-bold tracking-tight text-white">Create an Account</h1>
-          <p className="text-sm text-zinc-400">Join UpNode to start monitoring your applications</p>
-        </div>
-
-        {/* Alert Messages */}
-        {errorMessage && (
-          <div className="p-4 rounded-xl bg-red-950/50 border border-red-800/60 text-red-200 text-sm flex items-start gap-3">
-            <AlertCircle className="w-5 h-5 text-red-400 shrink-0 mt-0.5" />
-            <div>
-              <p className="font-semibold text-red-300">Registration Error</p>
-              <p className="mt-0.5 text-red-400">{errorMessage}</p>
+    <div className="min-h-screen bg-[#050608] text-zinc-100 font-sans selection:bg-zinc-800 grid grid-cols-1 lg:grid-cols-12 overflow-hidden">
+      {/* LEFT COLUMN: AUTH FORM */}
+      <motion.div
+        initial={{ opacity: 0, x: -15 }}
+        animate={{ opacity: 1, x: 0 }}
+        transition={{ duration: 0.4 }}
+        className="lg:col-span-5 flex flex-col justify-between p-6 sm:p-10 border-r border-white/[0.06] relative z-10 bg-[#050608]"
+      >
+        {/* Top Header Logo */}
+        <div className="flex items-center justify-between">
+          <Link href="/" className="flex items-center gap-2.5 group">
+            <div className="p-1.5 rounded-lg bg-white/[0.04] text-white">
+              <Activity className="w-4 h-4 text-indigo-400" />
             </div>
-          </div>
-        )}
+            <span className="font-semibold text-sm tracking-tight text-white">
+              PulseScale
+            </span>
+          </Link>
 
-        {successMessage && (
-          <div className="p-4 rounded-xl bg-emerald-950/50 border border-emerald-800/60 text-emerald-200 text-sm flex items-start gap-3">
-            <CheckCircle2 className="w-5 h-5 text-emerald-400 shrink-0 mt-0.5" />
-            <p className="mt-0.5 text-emerald-300 font-medium">{successMessage}</p>
-          </div>
-        )}
-
-        {/* Form */}
-        <form onSubmit={handleSubmit(onSubmit)} className="space-y-5">
-          {/* Full Name */}
-          <div className="space-y-1.5">
-            <label className="block text-sm font-medium text-zinc-300">Full Name</label>
-            <div className="relative">
-              <User className="absolute left-3.5 top-3.5 h-4 w-4 text-zinc-500" />
-              <input
-                {...register("name")}
-                type="text"
-                placeholder="John Doe"
-                disabled={isSubmitting}
-                className={`w-full pl-10 pr-4 py-2.5 bg-zinc-950 border rounded-xl text-sm placeholder-zinc-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 transition-all ${
-                  errors.name ? "border-red-500 focus:ring-red-500" : "border-zinc-800 focus:border-indigo-500"
-                }`}
-              />
-            </div>
-            {errors.name && <p className="text-xs text-red-400 font-medium">{errors.name.message}</p>}
-          </div>
-
-          {/* Email */}
-          <div className="space-y-1.5">
-            <label className="block text-sm font-medium text-zinc-300">Email Address</label>
-            <div className="relative">
-              <Mail className="absolute left-3.5 top-3.5 h-4 w-4 text-zinc-500" />
-              <input
-                {...register("email")}
-                type="email"
-                placeholder="name@company.com"
-                disabled={isSubmitting}
-                className={`w-full pl-10 pr-4 py-2.5 bg-zinc-950 border rounded-xl text-sm placeholder-zinc-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 transition-all ${
-                  errors.email ? "border-red-500 focus:ring-red-500" : "border-zinc-800 focus:border-indigo-500"
-                }`}
-              />
-            </div>
-            {errors.email && <p className="text-xs text-red-400 font-medium">{errors.email.message}</p>}
-          </div>
-
-          {/* Password */}
-          <div className="space-y-1.5">
-            <label className="block text-sm font-medium text-zinc-300">Password</label>
-            <div className="relative">
-              <Lock className="absolute left-3.5 top-3.5 h-4 w-4 text-zinc-500" />
-              <input
-                {...register("password")}
-                type="password"
-                placeholder="••••••••"
-                disabled={isSubmitting}
-                className={`w-full pl-10 pr-4 py-2.5 bg-zinc-950 border rounded-xl text-sm placeholder-zinc-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 transition-all ${
-                  errors.password ? "border-red-500 focus:ring-red-500" : "border-zinc-800 focus:border-indigo-500"
-                }`}
-              />
-            </div>
-            {errors.password && <p className="text-xs text-red-400 font-medium">{errors.password.message}</p>}
-          </div>
-
-          {/* Confirm Password */}
-          <div className="space-y-1.5">
-            <label className="block text-sm font-medium text-zinc-300">Confirm Password</label>
-            <div className="relative">
-              <Lock className="absolute left-3.5 top-3.5 h-4 w-4 text-zinc-500" />
-              <input
-                {...register("confirmPassword")}
-                type="password"
-                placeholder="••••••••"
-                disabled={isSubmitting}
-                className={`w-full pl-10 pr-4 py-2.5 bg-zinc-950 border rounded-xl text-sm placeholder-zinc-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 transition-all ${
-                  errors.confirmPassword
-                    ? "border-red-500 focus:ring-red-500"
-                    : "border-zinc-800 focus:border-indigo-500"
-                }`}
-              />
-            </div>
-            {errors.confirmPassword && (
-              <p className="text-xs text-red-400 font-medium">{errors.confirmPassword.message}</p>
-            )}
-          </div>
-
-          {/* Submit Button */}
-          <button
-            type="submit"
-            disabled={isSubmitting}
-            className="w-full py-3 px-4 bg-indigo-600 hover:bg-indigo-500 active:bg-indigo-700 disabled:opacity-50 text-white font-medium rounded-xl text-sm transition-all shadow-lg shadow-indigo-600/20 flex items-center justify-center gap-2 cursor-pointer disabled:cursor-not-allowed mt-2"
+          <Link
+            href="/"
+            className="text-xs font-mono text-zinc-400 hover:text-white transition-colors"
           >
-            {isSubmitting ? (
-              <>
-                <Loader2 className="w-4 h-4 animate-spin" />
-                Creating Account...
-              </>
-            ) : (
-              <>
-                <UserPlus className="w-4 h-4" />
-                Register
-              </>
-            )}
-          </button>
-        </form>
-
-        {/* Footer */}
-        <div className="text-center text-xs text-zinc-400 pt-2 border-t border-zinc-800/60">
-          Already have an account?{" "}
-          <Link href="/login" className="font-semibold text-indigo-400 hover:text-indigo-300 transition-colors">
-            Sign in
+            &larr; Back to home
           </Link>
         </div>
-      </div>
+
+        {/* Form Container */}
+        <div className="my-auto py-8 max-w-sm w-full mx-auto space-y-5">
+          <div className="space-y-1.5">
+            <h1 className="text-2xl font-semibold tracking-tight text-white">
+              Create an account
+            </h1>
+            <p className="text-xs text-zinc-400">
+              Get started with sub-second incident alerting and non-blocking queue ingestion.
+            </p>
+          </div>
+
+          {/* Alert Messages */}
+          {errorMessage && (
+            <motion.div
+              initial={{ opacity: 0, y: -10 }}
+              animate={{ opacity: 1, y: 0 }}
+              className="p-3.5 rounded-xl bg-white/[0.03] text-rose-400 text-xs flex items-start gap-2.5"
+            >
+              <AlertCircle className="w-4 h-4 text-rose-400 shrink-0 mt-0.5" />
+              <div>
+                <p className="font-semibold text-rose-300">Registration Failed</p>
+                <p className="mt-0.5 text-rose-400">{errorMessage}</p>
+              </div>
+            </motion.div>
+          )}
+
+          {successMessage && (
+            <motion.div
+              initial={{ opacity: 0, y: -10 }}
+              animate={{ opacity: 1, y: 0 }}
+              className="p-3.5 rounded-xl bg-white/[0.03] text-emerald-400 text-xs flex items-start gap-2.5"
+            >
+              <CheckCircle2 className="w-4 h-4 text-emerald-400 shrink-0 mt-0.5" />
+              <p className="font-medium text-emerald-300">{successMessage}</p>
+            </motion.div>
+          )}
+
+          {/* Register Form */}
+          <form onSubmit={handleSubmit(onSubmit)} className="space-y-3.5">
+            {/* Full Name */}
+            <div className="space-y-1">
+              <label className="block text-xs font-medium text-zinc-300">
+                Full Name
+              </label>
+              <div className="relative">
+                <User className="absolute left-3.5 top-3 h-4 w-4 text-zinc-500" />
+                <input
+                  {...register("name")}
+                  type="text"
+                  placeholder="Alex Rivers"
+                  disabled={isSubmitting}
+                  className={`w-full pl-10 pr-3.5 py-2.5 bg-white/[0.03] rounded-xl text-xs text-white placeholder:text-zinc-600 focus:outline-none focus:bg-white/[0.06] transition-all ${
+                    errors.name ? "ring-1 ring-rose-500" : ""
+                  }`}
+                />
+              </div>
+              {errors.name && (
+                <p className="text-[11px] text-rose-400 font-mono">{errors.name.message}</p>
+              )}
+            </div>
+
+            {/* Email Address */}
+            <div className="space-y-1">
+              <label className="block text-xs font-medium text-zinc-300">
+                Work Email
+              </label>
+              <div className="relative">
+                <Mail className="absolute left-3.5 top-3 h-4 w-4 text-zinc-500" />
+                <input
+                  {...register("email")}
+                  type="email"
+                  placeholder="name@company.com"
+                  disabled={isSubmitting}
+                  className={`w-full pl-10 pr-3.5 py-2.5 bg-white/[0.03] rounded-xl text-xs text-white placeholder:text-zinc-600 focus:outline-none focus:bg-white/[0.06] transition-all ${
+                    errors.email ? "ring-1 ring-rose-500" : ""
+                  }`}
+                />
+              </div>
+              {errors.email && (
+                <p className="text-[11px] text-rose-400 font-mono">{errors.email.message}</p>
+              )}
+            </div>
+
+            {/* Password */}
+            <div className="space-y-1">
+              <label className="block text-xs font-medium text-zinc-300">
+                Password
+              </label>
+              <div className="relative">
+                <Lock className="absolute left-3.5 top-3 h-4 w-4 text-zinc-500" />
+                <input
+                  {...register("password")}
+                  type="password"
+                  placeholder="••••••••"
+                  disabled={isSubmitting}
+                  className={`w-full pl-10 pr-3.5 py-2.5 bg-white/[0.03] rounded-xl text-xs text-white placeholder:text-zinc-600 focus:outline-none focus:bg-white/[0.06] transition-all ${
+                    errors.password ? "ring-1 ring-rose-500" : ""
+                  }`}
+                />
+              </div>
+              {errors.password && (
+                <p className="text-[11px] text-rose-400 font-mono">{errors.password.message}</p>
+              )}
+            </div>
+
+            {/* Confirm Password */}
+            <div className="space-y-1">
+              <label className="block text-xs font-medium text-zinc-300">
+                Confirm Password
+              </label>
+              <div className="relative">
+                <Lock className="absolute left-3.5 top-3 h-4 w-4 text-zinc-500" />
+                <input
+                  {...register("confirmPassword")}
+                  type="password"
+                  placeholder="••••••••"
+                  disabled={isSubmitting}
+                  className={`w-full pl-10 pr-3.5 py-2.5 bg-white/[0.03] rounded-xl text-xs text-white placeholder:text-zinc-600 focus:outline-none focus:bg-white/[0.06] transition-all ${
+                    errors.confirmPassword ? "ring-1 ring-rose-500" : ""
+                  }`}
+                />
+              </div>
+              {errors.confirmPassword && (
+                <p className="text-[11px] text-rose-400 font-mono">{errors.confirmPassword.message}</p>
+              )}
+            </div>
+
+            {/* Submit Button */}
+            <button
+              type="submit"
+              disabled={isSubmitting}
+              className="w-full py-2.5 px-4 bg-white hover:bg-zinc-200 text-black font-semibold rounded-xl text-xs transition-all flex items-center justify-center gap-2 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed mt-2"
+            >
+              {isSubmitting ? (
+                <>
+                  <Loader2 className="w-3.5 h-3.5 animate-spin" />
+                  Creating Account...
+                </>
+              ) : (
+                <>
+                  <UserPlus className="w-3.5 h-3.5" />
+                  Create Account
+                </>
+              )}
+            </button>
+          </form>
+
+          {/* Toggle Link to Login */}
+          <div className="text-center text-xs text-zinc-400 pt-2 border-t border-white/[0.06]">
+            Already have an account?{" "}
+            <Link
+              href="/login"
+              className="font-medium text-white hover:underline transition-all"
+            >
+              Sign in
+            </Link>
+          </div>
+        </div>
+
+        {/* Footer info */}
+        <div className="text-[11px] font-mono text-zinc-500 flex items-center justify-between">
+          <span>PulseScale Incident Platform</span>
+          <span>v2.6 Security Compliant</span>
+        </div>
+      </motion.div>
+
+      {/* RIGHT COLUMN: CLEAN SHOWCASE */}
+      <motion.div
+        initial={{ opacity: 0, x: 15 }}
+        animate={{ opacity: 1, x: 0 }}
+        transition={{ duration: 0.4, delay: 0.1 }}
+        className="hidden lg:flex lg:col-span-7 flex-col justify-between p-12 bg-[#08090c] relative overflow-hidden"
+      >
+        <div className="relative z-10 max-w-lg space-y-6">
+          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/[0.03] text-zinc-300 text-xs font-mono">
+            <Terminal className="w-3.5 h-3.5 text-indigo-400" />
+            <span>Setup in 3 minutes</span>
+          </div>
+
+          <h2 className="text-3xl font-semibold text-white tracking-tight leading-snug">
+            Built for Site Reliability Engineers who demand{" "}
+            <span className="text-indigo-400 font-normal">zero downtime</span>.
+          </h2>
+
+          <p className="text-xs text-zinc-400 leading-relaxed font-normal">
+            Start monitoring your infrastructure with full SSE telemetry, isolated background workers, and built-in incident status pages.
+          </p>
+
+          <div className="space-y-3 pt-2">
+            {[
+              {
+                title: "14-Day Unlimited Trial",
+                desc: "Full access to all SRE features and telemetry logs.",
+                icon: ShieldCheck,
+                iconColor: "text-emerald-400",
+              },
+              {
+                title: "Asynchronous Queue Engine",
+                desc: "Powered by BullMQ and Redis memory buffers.",
+                icon: Layers,
+                iconColor: "text-amber-400",
+              },
+              {
+                title: "Instant Slack & PagerDuty Sync",
+                desc: "Automated alert escalation and status updates.",
+                icon: Radio,
+                iconColor: "text-indigo-400",
+              },
+            ].map((item, idx) => (
+              <motion.div
+                key={idx}
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.3, delay: 0.2 + idx * 0.1 }}
+                className="p-4 rounded-2xl bg-[#0d0e12] flex items-start gap-3"
+              >
+                <div className="p-2 rounded-xl bg-white/[0.04] text-white mt-0.5">
+                  <item.icon className={`w-4 h-4 ${item.iconColor}`} />
+                </div>
+                <div>
+                  <h4 className="text-xs font-semibold text-white">{item.title}</h4>
+                  <p className="text-[11px] text-zinc-400 mt-0.5">{item.desc}</p>
+                </div>
+              </motion.div>
+            ))}
+          </div>
+        </div>
+
+        {/* Live Status Bar Card */}
+        <motion.div
+          initial={{ opacity: 0, y: 15 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.4, delay: 0.4 }}
+          className="relative z-10 p-4 rounded-2xl bg-[#0d0e12] flex items-center justify-between text-xs font-mono max-w-lg"
+        >
+          <div className="flex items-center gap-2">
+            <span className="w-1.5 h-1.5 rounded-full bg-emerald-400" />
+            <span className="text-zinc-300">All Telemetry Ingestion Nodes Operational</span>
+          </div>
+          <span className="text-emerald-400 font-semibold text-[10px]">99.999% SLA</span>
+        </motion.div>
+      </motion.div>
     </div>
   );
 }
