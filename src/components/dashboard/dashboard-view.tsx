@@ -55,7 +55,7 @@ export function DashboardView() {
   }, [paginatedIncidents?.items, searchQuery]);
 
   return (
-    <div className="flex flex-col min-h-screen bg-zinc-950 text-zinc-100 font-sans">
+    <div className="flex flex-col min-h-screen bg-background text-foreground font-sans">
       {/* Top Header */}
       <DashboardHeader
         streamStatus={streamStatus}
