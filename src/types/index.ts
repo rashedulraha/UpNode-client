@@ -36,3 +36,68 @@ export interface ApiError {
   status?: number;
   code?: string;
 }
+
+export type IncidentStatus = "INVESTIGATING" | "IDENTIFIED" | "MONITORING" | "RESOLVED";
+export type IncidentSeverity = "LOW" | "MEDIUM" | "HIGH" | "CRITICAL";
+
+export interface TimelineEvent {
+  id: string;
+  incidentId: string;
+  status: IncidentStatus;
+  message: string;
+  createdAt: string;
+}
+
+export interface Incident {
+  id: string;
+  title: string;
+  description: string;
+  status: IncidentStatus;
+  severity: IncidentSeverity;
+  version: number;
+  projectId: string;
+  createdAt: string;
+  updatedAt: string;
+  project?: {
+    id: string;
+    name: string;
+  };
+  timelineEvents?: TimelineEvent[];
+}
+
+export interface GetIncidentsQuery {
+  projectId?: string;
+  status?: IncidentStatus;
+  severity?: IncidentSeverity;
+  limit?: number;
+  offset?: number;
+}
+
+export interface PaginatedIncidents {
+  items: Incident[];
+  total: number;
+  limit: number;
+  offset: number;
+}
+
+export interface CreateIncidentInput {
+  title: string;
+  description: string;
+  projectId: string;
+  status?: IncidentStatus;
+  severity?: IncidentSeverity;
+}
+
+export interface UpdateIncidentInput {
+  title?: string;
+  description?: string;
+  status?: IncidentStatus;
+  severity?: IncidentSeverity;
+  expectedVersion: number;
+}
+
+export interface SSEIncidentEvent {
+  type: "INCIDENT_CREATED" | "INCIDENT_UPDATED" | "INCIDENT_RESOLVED";
+  organizationId: string;
+  data: Incident;
+}
