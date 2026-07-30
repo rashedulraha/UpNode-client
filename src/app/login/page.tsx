@@ -17,10 +17,8 @@ import {
   Activity,
   Mail,
   Lock,
-  ArrowRight,
   ShieldCheck,
   Zap,
-  Terminal,
   Layers,
   Radio,
 } from "lucide-react";
@@ -39,8 +37,8 @@ export default function LoginPage() {
     <ProtectedRoute requireAuth={false}>
       <Suspense
         fallback={
-          <div className="flex min-h-screen items-center justify-center bg-[#050608] text-white font-mono text-xs">
-            <Loader2 className="h-5 w-5 animate-spin text-zinc-400" />
+          <div className="flex min-h-screen items-center justify-center bg-background text-foreground font-mono text-xs">
+            <Loader2 className="h-5 w-5 animate-spin text-muted-foreground" />
           </div>
         }
       >
@@ -134,10 +132,10 @@ function LoginFormContent() {
         {/* Form Container */}
         <div className="my-auto py-10 max-w-sm w-full mx-auto space-y-6">
           <div className="space-y-2">
-            <h1 className="text-2xl font-semibold tracking-tight text-white">
+            <h1 className="text-2xl font-semibold tracking-tight text-foreground">
               Sign in to PulseScale
             </h1>
-            <p className="text-xs text-zinc-400">
+            <p className="text-xs text-muted-foreground leading-relaxed">
               Enter your credentials to access your real-time incident monitoring dashboard.
             </p>
           </div>
@@ -147,12 +145,12 @@ function LoginFormContent() {
             <motion.div
               initial={{ opacity: 0, y: -10 }}
               animate={{ opacity: 1, y: 0 }}
-              className="p-3.5 rounded-xl bg-white/[0.03] text-rose-400 text-xs flex items-start gap-2.5"
+              className="p-3.5 rounded-xl bg-destructive/10 border border-destructive/20 text-destructive text-xs flex items-start gap-2.5"
             >
-              <AlertCircle className="w-4 h-4 text-rose-400 shrink-0 mt-0.5" />
+              <AlertCircle className="w-4 h-4 text-destructive shrink-0 mt-0.5" />
               <div>
-                <p className="font-semibold text-rose-300">Authentication Failed</p>
-                <p className="mt-0.5 text-rose-400">{errorMessage}</p>
+                <p className="font-semibold text-destructive">Authentication Failed</p>
+                <p className="mt-0.5 text-destructive">{errorMessage}</p>
               </div>
             </motion.div>
           )}
@@ -161,10 +159,10 @@ function LoginFormContent() {
             <motion.div
               initial={{ opacity: 0, y: -10 }}
               animate={{ opacity: 1, y: 0 }}
-              className="p-3.5 rounded-xl bg-white/[0.03] text-emerald-400 text-xs flex items-start gap-2.5"
+              className="p-3.5 rounded-xl bg-emerald-500/10 border border-emerald-500/20 text-emerald-500 text-xs flex items-start gap-2.5"
             >
-              <CheckCircle2 className="w-4 h-4 text-emerald-400 shrink-0 mt-0.5" />
-              <p className="font-medium text-emerald-300">{successMessage}</p>
+              <CheckCircle2 className="w-4 h-4 text-emerald-500 shrink-0 mt-0.5" />
+              <p className="font-medium text-emerald-500">{successMessage}</p>
             </motion.div>
           )}
 
@@ -172,47 +170,47 @@ function LoginFormContent() {
           <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
             {/* Email Field */}
             <div className="space-y-1.5">
-              <label className="block text-xs font-medium text-zinc-300">
+              <label className="block text-xs font-medium text-foreground">
                 Work Email
               </label>
               <div className="relative">
-                <Mail className="absolute left-3.5 top-3 h-4 w-4 text-zinc-500" />
+                <Mail className="absolute left-3.5 top-3 h-4 w-4 text-muted-foreground" />
                 <input
                   {...register("email")}
                   type="email"
                   placeholder="name@company.com"
                   disabled={isSubmitting}
-                  className={`w-full pl-10 pr-3.5 py-2.5 bg-white/[0.03] rounded-xl text-xs text-white placeholder:text-zinc-600 focus:outline-none focus:bg-white/[0.06] transition-all ${
-                    errors.email ? "ring-1 ring-rose-500" : ""
+                  className={`w-full pl-10 pr-3.5 py-2.5 bg-muted/60 border border-border rounded-xl text-xs text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary focus:bg-background transition-all ${
+                    errors.email ? "ring-1 ring-destructive" : ""
                   }`}
                 />
               </div>
               {errors.email && (
-                <p className="text-[11px] text-rose-400 font-mono">{errors.email.message}</p>
+                <p className="text-[11px] text-destructive font-mono">{errors.email.message}</p>
               )}
             </div>
 
             {/* Password Field */}
             <div className="space-y-1.5">
               <div className="flex items-center justify-between">
-                <label className="block text-xs font-medium text-zinc-300">
+                <label className="block text-xs font-medium text-foreground">
                   Password
                 </label>
               </div>
               <div className="relative">
-                <Lock className="absolute left-3.5 top-3 h-4 w-4 text-zinc-500" />
+                <Lock className="absolute left-3.5 top-3 h-4 w-4 text-muted-foreground" />
                 <input
                   {...register("password")}
                   type="password"
                   placeholder="••••••••"
                   disabled={isSubmitting}
-                  className={`w-full pl-10 pr-3.5 py-2.5 bg-white/[0.03] rounded-xl text-xs text-white placeholder:text-zinc-600 focus:outline-none focus:bg-white/[0.06] transition-all ${
-                    errors.password ? "ring-1 ring-rose-500" : ""
+                  className={`w-full pl-10 pr-3.5 py-2.5 bg-muted/60 border border-border rounded-xl text-xs text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary focus:bg-background transition-all ${
+                    errors.password ? "ring-1 ring-destructive" : ""
                   }`}
                 />
               </div>
               {errors.password && (
-                <p className="text-[11px] text-rose-400 font-mono">{errors.password.message}</p>
+                <p className="text-[11px] text-destructive font-mono">{errors.password.message}</p>
               )}
             </div>
 
@@ -220,7 +218,7 @@ function LoginFormContent() {
             <button
               type="submit"
               disabled={isSubmitting}
-              className="w-full py-2.5 px-4 bg-white hover:bg-zinc-200 text-black font-semibold rounded-xl text-xs transition-all flex items-center justify-center gap-2 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed mt-2"
+              className="w-full py-2.5 px-4 bg-primary hover:bg-primary/90 text-primary-foreground font-semibold rounded-xl text-xs transition-all flex items-center justify-center gap-2 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed mt-2 shadow-md shadow-primary/20"
             >
               {isSubmitting ? (
                 <>
@@ -237,11 +235,11 @@ function LoginFormContent() {
           </form>
 
           {/* Toggle to Register */}
-          <div className="text-center text-xs text-zinc-400 pt-2 border-t border-white/[0.06]">
+          <div className="text-center text-xs text-muted-foreground pt-2 border-t border-border">
             Don't have an account?{" "}
             <Link
               href="/register"
-              className="font-medium text-white hover:underline transition-all"
+              className="font-medium text-primary hover:underline transition-all"
             >
               Create an account
             </Link>
@@ -249,7 +247,7 @@ function LoginFormContent() {
         </div>
 
         {/* Footer info */}
-        <div className="text-[11px] font-mono text-zinc-500 flex items-center justify-between">
+        <div className="text-[11px] font-mono text-muted-foreground flex items-center justify-between">
           <span>PulseScale Incident Platform</span>
           <span>v2.6 Security Compliant</span>
         </div>
@@ -260,20 +258,20 @@ function LoginFormContent() {
         initial={{ opacity: 0, x: 15 }}
         animate={{ opacity: 1, x: 0 }}
         transition={{ duration: 0.4, delay: 0.1 }}
-        className="hidden lg:flex lg:col-span-7 flex-col justify-between p-12 bg-[#08090c] relative overflow-hidden"
+        className="hidden lg:flex lg:col-span-7 flex-col justify-between p-12 bg-muted/40 relative overflow-hidden"
       >
         <div className="relative z-10 max-w-lg space-y-6">
-          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/[0.03] text-zinc-300 text-xs font-mono">
-            <Radio className="w-3.5 h-3.5 text-emerald-400" />
+          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-card border border-border text-foreground text-xs font-mono">
+            <Radio className="w-3.5 h-3.5 text-emerald-500" />
             <span>Live Incident Stream Active</span>
           </div>
 
-          <h2 className="text-3xl font-semibold text-white tracking-tight leading-snug">
+          <h2 className="text-3xl font-semibold text-foreground tracking-tight leading-snug">
             Real-Time Telemetry & On-Call Automation with{" "}
-            <span className="text-indigo-400 font-normal">Zero DB Lockup</span>.
+            <span className="text-primary font-normal">Zero DB Lockup</span>.
           </h2>
 
-          <p className="text-xs text-zinc-400 leading-relaxed font-normal">
+          <p className="text-xs text-muted-foreground leading-relaxed font-normal">
             PulseScale decouples ingestion gateways from relational SQL databases using non-blocking BullMQ Redis queues, ensuring sub-second SSE incident broadcasts during 500,000 req/sec spikes.
           </p>
 
@@ -283,19 +281,19 @@ function LoginFormContent() {
                 title: "Sub-Second SSE Push",
                 desc: "Direct browser event streaming under 15ms globally.",
                 icon: Zap,
-                iconColor: "text-indigo-400",
+                iconColor: "text-primary",
               },
               {
                 title: "BullMQ / Redis Buffer",
                 desc: "Prevents Postgres locks during black swan traffic spikes.",
                 icon: Layers,
-                iconColor: "text-amber-400",
+                iconColor: "text-amber-500",
               },
               {
                 title: "Role-Based IAM Scopes",
                 desc: "Encrypted tenant boundaries & SOC2 compliant access control.",
                 icon: ShieldCheck,
-                iconColor: "text-emerald-400",
+                iconColor: "text-emerald-500",
               },
             ].map((item, idx) => (
               <motion.div
@@ -303,14 +301,14 @@ function LoginFormContent() {
                 initial={{ opacity: 0, y: 10 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.3, delay: 0.2 + idx * 0.1 }}
-                className="p-4 rounded-2xl bg-[#0d0e12] flex items-start gap-3"
+                className="p-4 rounded-2xl bg-card border border-border flex items-start gap-3 shadow-sm"
               >
-                <div className="p-2 rounded-xl bg-white/[0.04] text-white mt-0.5">
+                <div className="p-2 rounded-xl bg-muted border border-border text-foreground mt-0.5">
                   <item.icon className={`w-4 h-4 ${item.iconColor}`} />
                 </div>
                 <div>
-                  <h4 className="text-xs font-semibold text-white">{item.title}</h4>
-                  <p className="text-[11px] text-zinc-400 mt-0.5">{item.desc}</p>
+                  <h4 className="text-xs font-semibold text-foreground">{item.title}</h4>
+                  <p className="text-[11px] text-muted-foreground mt-0.5">{item.desc}</p>
                 </div>
               </motion.div>
             ))}
@@ -322,14 +320,14 @@ function LoginFormContent() {
           initial={{ opacity: 0, y: 15 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.4, delay: 0.4 }}
-          className="relative z-10 p-5 rounded-2xl bg-[#0d0e12] space-y-2 max-w-lg"
+          className="relative z-10 p-5 rounded-2xl bg-card border border-border space-y-2 max-w-lg shadow-sm"
         >
-          <p className="text-xs text-zinc-300 italic leading-relaxed">
+          <p className="text-xs text-muted-foreground italic leading-relaxed">
             "PulseScale completely eliminated main-thread database locks during our Black Friday event. Our SRE team had live incident visibility within 0.4ms."
           </p>
-          <div className="flex items-center justify-between pt-2 border-t border-white/[0.04] text-[11px] font-mono text-zinc-400">
-            <span className="font-semibold text-white">Principal Infrastructure Lead</span>
-            <span className="text-indigo-400">Top 50 SaaS Enterprise</span>
+          <div className="flex items-center justify-between pt-2 border-t border-border text-[11px] font-mono text-muted-foreground">
+            <span className="font-semibold text-foreground">Principal Infrastructure Lead</span>
+            <span className="text-primary">Top 50 SaaS Enterprise</span>
           </div>
         </motion.div>
       </motion.div>
