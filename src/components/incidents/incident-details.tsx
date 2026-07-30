@@ -29,8 +29,8 @@ export function IncidentDetails({ incident, isLoading, onClose }: IncidentDetail
 
   if (isLoading) {
     return (
-      <div className="flex flex-col items-center justify-center h-full p-8 text-zinc-500 gap-3">
-        <Loader2 className="w-8 h-8 animate-spin text-indigo-500" />
+      <div className="flex flex-col items-center justify-center h-full p-8 text-muted-foreground gap-3">
+        <Loader2 className="w-8 h-8 animate-spin text-primary" />
         <p className="text-sm font-medium">Loading incident details...</p>
       </div>
     );
@@ -38,11 +38,11 @@ export function IncidentDetails({ incident, isLoading, onClose }: IncidentDetail
 
   if (!incident) {
     return (
-      <div className="flex flex-col items-center justify-center h-full p-8 text-center text-zinc-500 gap-3 bg-zinc-900/40 rounded-2xl border border-zinc-800/60">
-        <Layers className="w-12 h-12 text-zinc-700" />
+      <div className="flex flex-col items-center justify-center h-full p-8 text-center text-muted-foreground gap-3 bg-card/40 rounded-2xl border border-border">
+        <Layers className="w-12 h-12 text-muted-foreground/40" />
         <div>
-          <p className="text-zinc-300 font-semibold text-base">No Incident Selected</p>
-          <p className="text-xs text-zinc-500 mt-1 max-w-xs">
+          <p className="text-foreground font-semibold text-base">No Incident Selected</p>
+          <p className="text-xs text-muted-foreground mt-1 max-w-xs">
             Select an incident from the list on the left to view full diagnostic details and manage status updates.
           </p>
         </div>
@@ -73,24 +73,24 @@ export function IncidentDetails({ incident, isLoading, onClose }: IncidentDetail
   };
 
   return (
-    <div className="flex flex-col h-full bg-zinc-900/80 border border-zinc-800 rounded-2xl p-6 overflow-y-auto space-y-6">
+    <div className="flex flex-col h-full bg-card border border-border rounded-2xl p-6 overflow-y-auto space-y-6">
       {/* Header */}
-      <div className="flex items-start justify-between gap-4 border-b border-zinc-800 pb-5">
+      <div className="flex items-start justify-between gap-4 border-b border-border pb-5">
         <div className="space-y-1">
           <div className="flex items-center gap-2">
-            <span className="text-xs font-mono px-2 py-0.5 rounded bg-zinc-950 text-indigo-400 border border-zinc-800">
+            <span className="text-xs font-mono px-2 py-0.5 rounded bg-background text-primary border border-border">
               {incident.project?.name || "Project"}
             </span>
-            <span className="text-xs font-mono px-2 py-0.5 rounded bg-zinc-950 text-zinc-500 border border-zinc-800">
+            <span className="text-xs font-mono px-2 py-0.5 rounded bg-background text-muted-foreground border border-border">
               Version {incident.version}
             </span>
           </div>
-          <h2 className="text-xl font-bold text-white tracking-tight">{incident.title}</h2>
+          <h2 className="text-xl font-bold text-foreground tracking-tight">{incident.title}</h2>
         </div>
         {onClose && (
           <button
             onClick={onClose}
-            className="p-1.5 rounded-lg text-zinc-400 hover:text-zinc-200 hover:bg-zinc-800 transition-colors cursor-pointer"
+            className="p-1.5 rounded-lg text-muted-foreground hover:text-foreground hover:bg-accent transition-colors cursor-pointer"
           >
             <X className="w-5 h-5" />
           </button>
@@ -99,23 +99,23 @@ export function IncidentDetails({ incident, isLoading, onClose }: IncidentDetail
 
       {/* Mutation Error Alert */}
       {mutationError && (
-        <div className="p-4 rounded-xl bg-red-950/60 border border-red-800/80 text-red-200 text-xs flex items-start gap-3">
-          <AlertCircle className="w-5 h-5 text-red-400 shrink-0 mt-0.5" />
+        <div className="p-4 rounded-xl bg-destructive/10 border border-destructive/30 text-destructive text-xs flex items-start gap-3">
+          <AlertCircle className="w-5 h-5 text-destructive shrink-0 mt-0.5" />
           <div>
-            <p className="font-semibold text-red-300">Optimistic Update Failed</p>
-            <p className="mt-0.5 text-red-400">{mutationError}</p>
+            <p className="font-semibold text-destructive">Optimistic Update Failed</p>
+            <p className="mt-0.5 text-destructive/80">{mutationError}</p>
           </div>
         </div>
       )}
 
       {/* Status Transition Control (Optimistic Update) */}
-      <div className="p-4 rounded-xl bg-zinc-950/80 border border-zinc-800 space-y-3">
+      <div className="p-4 rounded-xl bg-background border border-border space-y-3">
         <div className="flex items-center justify-between">
-          <h3 className="text-xs font-semibold text-zinc-400 uppercase tracking-wider">
+          <h3 className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">
             Update Incident Lifecycle Status
           </h3>
           {updateStatusMutation.isPending && (
-            <span className="text-xs text-indigo-400 flex items-center gap-1.5 font-medium">
+            <span className="text-xs text-primary flex items-center gap-1.5 font-medium">
               <Loader2 className="w-3.5 h-3.5 animate-spin" /> Optimistically Updating...
             </span>
           )}
@@ -131,15 +131,15 @@ export function IncidentDetails({ incident, isLoading, onClose }: IncidentDetail
                 onClick={() => handleStatusChange(item.status)}
                 className={`p-3 rounded-xl border text-left transition-all cursor-pointer flex flex-col justify-between ${
                   isActive
-                    ? "bg-indigo-600/20 border-indigo-500 text-indigo-300 shadow-md shadow-indigo-600/10"
-                    : "bg-zinc-900/60 border-zinc-800 text-zinc-400 hover:border-zinc-700 hover:text-zinc-200"
+                    ? "bg-primary/15 border-primary text-primary shadow-md shadow-primary/10"
+                    : "bg-card/60 border-border text-muted-foreground hover:border-primary/40 hover:text-foreground"
                 }`}
               >
                 <div className="flex items-center justify-between mb-1">
                   <span className="font-semibold text-xs">{item.label}</span>
-                  {isActive && <CheckCircle2 className="w-3.5 h-3.5 text-indigo-400" />}
+                  {isActive && <CheckCircle2 className="w-3.5 h-3.5 text-primary" />}
                 </div>
-                <span className="text-[10px] text-zinc-500 leading-tight">{item.desc}</span>
+                <span className="text-[10px] text-muted-foreground leading-tight">{item.desc}</span>
               </button>
             );
           })}
@@ -148,27 +148,27 @@ export function IncidentDetails({ incident, isLoading, onClose }: IncidentDetail
 
       {/* Description Section */}
       <div className="space-y-2">
-        <h3 className="text-xs font-semibold text-zinc-400 uppercase tracking-wider">Description</h3>
-        <div className="p-4 rounded-xl bg-zinc-950/60 border border-zinc-800 text-sm text-zinc-300 leading-relaxed whitespace-pre-wrap">
+        <h3 className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">Description</h3>
+        <div className="p-4 rounded-xl bg-background border border-border text-sm text-foreground leading-relaxed whitespace-pre-wrap">
           {incident.description || "No description provided."}
         </div>
       </div>
 
       {/* Incident Metadata Overview Grid */}
       <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
-        <div className="p-3 rounded-xl bg-zinc-950/60 border border-zinc-800 space-y-1">
-          <span className="text-[10px] font-mono text-zinc-500 uppercase">SEVERITY LEVEL</span>
-          <p className="text-xs font-bold text-zinc-200">{incident.severity}</p>
+        <div className="p-3 rounded-xl bg-background border border-border space-y-1">
+          <span className="text-[10px] font-mono text-muted-foreground uppercase">SEVERITY LEVEL</span>
+          <p className="text-xs font-bold text-foreground">{incident.severity}</p>
         </div>
-        <div className="p-3 rounded-xl bg-zinc-950/60 border border-zinc-800 space-y-1">
-          <span className="text-[10px] font-mono text-zinc-500 uppercase">CREATED TIME</span>
-          <p className="text-xs font-medium text-zinc-300">
+        <div className="p-3 rounded-xl bg-background border border-border space-y-1">
+          <span className="text-[10px] font-mono text-muted-foreground uppercase">CREATED TIME</span>
+          <p className="text-xs font-medium text-foreground">
             {new Date(incident.createdAt).toLocaleString()}
           </p>
         </div>
-        <div className="p-3 rounded-xl bg-zinc-950/60 border border-zinc-800 space-y-1">
-          <span className="text-[10px] font-mono text-zinc-500 uppercase">LAST UPDATED</span>
-          <p className="text-xs font-medium text-zinc-300">
+        <div className="p-3 rounded-xl bg-background border border-border space-y-1">
+          <span className="text-[10px] font-mono text-muted-foreground uppercase">LAST UPDATED</span>
+          <p className="text-xs font-medium text-foreground">
             {new Date(incident.updatedAt).toLocaleString()}
           </p>
         </div>
@@ -176,21 +176,21 @@ export function IncidentDetails({ incident, isLoading, onClose }: IncidentDetail
 
       {/* Timeline Event Log History */}
       <div className="space-y-3 pt-2">
-        <div className="flex items-center gap-2 text-xs font-semibold text-zinc-400 uppercase tracking-wider">
-          <History className="w-4 h-4 text-indigo-400" />
+        <div className="flex items-center gap-2 text-xs font-semibold text-muted-foreground uppercase tracking-wider">
+          <History className="w-4 h-4 text-primary" />
           Audit & Status Timeline History
         </div>
 
         {incident.timelineEvents && incident.timelineEvents.length > 0 ? (
-          <div className="relative border-l border-zinc-800 ml-3 pl-4 space-y-4">
+          <div className="relative border-l border-border ml-3 pl-4 space-y-4">
             {incident.timelineEvents.map((evt) => (
               <div key={evt.id} className="relative group">
                 {/* Bullet */}
-                <div className="absolute -left-[21px] top-1 w-2.5 h-2.5 rounded-full bg-indigo-500 ring-4 ring-zinc-900" />
-                <div className="p-3 rounded-xl bg-zinc-950/80 border border-zinc-800/80 space-y-1">
+                <div className="absolute -left-[21px] top-1 w-2.5 h-2.5 rounded-full bg-primary ring-4 ring-card" />
+                <div className="p-3 rounded-xl bg-background border border-border space-y-1">
                   <div className="flex items-center justify-between text-xs">
-                    <span className="font-semibold text-indigo-300">{evt.status}</span>
-                    <span className="text-[10px] text-zinc-500">
+                    <span className="font-semibold text-primary">{evt.status}</span>
+                    <span className="text-[10px] text-muted-foreground">
                       {new Date(evt.createdAt).toLocaleTimeString([], {
                         hour: "2-digit",
                         minute: "2-digit",
@@ -198,13 +198,13 @@ export function IncidentDetails({ incident, isLoading, onClose }: IncidentDetail
                       })}
                     </span>
                   </div>
-                  <p className="text-xs text-zinc-300">{evt.message}</p>
+                  <p className="text-xs text-foreground">{evt.message}</p>
                 </div>
               </div>
             ))}
           </div>
         ) : (
-          <div className="p-4 text-center rounded-xl bg-zinc-950/40 border border-zinc-800/60 text-xs text-zinc-500">
+          <div className="p-4 text-center rounded-xl bg-background/50 border border-border text-xs text-muted-foreground">
             No recorded timeline events for this incident yet.
           </div>
         )}

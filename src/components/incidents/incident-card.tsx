@@ -74,8 +74,8 @@ export function IncidentCard({ incident, isSelected, onClick }: IncidentCardProp
       onClick={onClick}
       className={`p-4 rounded-2xl border transition-all cursor-pointer space-y-3 ${
         isSelected
-          ? "bg-zinc-900 border-indigo-500 shadow-lg shadow-indigo-500/10"
-          : "bg-zinc-900/60 border-zinc-800 hover:border-zinc-700 hover:bg-zinc-900/90"
+          ? "bg-card border-primary shadow-lg shadow-primary/10"
+          : "bg-card/60 border-border hover:border-primary/40 hover:bg-card"
       }`}
     >
       {/* Top Header Row: Severity & Status badges */}
@@ -93,29 +93,29 @@ export function IncidentCard({ incident, isSelected, onClick }: IncidentCardProp
             {incident.status}
           </span>
         </div>
-        <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-zinc-950 text-zinc-500 border border-zinc-800">
+        <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-background text-muted-foreground border border-border">
           v{incident.version}
         </span>
       </div>
 
       {/* Title & Description */}
       <div>
-        <h3 className="font-semibold text-base text-zinc-100 line-clamp-1">{incident.title}</h3>
-        <p className="text-xs text-zinc-400 line-clamp-2 mt-1">{incident.description}</p>
+        <h3 className="font-semibold text-base text-foreground line-clamp-1">{incident.title}</h3>
+        <p className="text-xs text-muted-foreground line-clamp-2 mt-1">{incident.description}</p>
       </div>
 
       {/* Footer Info: Project & Timestamp */}
-      <div className="flex items-center justify-between pt-2 border-t border-zinc-800/60 text-xs text-zinc-500">
+      <div className="flex items-center justify-between pt-2 border-t border-border/60 text-xs text-muted-foreground">
         <div className="flex items-center gap-1.5 truncate">
-          <FolderGit2 className="w-3.5 h-3.5 text-zinc-400" />
-          <span className="truncate font-medium text-zinc-300">
+          <FolderGit2 className="w-3.5 h-3.5 text-muted-foreground" />
+          <span className="truncate font-medium text-foreground">
             {incident.project?.name || "Project"}
           </span>
         </div>
-        <div className="flex items-center gap-1.5 shrink-0 text-zinc-400">
+        <div className="flex items-center gap-1.5 shrink-0 text-muted-foreground">
           <Clock className="w-3.5 h-3.5" />
           <span>{formattedDate}</span>
-          <ChevronRight className="w-4 h-4 text-zinc-600" />
+          <ChevronRight className="w-4 h-4 text-muted-foreground" />
         </div>
       </div>
     </div>

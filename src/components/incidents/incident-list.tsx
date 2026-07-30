@@ -56,15 +56,15 @@ export function IncidentList({
   return (
     <div className="flex flex-col h-full space-y-4">
       {/* Filters Bar */}
-      <div className="p-4 rounded-2xl bg-zinc-900/80 border border-zinc-800 space-y-3">
+      <div className="p-4 rounded-2xl bg-card border border-border space-y-3">
         <div className="flex items-center justify-between">
-          <div className="flex items-center gap-2 font-semibold text-xs text-zinc-400 uppercase tracking-wider">
-            <Filter className="w-4 h-4 text-indigo-400" />
+          <div className="flex items-center gap-2 font-semibold text-xs text-muted-foreground uppercase tracking-wider">
+            <Filter className="w-4 h-4 text-primary" />
             Filter Incidents
           </div>
           <button
             onClick={onRefresh}
-            className="p-1.5 rounded-lg bg-zinc-800 hover:bg-zinc-700 text-zinc-400 hover:text-zinc-200 transition-colors cursor-pointer"
+            className="p-1.5 rounded-lg bg-muted hover:bg-accent text-muted-foreground hover:text-foreground transition-colors cursor-pointer"
             title="Refresh list"
           >
             <RefreshCw className={`w-3.5 h-3.5 ${isLoading ? "animate-spin" : ""}`} />
@@ -73,15 +73,15 @@ export function IncidentList({
 
         {/* Status Chips */}
         <div className="flex items-center gap-1.5 overflow-x-auto pb-1 scrollbar-none">
-          <span className="text-xs text-zinc-500 font-medium pr-1 shrink-0">Status:</span>
+          <span className="text-xs text-muted-foreground font-medium pr-1 shrink-0">Status:</span>
           {statusOptions.map((st) => (
             <button
               key={st}
               onClick={() => onStatusFilterChange(st)}
               className={`px-2.5 py-1 rounded-xl text-xs font-medium transition-all shrink-0 cursor-pointer ${
                 statusFilter === st
-                  ? "bg-indigo-600 text-white shadow-md shadow-indigo-600/20"
-                  : "bg-zinc-950 text-zinc-400 hover:bg-zinc-800 hover:text-zinc-200 border border-zinc-800"
+                  ? "bg-primary text-primary-foreground shadow-md shadow-primary/20"
+                  : "bg-background text-muted-foreground hover:bg-accent hover:text-foreground border border-border"
               }`}
             >
               {st}
@@ -91,15 +91,15 @@ export function IncidentList({
 
         {/* Severity Chips */}
         <div className="flex items-center gap-1.5 overflow-x-auto pb-1 scrollbar-none">
-          <span className="text-xs text-zinc-500 font-medium pr-1 shrink-0">Severity:</span>
+          <span className="text-xs text-muted-foreground font-medium pr-1 shrink-0">Severity:</span>
           {severityOptions.map((sev) => (
             <button
               key={sev}
               onClick={() => onSeverityFilterChange(sev)}
               className={`px-2.5 py-1 rounded-xl text-xs font-medium transition-all shrink-0 cursor-pointer ${
                 severityFilter === sev
-                  ? "bg-zinc-700 text-white border border-zinc-600"
-                  : "bg-zinc-950 text-zinc-400 hover:bg-zinc-800 hover:text-zinc-200 border border-zinc-800"
+                  ? "bg-secondary text-secondary-foreground border border-border font-semibold"
+                  : "bg-background text-muted-foreground hover:bg-accent hover:text-foreground border border-border"
               }`}
             >
               {sev}
@@ -115,22 +115,22 @@ export function IncidentList({
             {[1, 2, 3, 4].map((i) => (
               <div
                 key={i}
-                className="p-5 rounded-2xl bg-zinc-900/60 border border-zinc-800/80 animate-pulse space-y-3"
+                className="p-5 rounded-2xl bg-card/60 border border-border animate-pulse space-y-3"
               >
                 <div className="flex gap-2">
-                  <div className="w-16 h-5 bg-zinc-800 rounded-full" />
-                  <div className="w-20 h-5 bg-zinc-800 rounded-full" />
+                  <div className="w-16 h-5 bg-muted rounded-full" />
+                  <div className="w-20 h-5 bg-muted rounded-full" />
                 </div>
-                <div className="w-3/4 h-5 bg-zinc-800 rounded" />
-                <div className="w-1/2 h-4 bg-zinc-800/60 rounded" />
+                <div className="w-3/4 h-5 bg-muted rounded" />
+                <div className="w-1/2 h-4 bg-muted/60 rounded" />
               </div>
             ))}
           </div>
         ) : error ? (
-          <div className="p-6 rounded-2xl bg-red-950/40 border border-red-800/60 text-red-300 space-y-2 text-center">
-            <AlertTriangle className="w-8 h-8 text-red-400 mx-auto" />
+          <div className="p-6 rounded-2xl bg-destructive/10 border border-destructive/30 text-destructive space-y-2 text-center">
+            <AlertTriangle className="w-8 h-8 text-destructive mx-auto" />
             <p className="font-semibold text-base">Failed to load incidents</p>
-            <p className="text-xs text-red-400">{error.message}</p>
+            <p className="text-xs text-destructive/80">{error.message}</p>
           </div>
         ) : incidents.length > 0 ? (
           incidents.map((incident) => (
@@ -142,11 +142,11 @@ export function IncidentList({
             />
           ))
         ) : (
-          <div className="p-12 text-center rounded-2xl bg-zinc-900/40 border border-zinc-800/60 space-y-3">
-            <Inbox className="w-10 h-10 text-zinc-600 mx-auto" />
+          <div className="p-12 text-center rounded-2xl bg-card border border-border space-y-3">
+            <Inbox className="w-10 h-10 text-muted-foreground mx-auto" />
             <div>
-              <p className="text-zinc-300 font-semibold text-sm">No incidents match your criteria</p>
-              <p className="text-zinc-500 text-xs mt-1">
+              <p className="text-foreground font-semibold text-sm">No incidents match your criteria</p>
+              <p className="text-muted-foreground text-xs mt-1">
                 Try clearing or adjusting filters, or create a new incident.
               </p>
             </div>
