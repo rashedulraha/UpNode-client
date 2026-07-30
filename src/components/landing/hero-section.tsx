@@ -170,11 +170,11 @@ export function HeroSection() {
           <motion.div
             whileHover={{ y: -2 }}
             transition={{ duration: 0.2 }}
-            className="p-5 rounded-2xl bg-card border border-border transition-all relative overflow-hidden"
+            className="p-5 rounded-2xl bg-card/75 backdrop-blur-xl border border-border/80 shadow-lg shadow-black/5 dark:shadow-black/20 hover:border-primary/40 transition-all relative overflow-hidden"
           >
             <div className="flex items-start justify-between gap-4 pb-3">
               <div className="flex items-center gap-3">
-                <div className="p-2 rounded-xl bg-destructive/10 text-destructive">
+                <div className="p-2 rounded-xl bg-destructive/10 text-destructive border border-destructive/20">
                   <ShieldAlert className="w-4 h-4" />
                 </div>
                 <div>
@@ -191,17 +191,17 @@ export function HeroSection() {
                   </h4>
                 </div>
               </div>
-              <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-muted text-emerald-500 flex items-center gap-1 font-semibold border border-border">
+              <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-muted/80 text-emerald-500 flex items-center gap-1 font-semibold border border-border">
                 <Activity className="w-3 h-3 text-primary" /> 0.4ms
               </span>
             </div>
 
             <div className="pt-2 space-y-1.5 text-[11px] font-mono">
-              <div className="flex items-center justify-between text-muted-foreground bg-muted/50 p-2.5 rounded-xl border border-border">
+              <div className="flex items-center justify-between text-muted-foreground bg-muted/50 p-2.5 rounded-xl border border-border/60">
                 <span className="text-muted-foreground">Target Host:</span>
                 <span className="text-foreground">api.auth.internal.prod</span>
               </div>
-              <div className="flex items-center justify-between text-muted-foreground bg-muted/50 p-2.5 rounded-xl border border-border">
+              <div className="flex items-center justify-between text-muted-foreground bg-muted/50 p-2.5 rounded-xl border border-border/60">
                 <span className="text-muted-foreground">Error Payload:</span>
                 <span className="text-destructive font-medium">
                   x509: certificate expired
@@ -214,11 +214,11 @@ export function HeroSection() {
           <motion.div
             whileHover={{ y: -2 }}
             transition={{ duration: 0.2 }}
-            className="p-5 rounded-2xl bg-card border border-border transition-all relative overflow-hidden"
+            className="p-5 rounded-2xl bg-card/75 backdrop-blur-xl border border-border/80 shadow-lg shadow-black/5 dark:shadow-black/20 hover:border-primary/40 transition-all relative overflow-hidden"
           >
             <div className="flex items-start justify-between gap-4 pb-3">
               <div className="flex items-center gap-3">
-                <div className="p-2 rounded-xl bg-amber-500/10 text-amber-500">
+                <div className="p-2 rounded-xl bg-amber-500/10 text-amber-500 border border-amber-500/20">
                   <Layers className="w-4 h-4" />
                 </div>
                 <div>
@@ -235,14 +235,14 @@ export function HeroSection() {
                   </h4>
                 </div>
               </div>
-              <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-muted text-primary border border-border">
+              <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-muted/80 text-primary border border-border">
                 BullMQ Buffer
               </span>
             </div>
 
             <div className="pt-2 space-y-1.5 text-[11px] font-mono">
               <div className="grid grid-cols-2 gap-2">
-                <div className="bg-muted/50 p-2.5 rounded-xl border border-border">
+                <div className="bg-muted/50 p-2.5 rounded-xl border border-border/60">
                   <span className="text-muted-foreground text-[9px] block">
                     TOPIC
                   </span>
@@ -250,7 +250,7 @@ export function HeroSection() {
                     telemetry.events.v2
                   </span>
                 </div>
-                <div className="bg-muted/50 p-2.5 rounded-xl border border-border">
+                <div className="bg-muted/50 p-2.5 rounded-xl border border-border/60">
                   <span className="text-muted-foreground text-[9px] block">
                     CONSUMER LAG
                   </span>
@@ -263,7 +263,7 @@ export function HeroSection() {
           </motion.div>
 
           {/* CLEAN CARD 3: MINI METRIC STRIP */}
-          <div className="p-4 rounded-xl bg-card border border-border flex items-center justify-between text-[11px] font-mono text-muted-foreground">
+          <div className="p-4 rounded-xl bg-card/75 backdrop-blur-xl border border-border/80 shadow-md shadow-black/5 flex items-center justify-between text-[11px] font-mono text-muted-foreground">
             <div className="flex items-center gap-2">
               <span className="w-1.5 h-1.5 rounded-full bg-emerald-500" />
               <span>Ingestion Throughput:</span>

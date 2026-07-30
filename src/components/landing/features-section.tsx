@@ -112,9 +112,9 @@ export function FeaturesSection() {
         <motion.div
           variants={fadeInUp}
           whileHover={{ y: -2 }}
-          className="p-6 rounded-2xl bg-card border border-border hover:bg-accent transition-all space-y-3"
+          className="p-6 rounded-2xl bg-card/75 backdrop-blur-xl border border-border/80 hover:border-primary/40 shadow-md shadow-black/5 dark:shadow-black/20 transition-all space-y-3"
         >
-          <div className="p-2.5 rounded-xl bg-muted border border-border text-primary w-fit">
+          <div className="p-2.5 rounded-xl bg-muted/80 border border-border text-primary w-fit">
             <Radio className="w-5 h-5" />
           </div>
           <h3 className="text-sm font-semibold text-foreground">
@@ -134,9 +134,9 @@ export function FeaturesSection() {
         <motion.div
           variants={fadeInUp}
           whileHover={{ y: -2 }}
-          className="p-6 rounded-2xl bg-card border border-border hover:bg-accent transition-all space-y-3"
+          className="p-6 rounded-2xl bg-card/75 backdrop-blur-xl border border-border/80 hover:border-primary/40 shadow-md shadow-black/5 dark:shadow-black/20 transition-all space-y-3"
         >
-          <div className="p-2.5 rounded-xl bg-muted border border-border text-amber-500 w-fit">
+          <div className="p-2.5 rounded-xl bg-muted/80 border border-border text-amber-500 w-fit">
             <Database className="w-5 h-5" />
           </div>
           <h3 className="text-sm font-semibold text-foreground">
@@ -156,9 +156,9 @@ export function FeaturesSection() {
         <motion.div
           variants={fadeInUp}
           whileHover={{ y: -2 }}
-          className="p-6 rounded-2xl bg-card border border-border hover:bg-accent transition-all space-y-3"
+          className="p-6 rounded-2xl bg-card/75 backdrop-blur-xl border border-border/80 hover:border-primary/40 shadow-md shadow-black/5 dark:shadow-black/20 transition-all space-y-3"
         >
-          <div className="p-2.5 rounded-xl bg-muted border border-border text-emerald-500 w-fit">
+          <div className="p-2.5 rounded-xl bg-muted/80 border border-border text-emerald-500 w-fit">
             <ShieldCheck className="w-5 h-5" />
           </div>
           <h3 className="text-sm font-semibold text-foreground">
@@ -178,11 +178,11 @@ export function FeaturesSection() {
         <motion.div
           variants={fadeInUp}
           whileHover={{ y: -2 }}
-          className="p-6 rounded-2xl bg-card border border-border hover:bg-accent transition-all space-y-4 md:col-span-2 lg:col-span-2"
+          className="p-6 rounded-2xl bg-card/75 backdrop-blur-xl border border-border/80 hover:border-primary/40 shadow-md shadow-black/5 dark:shadow-black/20 transition-all space-y-4 md:col-span-2 lg:col-span-2"
         >
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-3">
-              <div className="p-2.5 rounded-xl bg-muted border border-border text-primary">
+              <div className="p-2.5 rounded-xl bg-muted/80 border border-border text-primary">
                 <Terminal className="w-5 h-5" />
               </div>
               <div>
@@ -195,7 +195,7 @@ export function FeaturesSection() {
               </div>
             </div>
 
-            <div className="flex items-center gap-1 bg-muted p-1 rounded-lg text-[10px] font-mono border border-border">
+            <div className="flex items-center gap-1 bg-muted/80 p-1 rounded-lg text-[10px] font-mono border border-border">
               {(["ALL", "ERROR", "WARN", "INFO"] as const).map((lvl) => (
                 <button
                   key={lvl}
@@ -220,16 +220,16 @@ export function FeaturesSection() {
               placeholder="Filter logs..."
               value={logSearch}
               onChange={(e) => setLogSearch(e.target.value)}
-              className="w-full pl-8 pr-3 py-2 bg-muted border border-border rounded-xl text-xs font-mono text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary"
+              className="w-full pl-8 pr-3 py-2 bg-muted/80 border border-border rounded-xl text-xs font-mono text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary"
             />
           </div>
 
           {/* Log Stream Output */}
-          <div className="p-3 rounded-xl bg-muted/50 border border-border font-mono text-[11px] space-y-1.5 max-h-40 overflow-y-auto">
+          <div className="p-3 rounded-xl bg-muted/50 border border-border/80 font-mono text-[11px] space-y-1.5 max-h-40 overflow-y-auto">
             {filteredLogs.map((log) => (
               <div
                 key={log.id}
-                className="p-2 rounded-lg bg-card border border-border flex items-center justify-between gap-2 text-foreground"
+                className="p-2 rounded-lg bg-card/90 border border-border/60 flex items-center justify-between gap-2 text-foreground"
               >
                 <div className="flex items-center gap-2 overflow-hidden">
                   <span className="text-muted-foreground shrink-0">
@@ -265,9 +265,9 @@ export function FeaturesSection() {
         <motion.div
           variants={fadeInUp}
           whileHover={{ y: -2 }}
-          className="p-6 rounded-2xl bg-card border border-border hover:bg-accent transition-all space-y-3"
+          className="p-6 rounded-2xl bg-card/75 backdrop-blur-xl border border-border/80 hover:border-primary/40 shadow-md shadow-black/5 dark:shadow-black/20 transition-all space-y-3"
         >
-          <div className="p-2.5 rounded-xl bg-muted border border-border text-purple-500 w-fit">
+          <div className="p-2.5 rounded-xl bg-muted/80 border border-border text-purple-500 w-fit">
             <Users className="w-5 h-5" />
           </div>
           <h3 className="text-sm font-semibold text-foreground">

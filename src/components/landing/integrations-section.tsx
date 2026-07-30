@@ -48,7 +48,7 @@ export function IntegrationsSection() {
               key={idx}
               variants={fadeInUp}
               whileHover={{ y: -2 }}
-              className="p-4 rounded-2xl bg-card border border-border hover:bg-accent transition-all flex flex-col items-center justify-center gap-1.5 group cursor-pointer"
+              className="p-4 rounded-2xl bg-card/75 backdrop-blur-xl border border-border/80 hover:border-primary/40 shadow-sm transition-all flex flex-col items-center justify-center gap-1.5 group cursor-pointer"
             >
               <tech.icon className={`w-4 h-4 text-muted-foreground transition-colors ${tech.color}`} />
               <span className="text-xs font-medium text-foreground group-hover:text-foreground">

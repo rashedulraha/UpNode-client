@@ -100,10 +100,10 @@ export function ArchitectureSection() {
               variants={fadeInUp}
               whileHover={{ y: -2 }}
               onClick={() => setActivePipelineStep(item.step)}
-              className={`cursor-pointer p-6 rounded-2xl transition-all relative flex flex-col justify-between ${
+              className={`cursor-pointer p-6 rounded-2xl backdrop-blur-xl transition-all relative flex flex-col justify-between shadow-md shadow-black/5 dark:shadow-black/20 ${
                 isActive
-                  ? "bg-card border-2 border-primary"
-                  : "bg-card border border-border hover:border-primary/50"
+                  ? "bg-card/90 border-2 border-primary"
+                  : "bg-card/75 border border-border/80 hover:border-primary/50"
               }`}
             >
               <div className="space-y-4">

@@ -13,7 +13,7 @@ export function CtaSection() {
         whileInView={{ opacity: 1, y: 0 }}
         viewport={{ once: true }}
         transition={{ duration: 0.4 }}
-        className="rounded-3xl bg-card border border-border p-8 sm:p-14 text-center space-y-6"
+        className="rounded-3xl bg-card/75 backdrop-blur-2xl border border-border/80 p-8 sm:p-14 text-center space-y-6 shadow-xl shadow-primary/5 relative overflow-hidden"
       >
         <div className="max-w-xl mx-auto space-y-3">
           <h2 className="text-2xl sm:text-3xl font-semibold text-foreground tracking-tight">

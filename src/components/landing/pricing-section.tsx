@@ -85,7 +85,7 @@ export function PricingSection() {
         <motion.div
           variants={fadeInUp}
           whileHover={{ y: -3 }}
-          className="p-6 rounded-2xl bg-card border border-border hover:bg-accent transition-all flex flex-col justify-between space-y-6"
+          className="p-6 rounded-2xl bg-card/75 backdrop-blur-xl border border-border/80 hover:border-primary/40 shadow-md shadow-black/5 dark:shadow-black/20 transition-all flex flex-col justify-between space-y-6"
         >
           <div className="space-y-4">
             <div className="space-y-1">
@@ -124,7 +124,7 @@ export function PricingSection() {
 
           <Link
             href="/register"
-            className="w-full py-2.5 rounded-xl bg-muted border border-border hover:bg-accent text-foreground font-semibold text-xs transition-colors text-center block"
+            className="w-full py-2.5 rounded-xl bg-muted/80 border border-border hover:bg-accent text-foreground font-semibold text-xs transition-colors text-center block"
           >
             Get Started Free
           </Link>
@@ -134,9 +134,9 @@ export function PricingSection() {
         <motion.div
           variants={fadeInUp}
           whileHover={{ y: -3 }}
-          className="p-6 rounded-2xl bg-card border-2 border-primary relative flex flex-col justify-between space-y-6 shadow-sm"
+          className="p-6 rounded-2xl bg-card/90 backdrop-blur-xl border-2 border-primary relative flex flex-col justify-between space-y-6 shadow-xl shadow-primary/10 transition-all"
         >
-          <div className="absolute -top-3 right-6 px-2.5 py-0.5 rounded-full bg-primary text-primary-foreground text-[10px] font-bold uppercase font-mono tracking-wider">
+          <div className="absolute -top-3 right-6 px-2.5 py-0.5 rounded-full bg-primary text-primary-foreground text-[10px] font-bold uppercase font-mono tracking-wider shadow-sm">
             Most Popular
           </div>
 
@@ -183,7 +183,7 @@ export function PricingSection() {
 
           <Link
             href="/register"
-            className="w-full py-2.5 rounded-xl bg-primary hover:bg-primary/90 text-primary-foreground font-semibold text-xs transition-colors text-center block"
+            className="w-full py-2.5 rounded-xl bg-primary hover:bg-primary/90 text-primary-foreground font-semibold text-xs shadow-md shadow-primary/20 transition-all text-center block"
           >
             Start 14-Day Free Trial
           </Link>
@@ -193,7 +193,7 @@ export function PricingSection() {
         <motion.div
           variants={fadeInUp}
           whileHover={{ y: -3 }}
-          className="p-6 rounded-2xl bg-card border border-border hover:bg-accent transition-all flex flex-col justify-between space-y-6"
+          className="p-6 rounded-2xl bg-card/75 backdrop-blur-xl border border-border/80 hover:border-primary/40 shadow-md shadow-black/5 dark:shadow-black/20 transition-all flex flex-col justify-between space-y-6"
         >
           <div className="space-y-4">
             <div className="space-y-1">
@@ -233,7 +233,7 @@ export function PricingSection() {
 
           <a
             href="mailto:enterprise@pulsescale.com"
-            className="w-full py-2.5 rounded-xl bg-muted border border-border hover:bg-accent text-foreground font-semibold text-xs transition-colors text-center block"
+            className="w-full py-2.5 rounded-xl bg-muted/80 border border-border hover:bg-accent text-foreground font-semibold text-xs transition-colors text-center block"
           >
             Contact Sales
           </a>
