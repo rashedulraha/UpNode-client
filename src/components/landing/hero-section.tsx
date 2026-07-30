@@ -41,8 +41,33 @@ export function HeroSection() {
   return (
     <section
       id="platform"
-      className="pt-16 pb-20 sm:pt-24 sm:pb-28 grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-8 items-center border-b border-border"
+      className="relative pt-16 pb-20 sm:pt-24 sm:pb-28 grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-8 items-center border-b border-border overflow-hidden"
     >
+      {/* Background Grid Pattern & Subtle Glow */}
+      <div className="absolute inset-0 -z-10 pointer-events-none opacity-40 dark:opacity-20">
+        <svg
+          className="h-full w-full stroke-foreground/10 [mask-image:radial-gradient(1000px_circle_at_center,white,transparent)]"
+          aria-hidden="true"
+        >
+          <defs>
+            <pattern
+              id="hero-grid-pattern"
+              width="36"
+              height="36"
+              patternUnits="userSpaceOnUse"
+              x="-1"
+              y="-1"
+            >
+              <path d="M.5 36V.5H36" fill="none" strokeDasharray="0" />
+            </pattern>
+          </defs>
+          <rect width="100%" height="100%" strokeWidth="0" fill="url(#hero-grid-pattern)" />
+        </svg>
+      </div>
+
+      {/* Soft Radial Ambient Glow */}
+      <div className="absolute top-1/3 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[350px] bg-primary/10 blur-[130px] rounded-full pointer-events-none -z-10" />
+
       {/* HERO LEFT COLUMN */}
       <motion.div
         initial="hidden"
