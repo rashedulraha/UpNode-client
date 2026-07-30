@@ -25,6 +25,7 @@ import {
   Terminal,
 } from "lucide-react";
 import { useAuth } from "@/hooks/use-auth";
+import { ThemeToggle } from "@/components/ui/theme-toggle";
 
 const registerSchema = z
   .object({
@@ -110,31 +111,34 @@ function RegisterFormContent() {
   };
 
   return (
-    <div className="min-h-screen bg-[#050608] text-zinc-100 font-sans selection:bg-zinc-800 grid grid-cols-1 lg:grid-cols-12 overflow-hidden">
+    <div className="min-h-screen bg-background text-foreground font-sans grid grid-cols-1 lg:grid-cols-12 overflow-hidden">
       {/* LEFT COLUMN: AUTH FORM */}
       <motion.div
         initial={{ opacity: 0, x: -15 }}
         animate={{ opacity: 1, x: 0 }}
         transition={{ duration: 0.4 }}
-        className="lg:col-span-5 flex flex-col justify-between p-6 sm:p-10 border-r border-white/[0.06] relative z-10 bg-[#050608]"
+        className="lg:col-span-5 flex flex-col justify-between p-6 sm:p-10 border-r border-border relative z-10 bg-background"
       >
         {/* Top Header Logo */}
         <div className="flex items-center justify-between">
           <Link href="/" className="flex items-center gap-2.5 group">
-            <div className="p-1.5 rounded-lg bg-white/[0.04] text-white">
-              <Activity className="w-4 h-4 text-indigo-400" />
+            <div className="p-2 rounded-xl bg-primary/10 text-primary border border-primary/20">
+              <Activity className="w-4 h-4 text-primary" />
             </div>
-            <span className="font-semibold text-sm tracking-tight text-white">
-              PulseScale
+            <span className="font-bold text-sm tracking-tight text-foreground">
+              UpNode
             </span>
           </Link>
 
-          <Link
-            href="/"
-            className="text-xs font-mono text-zinc-400 hover:text-white transition-colors"
-          >
-            &larr; Back to home
-          </Link>
+          <div className="flex items-center gap-3">
+            <ThemeToggle />
+            <Link
+              href="/"
+              className="text-xs font-mono text-muted-foreground hover:text-foreground transition-colors"
+            >
+              &larr; Back to home
+            </Link>
+          </div>
         </div>
 
         {/* Form Container */}
