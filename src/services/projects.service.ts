@@ -26,4 +26,9 @@ export const projectsService = {
     const response = await api.post<Project>("/projects", data);
     return response.data;
   },
+
+  async getPublicStatus(slug: string) {
+    const response = await api.get(`/projects/public/${slug}/status`);
+    return response.data;
+  },
 };
