@@ -4,22 +4,9 @@ import React, { useState } from "react";
 import { Incident, IncidentStatus } from "@/types";
 import { useUpdateIncidentStatus } from "@/hooks/use-incidents";
 import { AiSreInsights } from "./ai-sre-insights";
-import {
-  AlertTriangle,
-  Clock,
-  History,
-  CheckCircle2,
-  AlertCircle,
-  Loader2,
-  FolderGit2,
-  Shield,
-  Layers,
-  ArrowRight,
-  X,
-  Sparkles,
-  Brain,
-  Wrench,
-} from "lucide-react";
+import { StatusDot } from "@/components/ui/status-dot";
+import { Loader2, X } from "lucide-react";
+import { format } from "date-fns";
 
 interface IncidentDetailsProps {
   incident: Incident | null;
@@ -34,20 +21,20 @@ export function IncidentDetails({ incident, isLoading, onClose }: IncidentDetail
   if (isLoading) {
     return (
       <div className="flex flex-col items-center justify-center h-full p-8 text-muted-foreground gap-3">
-        <Loader2 className="w-8 h-8 animate-spin text-primary" />
-        <p className="text-sm font-medium">Loading incident details...</p>
+        <Loader2 className="w-6 h-6 animate-spin text-primary" />
+        <p className="text-xs font-mono">Loading telemetry diagnostics...</p>
       </div>
     );
   }
 
   if (!incident) {
     return (
-      <div className="flex flex-col items-center justify-center h-full p-8 text-center text-muted-foreground gap-3 bg-card/40 rounded-2xl border border-border">
-        <Layers className="w-12 h-12 text-muted-foreground/40" />
+      <div className="flex flex-col items-center justify-center h-full p-8 text-center text-muted-foreground gap-3 bg-card/30 rounded-2xl border border-border/40">
+        <span className="w-3 h-3 rounded-full bg-muted-foreground/30 animate-pulse" />
         <div>
-          <p className="text-foreground font-semibold text-base">No Incident Selected</p>
-          <p className="text-xs text-muted-foreground mt-1 max-w-xs">
-            Select an incident from the list on the left to view full diagnostic details and manage status updates.
+          <p className="text-foreground font-semibold text-sm">No Incident Selected</p>
+          <p className="text-xs text-muted-foreground/80 mt-1 max-w-xs font-mono">
+            Select an incident from the telemetry list to view diagnostics.
           </p>
         </div>
       </div>
@@ -72,55 +59,62 @@ export function IncidentDetails({ incident, isLoading, onClose }: IncidentDetail
         expectedVersion: incident.version,
       });
     } catch (err: any) {
-      setMutationError(err.message || "Failed to update status. Version conflict may have occurred.");
+      setMutationError(err.message || "Failed to update status. Version conflict occurred.");
     }
   };
 
   return (
-    <div className="flex flex-col h-full bg-card border border-border rounded-2xl p-6 overflow-y-auto space-y-6">
-      {/* Header */}
-      <div className="flex items-start justify-between gap-4 border-b border-border pb-5">
-        <div className="space-y-1">
-          <div className="flex items-center gap-2">
-            <span className="text-xs font-mono px-2 py-0.5 rounded bg-background text-primary border border-border">
-              {incident.project?.name || "Project"}
+    <div className="flex flex-col h-full bg-card/40 backdrop-blur-xl border border-border/40 rounded-3xl p-6 sm:p-8 overflow-y-auto space-y-7 font-sans">
+      {/* Header with Pulsating Status Dot */}
+      <div className="flex items-start justify-between gap-4 border-b border-border/40 pb-6">
+        <div className="space-y-2">
+          <div className="flex items-center gap-2.5">
+            <StatusDot variant={incident.status} size="md" />
+            <span className="text-xs font-mono font-semibold uppercase tracking-wider text-foreground">
+              {incident.status}
             </span>
-            <span className="text-xs font-mono px-2 py-0.5 rounded bg-background text-muted-foreground border border-border">
-              Version {incident.version}
+            <span className="text-muted-foreground/40">•</span>
+            <span className="text-xs font-mono text-muted-foreground uppercase">
+              {incident.severity}
+            </span>
+            <span className="text-muted-foreground/40">•</span>
+            <span className="text-[11px] font-mono text-muted-foreground/80">
+              {incident.id}
             </span>
           </div>
-          <h2 className="text-xl font-bold text-foreground tracking-tight">{incident.title}</h2>
+
+          <h2 className="text-xl font-bold text-foreground tracking-tight leading-tight">
+            {incident.title}
+          </h2>
         </div>
+
         {onClose && (
           <button
             onClick={onClose}
-            className="p-1.5 rounded-lg text-muted-foreground hover:text-foreground hover:bg-accent transition-colors cursor-pointer"
+            className="p-1.5 rounded-xl text-muted-foreground hover:text-foreground hover:bg-muted/40 transition-colors cursor-pointer"
           >
-            <X className="w-5 h-5" />
+            <X className="w-4 h-4" />
           </button>
         )}
       </div>
 
       {/* Mutation Error Alert */}
       {mutationError && (
-        <div className="p-4 rounded-xl bg-destructive/10 border border-destructive/30 text-destructive text-xs flex items-start gap-3">
-          <AlertCircle className="w-5 h-5 text-destructive shrink-0 mt-0.5" />
-          <div>
-            <p className="font-semibold text-destructive">Optimistic Update Failed</p>
-            <p className="mt-0.5 text-destructive/80">{mutationError}</p>
-          </div>
+        <div className="p-4 rounded-2xl bg-destructive/10 border border-destructive/20 text-destructive text-xs font-mono space-y-1">
+          <p className="font-semibold">Optimistic Update Failed</p>
+          <p className="opacity-90">{mutationError}</p>
         </div>
       )}
 
-      {/* Status Transition Control (Optimistic Update) */}
-      <div className="p-4 rounded-xl bg-background border border-border space-y-3">
+      {/* Lifecycle Status Switcher */}
+      <div className="p-4 sm:p-5 rounded-2xl bg-muted/20 border border-border/40 space-y-3">
         <div className="flex items-center justify-between">
-          <h3 className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">
-            Update Incident Lifecycle Status
-          </h3>
+          <span className="text-[10px] font-mono font-semibold text-muted-foreground uppercase tracking-widest">
+            Lifecycle Status
+          </span>
           {updateStatusMutation.isPending && (
-            <span className="text-xs text-primary flex items-center gap-1.5 font-medium">
-              <Loader2 className="w-3.5 h-3.5 animate-spin" /> Optimistically Updating...
+            <span className="text-[11px] font-mono text-primary flex items-center gap-1.5">
+              <Loader2 className="w-3 h-3 animate-spin" /> Updating...
             </span>
           )}
         </div>
@@ -135,15 +129,17 @@ export function IncidentDetails({ incident, isLoading, onClose }: IncidentDetail
                 onClick={() => handleStatusChange(item.status)}
                 className={`p-3 rounded-xl border text-left transition-all cursor-pointer flex flex-col justify-between ${
                   isActive
-                    ? "bg-primary/15 border-primary text-primary shadow-md shadow-primary/10"
-                    : "bg-card/60 border-border text-muted-foreground hover:border-primary/40 hover:text-foreground"
+                    ? "bg-primary/10 border-primary/40 text-primary font-semibold shadow-sm"
+                    : "bg-card/40 border-border/40 text-muted-foreground hover:border-border hover:text-foreground"
                 }`}
               >
                 <div className="flex items-center justify-between mb-1">
-                  <span className="font-semibold text-xs">{item.label}</span>
-                  {isActive && <CheckCircle2 className="w-3.5 h-3.5 text-primary" />}
+                  <span className="text-xs font-medium">{item.label}</span>
+                  {isActive && <StatusDot variant={item.status} size="sm" pulse={false} />}
                 </div>
-                <span className="text-[10px] text-muted-foreground leading-tight">{item.desc}</span>
+                <span className="text-[10px] text-muted-foreground/70 leading-tight">
+                  {item.desc}
+                </span>
               </button>
             );
           })}
@@ -152,67 +148,65 @@ export function IncidentDetails({ incident, isLoading, onClose }: IncidentDetail
 
       {/* Description Section */}
       <div className="space-y-2">
-        <h3 className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">Description</h3>
-        <div className="p-4 rounded-xl bg-background border border-border text-sm text-foreground leading-relaxed whitespace-pre-wrap">
+        <span className="text-[10px] font-mono font-semibold text-muted-foreground uppercase tracking-widest">
+          Description
+        </span>
+        <div className="p-4 rounded-2xl bg-muted/20 border border-border/40 text-xs text-foreground leading-relaxed whitespace-pre-wrap font-sans">
           {incident.description || "No description provided."}
         </div>
       </div>
 
-      {/* AI SRE Insights Claude Code Terminal Card */}
+      {/* AI SRE Insights Terminal UI Card */}
       <AiSreInsights incident={incident} />
 
-      {/* Incident Metadata Overview Grid */}
-      <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
-        <div className="p-3 rounded-xl bg-background border border-border space-y-1">
-          <span className="text-[10px] font-mono text-muted-foreground uppercase">SEVERITY LEVEL</span>
-          <p className="text-xs font-bold text-foreground">{incident.severity}</p>
-        </div>
-        <div className="p-3 rounded-xl bg-background border border-border space-y-1">
-          <span className="text-[10px] font-mono text-muted-foreground uppercase">CREATED TIME</span>
-          <p className="text-xs font-medium text-foreground">
-            {new Date(incident.createdAt).toLocaleString()}
+      {/* Monospaced Metadata Overview Grid */}
+      <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 font-mono">
+        <div className="p-3 sm:p-4 rounded-2xl bg-muted/20 border border-border/40 space-y-1">
+          <span className="text-[10px] text-muted-foreground/60 uppercase block">PROJECT</span>
+          <p className="text-xs font-semibold text-foreground truncate">
+            {incident.project?.name || "Project"}
           </p>
         </div>
-        <div className="p-3 rounded-xl bg-background border border-border space-y-1">
-          <span className="text-[10px] font-mono text-muted-foreground uppercase">LAST UPDATED</span>
-          <p className="text-xs font-medium text-foreground">
-            {new Date(incident.updatedAt).toLocaleString()}
+        <div className="p-3 sm:p-4 rounded-2xl bg-muted/20 border border-border/40 space-y-1">
+          <span className="text-[10px] text-muted-foreground/60 uppercase block">CREATED AT</span>
+          <p className="text-xs font-semibold text-foreground">
+            {format(new Date(incident.createdAt), "yyyy-MM-dd HH:mm")}
+          </p>
+        </div>
+        <div className="p-3 sm:p-4 rounded-2xl bg-muted/20 border border-border/40 space-y-1">
+          <span className="text-[10px] text-muted-foreground/60 uppercase block">LAST UPDATED</span>
+          <p className="text-xs font-semibold text-foreground">
+            {format(new Date(incident.updatedAt), "yyyy-MM-dd HH:mm")}
           </p>
         </div>
       </div>
 
-      {/* Timeline Event Log History */}
-      <div className="space-y-3 pt-2">
-        <div className="flex items-center gap-2 text-xs font-semibold text-muted-foreground uppercase tracking-wider">
-          <History className="w-4 h-4 text-primary" />
-          Audit & Status Timeline History
-        </div>
+      {/* Audit & Timeline Log History */}
+      <div className="space-y-4 pt-2">
+        <span className="text-[10px] font-mono font-semibold text-muted-foreground uppercase tracking-widest block">
+          Timeline History
+        </span>
 
         {incident.timelineEvents && incident.timelineEvents.length > 0 ? (
-          <div className="relative border-l border-border ml-3 pl-4 space-y-4">
+          <div className="relative border-l border-border/40 ml-2 pl-4 space-y-4 font-mono">
             {incident.timelineEvents.map((evt) => (
-              <div key={evt.id} className="relative group">
-                {/* Bullet */}
-                <div className="absolute -left-[21px] top-1 w-2.5 h-2.5 rounded-full bg-primary ring-4 ring-card" />
-                <div className="p-3 rounded-xl bg-background border border-border space-y-1">
+              <div key={evt.id} className="relative">
+                <div className="absolute -left-[21px] top-1.5 w-2 h-2 rounded-full bg-primary" />
+                <div className="p-3 rounded-2xl bg-muted/20 border border-border/40 space-y-1">
                   <div className="flex items-center justify-between text-xs">
-                    <span className="font-semibold text-primary">{evt.status}</span>
-                    <span className="text-[10px] text-muted-foreground">
-                      {new Date(evt.createdAt).toLocaleTimeString([], {
-                        hour: "2-digit",
-                        minute: "2-digit",
-                        second: "2-digit",
-                      })}
+                    <span className="font-semibold text-foreground">{evt.status}</span>
+                    <span className="text-[10px] text-muted-foreground/70">
+                      {format(new Date(evt.createdAt), "HH:mm:ss")}
                     </span>
                   </div>
-                  <p className="text-xs text-foreground">{evt.message}</p>
+                  <p className="text-xs text-muted-foreground font-sans">{evt.message}</p>
                 </div>
               </div>
             ))}
           </div>
         ) : (
-          <div className="p-4 text-center rounded-xl bg-background/50 border border-border text-xs text-muted-foreground">
-            No recorded timeline events for this incident yet.
+          <div className="p-4 text-center rounded-2xl bg-muted/10 border border-border/40 text-xs font-mono text-muted-foreground">
+            No timeline events recorded.
           </div>
         )}
       </div>
