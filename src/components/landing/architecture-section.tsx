@@ -2,136 +2,187 @@
 
 import React, { useState } from "react";
 import { motion } from "framer-motion";
-import { Activity, Cpu, Globe, Layers, Radio } from "lucide-react";
+
+const GLASS: React.CSSProperties = {
+  background: "rgba(255,255,255,0.025)",
+  backdropFilter: "blur(20px)",
+  WebkitBackdropFilter: "blur(20px)",
+  border: "0.5px solid rgba(255,255,255,0.09)",
+  borderTop: "0.5px solid rgba(255,255,255,0.17)",
+};
+
+const GLASS_ACTIVE: React.CSSProperties = {
+  background: "rgba(255,255,255,0.06)",
+  backdropFilter: "blur(20px)",
+  WebkitBackdropFilter: "blur(20px)",
+  border: "0.5px solid rgba(255,255,255,0.22)",
+  borderTop: "0.5px solid rgba(255,255,255,0.35)",
+};
+
+const steps = [
+  {
+    step: 1,
+    title: "Ingestion Gateway",
+    tech: "Go / Edge Proxy",
+    latency: "< 0.8ms",
+    desc: "High-concurrency edge webhooks accept telemetry spikes up to 500,000 req/sec.",
+  },
+  {
+    step: 2,
+    title: "BullMQ / Redis Queue",
+    tech: "In-Memory Buffer",
+    latency: "< 0.2ms",
+    desc: "Non-blocking RAM buffer queues incoming alerts into job channels instantly.",
+  },
+  {
+    step: 3,
+    title: "Async Worker Pool",
+    tech: "Isolated Runners",
+    latency: "< 3.5ms",
+    desc: "Decoupled process pool handles deduplication, rules, and alert routing.",
+  },
+  {
+    step: 4,
+    title: "SSE Broadcast",
+    tech: "HTTP/2 Event Stream",
+    latency: "< 12ms",
+    desc: "Pushes real-time incident state directly to SRE dashboards — zero polling.",
+  },
+];
 
 export function ArchitectureSection() {
-  const [activePipelineStep, setActivePipelineStep] = useState<number>(1);
-
-  const fadeInUp = {
-    hidden: { opacity: 0, y: 12 },
-    visible: { opacity: 1, y: 0, transition: { duration: 0.4 } },
-  };
-
-  const staggerContainer = {
-    hidden: { opacity: 0 },
-    visible: {
-      opacity: 1,
-      transition: {
-        staggerChildren: 0.08,
-      },
-    },
-  };
-
-  const steps = [
-    {
-      step: 1,
-      title: "Ingestion Gateway",
-      tech: "Go / Edge Proxy",
-      latency: "< 0.8ms",
-      desc: "High-concurrency edge webhooks accept telemetry spikes up to 500,000 req/sec.",
-      icon: Globe,
-      textColor: "text-primary",
-    },
-    {
-      step: 2,
-      title: "BullMQ / Redis Queue",
-      tech: "In-Memory Buffer",
-      latency: "< 0.2ms",
-      desc: "Non-blocking RAM buffer queues incoming alerts into job channels instantly.",
-      icon: Layers,
-      textColor: "text-amber-500",
-    },
-    {
-      step: 3,
-      title: "Asynchronous Worker",
-      tech: "Isolated Runners",
-      latency: "< 3.5ms",
-      desc: "Decoupled process pool handles deduplication, rules, and alert routing.",
-      icon: Cpu,
-      textColor: "text-sky-500",
-    },
-    {
-      step: 4,
-      title: "Sub-second SSE Broadcast",
-      tech: "HTTP/2 Event Stream",
-      latency: "< 12ms",
-      desc: "Pushes real-time incident state directly to SRE dashboards with zero polling.",
-      icon: Radio,
-      textColor: "text-emerald-500",
-    },
-  ];
+  const [active, setActive] = useState(1);
 
   return (
-    <section id="architecture" className="py-20 border-b border-border space-y-12">
-      <motion.div
-        initial={{ opacity: 0, y: 12 }}
-        whileInView={{ opacity: 1, y: 0 }}
-        viewport={{ once: true }}
-        transition={{ duration: 0.4 }}
-        className="text-center max-w-2xl mx-auto space-y-3"
-      >
-        <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-muted border border-border text-xs font-mono">
-          <Activity className="w-3.5 h-3.5 text-primary" />
-          <span className="text-primary">High-Throughput Pipeline</span>
-        </div>
-        <h2 className="text-2xl sm:text-3xl font-semibold text-foreground tracking-tight">
-          Zero Main-Thread DB Lockup
-        </h2>
-        <p className="text-muted-foreground text-xs sm:text-sm leading-relaxed">
-          Traditional monitoring platforms lock up relational databases during
-          telemetry spikes. PulseScale completely decouples ingestion using an
-          asynchronous queue architecture.
-        </p>
-      </motion.div>
+    <section
+      id="architecture"
+      className="py-24 relative"
+      style={{ background: "#000", borderBottom: "0.5px solid rgba(255,255,255,0.06)" }}
+    >
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-14">
+        {/* Header */}
+        <motion.div
+          initial={{ opacity: 0, y: 14 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.5 }}
+          className="text-center space-y-4"
+        >
+          <div
+            className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full font-mono text-[10px] text-white/35 tracking-widest uppercase"
+            style={{ background: "rgba(255,255,255,0.03)", border: "0.5px solid rgba(255,255,255,0.09)" }}
+          >
+            <span className="w-1 h-1 rounded-full bg-white/30" />
+            High-Throughput Pipeline
+          </div>
+          <h2 className="text-3xl sm:text-5xl font-bold tracking-tighter text-white leading-tight">
+            Zero main-thread<br />
+            <span style={{ WebkitTextStroke: "1px rgba(255,255,255,0.35)", color: "transparent" }}>
+              DB lockup.
+            </span>
+          </h2>
+          <p className="text-white/30 text-sm max-w-lg mx-auto font-sans leading-relaxed">
+            Traditional platforms lock databases under telemetry spikes. UpNode completely decouples
+            ingestion with an async queue architecture.
+          </p>
+        </motion.div>
 
-      {/* Visual Pipeline Cards */}
-      <motion.div
-        initial="hidden"
-        whileInView="visible"
-        viewport={{ once: true }}
-        variants={staggerContainer}
-        className="grid grid-cols-1 md:grid-cols-4 gap-3"
-      >
-        {steps.map((item) => {
-          const isActive = activePipelineStep === item.step;
-          return (
-            <motion.div
-              key={item.step}
-              variants={fadeInUp}
-              whileHover={{ y: -2 }}
-              onClick={() => setActivePipelineStep(item.step)}
-              className={`cursor-pointer p-6 rounded-2xl backdrop-blur-xl transition-all relative flex flex-col justify-between shadow-md shadow-black/5 dark:shadow-black/20 ${
-                isActive
-                  ? "bg-card/90 border-2 border-primary"
-                  : "bg-card/75 border border-border/80 hover:border-primary/50"
-              }`}
-            >
-              <div className="space-y-4">
+        {/* Pipeline Steps */}
+        <motion.div
+          initial={{ opacity: 0 }}
+          whileInView={{ opacity: 1 }}
+          viewport={{ once: true }}
+          transition={{ staggerChildren: 0.08, delayChildren: 0.1 }}
+          className="grid grid-cols-1 md:grid-cols-4 gap-3"
+        >
+          {steps.map((item) => {
+            const isActive = active === item.step;
+            return (
+              <motion.div
+                key={item.step}
+                initial={{ opacity: 0, y: 14 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.45, delay: item.step * 0.08 }}
+                whileHover={{ y: -3 }}
+                onClick={() => setActive(item.step)}
+                className="cursor-pointer p-5 rounded-2xl transition-all space-y-4"
+                style={isActive ? GLASS_ACTIVE : GLASS}
+              >
+                {/* Step number + latency */}
                 <div className="flex items-center justify-between">
-                  <div className="p-2 rounded-xl bg-muted border border-border text-foreground">
-                    <item.icon className={`w-4 h-4 ${item.textColor}`} />
-                  </div>
-                  <span className={`text-[10px] font-mono px-2 py-0.5 rounded bg-muted border border-border ${item.textColor}`}>
+                  <span
+                    className="font-mono text-[10px] text-white/30 tracking-widest"
+                    style={{
+                      border: "0.5px solid rgba(255,255,255,0.10)",
+                      padding: "2px 8px",
+                      borderRadius: "4px",
+                      background: "rgba(255,255,255,0.03)",
+                    }}
+                  >
+                    STAGE 0{item.step}
+                  </span>
+                  <span
+                    className="font-mono text-[10px] tracking-widest"
+                    style={{ color: isActive ? "rgba(255,255,255,0.75)" : "rgba(255,255,255,0.28)" }}
+                  >
                     {item.latency}
                   </span>
                 </div>
 
-                <div>
-                  <div className="text-[9px] font-mono uppercase text-primary font-semibold">
-                    STAGE 0{item.step} • {item.tech}
+                {/* Title / Tech / Desc */}
+                <div className="space-y-1.5">
+                  <div className="font-mono text-[9px] text-white/25 tracking-widest uppercase">
+                    {item.tech}
                   </div>
-                  <h3 className="text-sm font-semibold text-foreground mt-1">
+                  <h3
+                    className="text-sm font-semibold transition-colors"
+                    style={{ color: isActive ? "rgba(255,255,255,0.90)" : "rgba(255,255,255,0.60)" }}
+                  >
                     {item.title}
                   </h3>
-                  <p className="text-xs text-muted-foreground mt-1 leading-relaxed">
-                    {item.desc}
-                  </p>
+                  <p className="text-xs text-white/30 leading-relaxed font-sans">{item.desc}</p>
                 </div>
+
+                {/* Active indicator */}
+                {isActive && (
+                  <div className="flex items-center gap-2">
+                    <span className="relative flex h-1.5 w-1.5">
+                      <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-white/60 opacity-70" />
+                      <span className="relative inline-flex rounded-full h-1.5 w-1.5 bg-white/80" />
+                    </span>
+                    <span className="font-mono text-[9px] text-white/35 tracking-widest uppercase">
+                      Selected
+                    </span>
+                  </div>
+                )}
+              </motion.div>
+            );
+          })}
+        </motion.div>
+
+        {/* Connector Flow Line */}
+        <div className="hidden md:flex items-center justify-center gap-0">
+          {steps.map((s, i) => (
+            <React.Fragment key={s.step}>
+              <div
+                className="w-8 h-8 rounded-full flex items-center justify-center font-mono text-[10px] transition-all cursor-pointer"
+                style={{
+                  background: active === s.step ? "rgba(255,255,255,0.15)" : "rgba(255,255,255,0.04)",
+                  border: active === s.step ? "0.5px solid rgba(255,255,255,0.40)" : "0.5px solid rgba(255,255,255,0.10)",
+                  color: active === s.step ? "rgba(255,255,255,0.85)" : "rgba(255,255,255,0.25)",
+                }}
+                onClick={() => setActive(s.step)}
+              >
+                {s.step}
               </div>
-            </motion.div>
-          );
-        })}
-      </motion.div>
+              {i < steps.length - 1 && (
+                <div className="flex-1 h-[0.5px] mx-1" style={{ background: "rgba(255,255,255,0.08)" }} />
+              )}
+            </React.Fragment>
+          ))}
+        </div>
+      </div>
     </section>
   );
 }

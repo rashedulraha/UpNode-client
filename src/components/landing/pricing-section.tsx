@@ -3,242 +3,211 @@
 import React, { useState } from "react";
 import Link from "next/link";
 import { motion } from "framer-motion";
-import { Check, CreditCard } from "lucide-react";
+import { Check, ArrowRight } from "lucide-react";
+
+const GLASS: React.CSSProperties = {
+  background: "rgba(255,255,255,0.025)",
+  backdropFilter: "blur(20px)",
+  WebkitBackdropFilter: "blur(20px)",
+  border: "0.5px solid rgba(255,255,255,0.09)",
+  borderTop: "0.5px solid rgba(255,255,255,0.17)",
+};
+
+const GLASS_FEATURED: React.CSSProperties = {
+  background: "rgba(255,255,255,0.07)",
+  backdropFilter: "blur(20px)",
+  WebkitBackdropFilter: "blur(20px)",
+  border: "0.5px solid rgba(255,255,255,0.22)",
+  borderTop: "0.5px solid rgba(255,255,255,0.38)",
+};
 
 export function PricingSection() {
   const [billingCycle, setBillingCycle] = useState<"monthly" | "yearly">("yearly");
 
-  const fadeInUp = {
-    hidden: { opacity: 0, y: 12 },
-    visible: { opacity: 1, y: 0, transition: { duration: 0.4 } },
-  };
-
-  const staggerContainer = {
-    hidden: { opacity: 0 },
-    visible: {
-      opacity: 1,
-      transition: {
-        staggerChildren: 0.08,
-      },
+  const plans = [
+    {
+      name: "Developer",
+      desc: "For side projects & indie developers.",
+      price: "0",
+      unit: "/ forever",
+      featured: false,
+      cta: "Get Started Free",
+      href: "/register",
+      featureColor: "text-white/35",
+      dotColor: "bg-white/30",
+      features: ["Up to 10,000 events/mo", "24-hour log retention", "Basic SSE alerts", "Community support"],
     },
-  };
+    {
+      name: "Scale Pro",
+      desc: "For fast-growing SaaS & engineering teams.",
+      price: billingCycle === "yearly" ? "39" : "49",
+      unit: "/ month",
+      featured: true,
+      cta: "Start 14-Day Free Trial",
+      href: "/register",
+      badge: "Most Popular",
+      featureColor: "text-white/55",
+      dotColor: "bg-white/60",
+      features: ["500,000 events/mo", "30-day log retention", "Sub-second SSE push alerts", "BullMQ queue isolation", "Slack & PagerDuty sync"],
+    },
+    {
+      name: "Enterprise",
+      desc: "For high-throughput critical systems.",
+      price: "Custom",
+      unit: "",
+      featured: false,
+      cta: "Contact Sales",
+      href: "mailto:enterprise@upnode.io",
+      featureColor: "text-white/35",
+      dotColor: "bg-white/30",
+      features: ["Unlimited telemetry events", "1-year custom log retention", "Dedicated BullMQ worker pods", "99.999% SLA & SOC2", "24/7 dedicated SRE support"],
+    },
+  ];
 
   return (
-    <section id="pricing" className="py-20 border-b border-border space-y-12">
-      <motion.div
-        initial={{ opacity: 0, y: 12 }}
-        whileInView={{ opacity: 1, y: 0 }}
-        viewport={{ once: true }}
-        className="text-center max-w-2xl mx-auto space-y-3"
-      >
-        <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-muted border border-border text-xs font-mono">
-          <CreditCard className="w-3.5 h-3.5 text-primary" />
-          <span className="text-primary">Transparent Pricing</span>
-        </div>
-        <h2 className="text-2xl sm:text-3xl font-semibold text-foreground tracking-tight">
-          Simple, predictable plans for any engineering team
-        </h2>
-        <p className="text-muted-foreground text-xs sm:text-sm">
-          Zero hidden fees. Scale telemetry ingestion as your infrastructure
-          grows.
-        </p>
+    <section
+      id="pricing"
+      className="py-24 relative"
+      style={{ background: "#000", borderBottom: "0.5px solid rgba(255,255,255,0.06)" }}
+    >
+      <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 space-y-14">
+        {/* Header */}
+        <motion.div
+          initial={{ opacity: 0, y: 14 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.5 }}
+          className="text-center space-y-4"
+        >
+          <div
+            className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full font-mono text-[10px] text-white/35 tracking-widest uppercase"
+            style={{ background: "rgba(255,255,255,0.03)", border: "0.5px solid rgba(255,255,255,0.09)" }}
+          >
+            <span className="w-1 h-1 rounded-full bg-white/30" />
+            Transparent Pricing
+          </div>
+          <h2 className="text-3xl sm:text-5xl font-bold tracking-tighter text-white leading-tight">
+            Simple, predictable plans<br />
+            <span style={{ WebkitTextStroke: "1px rgba(255,255,255,0.35)", color: "transparent" }}>
+              for any team.
+            </span>
+          </h2>
+          <p className="text-white/30 text-sm max-w-md mx-auto font-sans leading-relaxed">
+            Zero hidden fees. Scale telemetry ingestion as your infrastructure grows.
+          </p>
 
-        {/* Monthly / Yearly Toggle */}
-        <div className="pt-2 flex items-center justify-center">
-          <div className="flex items-center gap-1 bg-muted border border-border p-1 rounded-xl text-xs font-mono">
-            <button
-              onClick={() => setBillingCycle("monthly")}
-              className={`px-3 py-1 rounded-lg transition-all cursor-pointer ${
-                billingCycle === "monthly"
-                  ? "bg-primary text-primary-foreground font-bold"
-                  : "text-muted-foreground hover:text-foreground"
-              }`}
+          {/* Toggle */}
+          <div className="flex justify-center pt-2">
+            <div
+              className="flex items-center gap-0.5 p-0.5 font-mono text-[11px] rounded-xl"
+              style={{ background: "rgba(255,255,255,0.04)", border: "0.5px solid rgba(255,255,255,0.09)" }}
             >
-              Monthly
-            </button>
-            <button
-              onClick={() => setBillingCycle("yearly")}
-              className={`px-3 py-1 rounded-lg transition-all flex items-center gap-1 cursor-pointer ${
-                billingCycle === "yearly"
-                  ? "bg-primary text-primary-foreground font-bold"
-                  : "text-muted-foreground hover:text-foreground"
-              }`}
+              {(["monthly", "yearly"] as const).map((cycle) => (
+                <button
+                  key={cycle}
+                  onClick={() => setBillingCycle(cycle)}
+                  className={`px-4 py-1.5 rounded-lg transition-all cursor-pointer tracking-widest uppercase text-[10px] flex items-center gap-2`}
+                  style={
+                    billingCycle === cycle
+                      ? { background: "rgba(255,255,255,0.88)", color: "#000", borderRadius: "8px" }
+                      : { color: "rgba(255,255,255,0.30)" }
+                  }
+                >
+                  {cycle}
+                  {cycle === "yearly" && (
+                    <span
+                      className="text-[8px] font-bold text-white/50 px-1 py-0.5 rounded"
+                      style={{ border: "0.5px solid rgba(255,255,255,0.15)" }}
+                    >
+                      -20%
+                    </span>
+                  )}
+                </button>
+              ))}
+            </div>
+          </div>
+        </motion.div>
+
+        {/* Plans Grid */}
+        <motion.div
+          initial={{ opacity: 0 }}
+          whileInView={{ opacity: 1 }}
+          viewport={{ once: true }}
+          transition={{ staggerChildren: 0.1, delayChildren: 0.1 }}
+          className="grid grid-cols-1 md:grid-cols-3 gap-4"
+        >
+          {plans.map((plan, i) => (
+            <motion.div
+              key={plan.name}
+              initial={{ opacity: 0, y: 16 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.5, delay: i * 0.1 }}
+              whileHover={{ y: -4 }}
+              className="rounded-2xl p-6 flex flex-col justify-between gap-6 relative transition-all"
+              style={plan.featured ? GLASS_FEATURED : GLASS}
             >
-              <span>Yearly</span>
-              <span className="text-[9px] font-bold text-emerald-500 bg-emerald-500/10 px-1.5 py-0.5 rounded border border-emerald-500/20">
-                Save 20%
-              </span>
-            </button>
-          </div>
-        </div>
-      </motion.div>
+              {plan.badge && (
+                <div
+                  className="absolute -top-3 right-5 px-3 py-0.5 rounded-full font-mono text-[9px] tracking-widest uppercase text-black font-bold"
+                  style={{ background: "rgba(255,255,255,0.90)" }}
+                >
+                  {plan.badge}
+                </div>
+              )}
 
-      {/* Pricing Grid */}
-      <motion.div
-        initial="hidden"
-        whileInView="visible"
-        viewport={{ once: true }}
-        variants={staggerContainer}
-        className="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-6xl mx-auto"
-      >
-        {/* Starter Plan */}
-        <motion.div
-          variants={fadeInUp}
-          whileHover={{ y: -3 }}
-          className="p-6 rounded-2xl bg-card/75 backdrop-blur-xl border border-border/80 hover:border-primary/40 shadow-md shadow-black/5 dark:shadow-black/20 transition-all flex flex-col justify-between space-y-6"
-        >
-          <div className="space-y-4">
-            <div className="space-y-1">
-              <h3 className="text-base font-semibold text-foreground">
-                Developer
-              </h3>
-              <p className="text-xs text-muted-foreground">
-                For side projects & indie developers.
-              </p>
-            </div>
-            <div className="flex items-baseline gap-1">
-              <span className="text-3xl font-bold text-foreground">$0</span>
-              <span className="text-xs font-mono text-muted-foreground">
-                / forever
-              </span>
-            </div>
-            <ul className="space-y-2 text-xs text-muted-foreground font-mono pt-2 border-t border-border">
-              <li className="flex items-center gap-2">
-                <Check className="w-3.5 h-3.5 text-primary" /> Up to 10,000
-                events/mo
-              </li>
-              <li className="flex items-center gap-2">
-                <Check className="w-3.5 h-3.5 text-primary" /> 24-hour log
-                retention
-              </li>
-              <li className="flex items-center gap-2">
-                <Check className="w-3.5 h-3.5 text-primary" /> Basic SSE
-                alerts
-              </li>
-              <li className="flex items-center gap-2 text-muted-foreground/60">
-                <Check className="w-3.5 h-3.5 text-muted-foreground/40" />{" "}
-                Community support
-              </li>
-            </ul>
-          </div>
+              <div className="space-y-4">
+                <div className="space-y-1">
+                  <h3
+                    className="text-base font-semibold"
+                    style={{ color: plan.featured ? "rgba(255,255,255,0.90)" : "rgba(255,255,255,0.60)" }}
+                  >
+                    {plan.name}
+                  </h3>
+                  <p className="text-xs text-white/28 font-sans">{plan.desc}</p>
+                </div>
 
-          <Link
-            href="/register"
-            className="w-full py-2.5 rounded-xl bg-muted/80 border border-border hover:bg-accent text-foreground font-semibold text-xs transition-colors text-center block"
-          >
-            Get Started Free
-          </Link>
+                <div className="flex items-baseline gap-1">
+                  <span
+                    className="text-3xl font-bold tracking-tight"
+                    style={{ color: plan.featured ? "rgba(255,255,255,0.90)" : "rgba(255,255,255,0.60)" }}
+                  >
+                    {plan.price !== "Custom" ? `$${plan.price}` : plan.price}
+                  </span>
+                  {plan.unit && (
+                    <span className="font-mono text-[11px] text-white/22">{plan.unit}</span>
+                  )}
+                </div>
+
+                <ul
+                  className="space-y-2 pt-3"
+                  style={{ borderTop: "0.5px solid rgba(255,255,255,0.07)" }}
+                >
+                  {plan.features.map((f) => (
+                    <li key={f} className={`flex items-center gap-2.5 font-mono text-[11px] ${plan.featureColor}`}>
+                      <span className={`w-1 h-1 rounded-full shrink-0 ${plan.dotColor}`} />
+                      {f}
+                    </li>
+                  ))}
+                </ul>
+              </div>
+
+              <Link
+                href={plan.href}
+                className="w-full py-2.5 rounded-xl font-mono text-[11px] font-semibold tracking-wider text-center flex items-center justify-center gap-1.5 transition-all cursor-pointer active:scale-95"
+                style={
+                  plan.featured
+                    ? { background: "rgba(255,255,255,0.92)", color: "#000", border: "0.5px solid rgba(255,255,255,0.3)" }
+                    : { background: "rgba(255,255,255,0.04)", color: "rgba(255,255,255,0.45)", border: "0.5px solid rgba(255,255,255,0.10)" }
+                }
+              >
+                {plan.cta}
+                {plan.featured && <ArrowRight className="w-3 h-3" />}
+              </Link>
+            </motion.div>
+          ))}
         </motion.div>
-
-        {/* Pro Plan */}
-        <motion.div
-          variants={fadeInUp}
-          whileHover={{ y: -3 }}
-          className="p-6 rounded-2xl bg-card/90 backdrop-blur-xl border-2 border-primary relative flex flex-col justify-between space-y-6 shadow-xl shadow-primary/10 transition-all"
-        >
-          <div className="absolute -top-3 right-6 px-2.5 py-0.5 rounded-full bg-primary text-primary-foreground text-[10px] font-bold uppercase font-mono tracking-wider shadow-sm">
-            Most Popular
-          </div>
-
-          <div className="space-y-4">
-            <div className="space-y-1">
-              <h3 className="text-base font-semibold text-foreground">
-                Scale Pro
-              </h3>
-              <p className="text-xs text-muted-foreground">
-                For fast-growing SaaS & engineering teams.
-              </p>
-            </div>
-            <div className="flex items-baseline gap-1">
-              <span className="text-3xl font-bold text-foreground">
-                ${billingCycle === "yearly" ? "39" : "49"}
-              </span>
-              <span className="text-xs font-mono text-muted-foreground">
-                / month
-              </span>
-            </div>
-            <ul className="space-y-2 text-xs text-muted-foreground font-mono pt-2 border-t border-border">
-              <li className="flex items-center gap-2">
-                <Check className="w-3.5 h-3.5 text-emerald-500" /> 500,000
-                events/mo
-              </li>
-              <li className="flex items-center gap-2">
-                <Check className="w-3.5 h-3.5 text-emerald-500" /> 30-day log
-                retention
-              </li>
-              <li className="flex items-center gap-2">
-                <Check className="w-3.5 h-3.5 text-emerald-500" /> Sub-second
-                SSE push alerts
-              </li>
-              <li className="flex items-center gap-2">
-                <Check className="w-3.5 h-3.5 text-emerald-500" /> BullMQ queue
-                isolation
-              </li>
-              <li className="flex items-center gap-2">
-                <Check className="w-3.5 h-3.5 text-emerald-500" /> Slack &
-                PagerDuty sync
-              </li>
-            </ul>
-          </div>
-
-          <Link
-            href="/register"
-            className="w-full py-2.5 rounded-xl bg-primary hover:bg-primary/90 text-primary-foreground font-semibold text-xs shadow-md shadow-primary/20 transition-all text-center block"
-          >
-            Start 14-Day Free Trial
-          </Link>
-        </motion.div>
-
-        {/* Enterprise Plan */}
-        <motion.div
-          variants={fadeInUp}
-          whileHover={{ y: -3 }}
-          className="p-6 rounded-2xl bg-card/75 backdrop-blur-xl border border-border/80 hover:border-primary/40 shadow-md shadow-black/5 dark:shadow-black/20 transition-all flex flex-col justify-between space-y-6"
-        >
-          <div className="space-y-4">
-            <div className="space-y-1">
-              <h3 className="text-base font-semibold text-foreground">
-                Enterprise
-              </h3>
-              <p className="text-xs text-muted-foreground">
-                For high-throughput critical systems.
-              </p>
-            </div>
-            <div className="flex items-baseline gap-1">
-              <span className="text-3xl font-bold text-foreground">Custom</span>
-            </div>
-            <ul className="space-y-2 text-xs text-muted-foreground font-mono pt-2 border-t border-border">
-              <li className="flex items-center gap-2">
-                <Check className="w-3.5 h-3.5 text-purple-500" /> Unlimited
-                telemetry events
-              </li>
-              <li className="flex items-center gap-2">
-                <Check className="w-3.5 h-3.5 text-purple-500" /> 1-year custom
-                log retention
-              </li>
-              <li className="flex items-center gap-2">
-                <Check className="w-3.5 h-3.5 text-purple-500" /> Dedicated
-                BullMQ worker pods
-              </li>
-              <li className="flex items-center gap-2">
-                <Check className="w-3.5 h-3.5 text-purple-500" /> 99.999% SLA &
-                SOC2 Compliance
-              </li>
-              <li className="flex items-center gap-2">
-                <Check className="w-3.5 h-3.5 text-purple-500" /> 24/7 dedicated
-                SRE support
-              </li>
-            </ul>
-          </div>
-
-          <a
-            href="mailto:enterprise@pulsescale.com"
-            className="w-full py-2.5 rounded-xl bg-muted/80 border border-border hover:bg-accent text-foreground font-semibold text-xs transition-colors text-center block"
-          >
-            Contact Sales
-          </a>
-        </motion.div>
-      </motion.div>
+      </div>
     </section>
   );
 }
