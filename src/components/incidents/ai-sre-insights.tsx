@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Incident } from "@/types";
 import { useUpdateIncidentStatus } from "@/hooks/use-incidents";
@@ -115,15 +115,21 @@ export function AiSreInsights({ incident }: AiSreInsightsProps) {
         <div className="flex items-center gap-2 text-[11px] text-emerald-500/70">
           <span className="text-emerald-400 font-bold">$</span>
           <span className="text-emerald-300">claude diagnose</span>
-          <span className="text-emerald-600">--project="{incident.project?.name || "default"}"</span>
-          <span className="text-emerald-600">--severity="{incident.severity}"</span>
+          <span className="text-emerald-600">
+            --project="{incident.project?.name || "default"}"
+          </span>
+          <span className="text-emerald-600">
+            --severity="{incident.severity}"
+          </span>
         </div>
 
         {/* Root Cause Section with Animated Typing & Blinking Block Cursor */}
         <div className="space-y-1.5 pt-1 border-t border-emerald-900/30">
           <div className="flex items-center justify-between text-[10px] text-emerald-500 uppercase tracking-widest font-bold">
             <span>Root Cause Diagnostics</span>
-            <span>{isAnalyzing ? "ANALYZING STREAM..." : "CONFIDENCE 98.6%"}</span>
+            <span>
+              {isAnalyzing ? "ANALYZING STREAM..." : "CONFIDENCE 98.6%"}
+            </span>
           </div>
 
           <div className="p-3 rounded-xl bg-black border border-emerald-900/40 text-emerald-300/90 leading-relaxed font-mono min-h-[4rem] text-xs relative">
@@ -150,14 +156,16 @@ export function AiSreInsights({ incident }: AiSreInsightsProps) {
             <div className="flex flex-wrap items-center gap-4 text-[11px] font-mono pt-1">
               <button
                 onClick={handleApplyFix}
-                disabled={isApplyingFix || fixApplied || incident.status === "RESOLVED"}
+                disabled={
+                  isApplyingFix || fixApplied || incident.status === "RESOLVED"
+                }
                 className="text-emerald-400 hover:text-emerald-300 underline underline-offset-4 cursor-pointer transition-all disabled:opacity-50 disabled:no-underline disabled:cursor-not-allowed"
               >
                 {isApplyingFix
                   ? "> executing_patch()..."
                   : fixApplied || incident.status === "RESOLVED"
-                  ? "[FIX_APPLIED_AND_RESOLVED]"
-                  : "> execute_fix()"}
+                    ? "[FIX_APPLIED_AND_RESOLVED]"
+                    : "> execute_fix()"}
               </button>
 
               <button
@@ -190,8 +198,12 @@ export function AiSreInsights({ incident }: AiSreInsightsProps) {
               <p className="text-emerald-400">
                 [CLI] Connecting to telemetry cluster node... OK
               </p>
-              <p className="text-emerald-300">[CLI] Scaling postgres connection pool max: 50</p>
-              <p className="text-emerald-500/80">[CLI] Flushing stale redis telemetry keys... 0.04s</p>
+              <p className="text-emerald-300">
+                [CLI] Scaling postgres connection pool max: 50
+              </p>
+              <p className="text-emerald-500/80">
+                [CLI] Flushing stale redis telemetry keys... 0.04s
+              </p>
               <p className="text-emerald-300 font-bold">
                 [SUCCESS] Incident status updated to RESOLVED via SSE pipeline.
               </p>
