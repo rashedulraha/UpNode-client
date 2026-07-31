@@ -37,7 +37,11 @@ export interface ApiError {
   code?: string;
 }
 
-export type IncidentStatus = "INVESTIGATING" | "IDENTIFIED" | "MONITORING" | "RESOLVED";
+export type IncidentStatus =
+  | "INVESTIGATING"
+  | "IDENTIFIED"
+  | "MONITORING"
+  | "RESOLVED";
 export type IncidentSeverity = "LOW" | "MEDIUM" | "HIGH" | "CRITICAL";
 
 export interface TimelineEvent {
@@ -114,7 +118,7 @@ export interface Member {
     name: string;
     email: string;
     image?: string | null;
-    createdAt: string;
+    createdAt?: string;
   };
 }
 
@@ -123,3 +127,33 @@ export interface InviteMemberPayload {
   role: MemberRole;
 }
 
+export interface PingMetric {
+  id: string;
+  projectId: string;
+  url: string;
+  statusCode: number | null;
+  responseTimeMs: number;
+  isUp: boolean;
+  createdAt: string;
+}
+
+export type SystemStatusType =
+  | "OPERATIONAL"
+  | "DEGRADED_PERFORMANCE"
+  | "PARTIAL_OUTAGE"
+  | "MAJOR_OUTAGE";
+
+export interface PublicProjectStatusData {
+  project: {
+    id: string;
+    name: string;
+    slug: string;
+    url?: string | null;
+  };
+  systemStatus: SystemStatusType;
+  uptimePercentage: number;
+  avgLatencyMs: number;
+  activeIncidents: Incident[];
+  past7DaysIncidents: Incident[];
+  recentMetrics: PingMetric[];
+}
