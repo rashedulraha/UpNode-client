@@ -1,13 +1,23 @@
 "use client";
 
-import React from "react";
+import React, { useState } from "react";
 import Link from "next/link";
 import { Activity, ArrowRight, LayoutDashboard, LogOut, User } from "lucide-react";
 import { ThemeToggle } from "@/components/ui/theme-toggle";
 import { useAuth } from "@/hooks/use-auth";
+import { LogoutConfirmModal } from "@/components/auth/logout-confirm-modal";
 
 export function LandingNavbar() {
   const { isAuthenticated, user, signOut } = useAuth();
+  const [isLogoutModalOpen, setIsLogoutModalOpen] = useState(false);
+  const [isSigningOut, setIsSigningOut] = useState(false);
+
+  const handleConfirmLogout = async () => {
+    setIsSigningOut(true);
+    await signOut();
+    setIsSigningOut(false);
+    setIsLogoutModalOpen(false);
+  };
 
   return (
     <header className="sticky top-0 z-50 w-full border-b border-border/80 bg-background/80 backdrop-blur-xl transition-all">
@@ -72,8 +82,8 @@ export function LandingNavbar() {
                 <span>Dashboard</span>
               </Link>
               <button
-                onClick={() => signOut()}
-                className="text-xs font-semibold text-muted-foreground hover:text-foreground transition-colors px-2 py-1 flex items-center gap-1 cursor-pointer"
+                onClick={() => setIsLogoutModalOpen(true)}
+                className="text-xs font-semibold text-muted-foreground hover:text-destructive transition-colors px-2 py-1 flex items-center gap-1 cursor-pointer"
                 title="Sign out"
               >
                 <LogOut className="w-3.5 h-3.5" />
@@ -99,6 +109,13 @@ export function LandingNavbar() {
           )}
         </div>
       </div>
+
+      <LogoutConfirmModal
+        isOpen={isLogoutModalOpen}
+        onClose={() => setIsLogoutModalOpen(false)}
+        onConfirm={handleConfirmLogout}
+        isLoading={isSigningOut}
+      />
     </header>
   );
 }

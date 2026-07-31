@@ -1,8 +1,9 @@
 "use client";
 
-import React from "react";
+import React, { useState } from "react";
 import { useAuth } from "@/hooks/use-auth";
 import { IncidentStreamStatus } from "@/hooks/useIncidentStream";
+import { LogoutConfirmModal } from "@/components/auth/logout-confirm-modal";
 import {
   Activity,
   Radio,
@@ -31,6 +32,15 @@ export function DashboardHeader({
   onOpenCreateModal,
 }: DashboardHeaderProps) {
   const { user, signOut } = useAuth();
+  const [isLogoutModalOpen, setIsLogoutModalOpen] = useState(false);
+  const [isSigningOut, setIsSigningOut] = useState(false);
+
+  const handleConfirmLogout = async () => {
+    setIsSigningOut(true);
+    await signOut();
+    setIsSigningOut(false);
+    setIsLogoutModalOpen(false);
+  };
 
   return (
     <header className="sticky top-0 z-50 w-full border-b border-border bg-background/80 backdrop-blur-md px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between gap-4 transition-all">
@@ -109,14 +119,21 @@ export function DashboardHeader({
             </span>
           </div>
           <button
-            onClick={() => signOut()}
-            className="p-2 rounded-lg bg-muted hover:bg-accent text-muted-foreground hover:text-foreground border border-border transition-colors cursor-pointer"
+            onClick={() => setIsLogoutModalOpen(true)}
+            className="p-2 rounded-lg bg-muted hover:bg-destructive/10 text-muted-foreground hover:text-destructive border border-border hover:border-destructive/20 transition-all cursor-pointer"
             title="Sign Out"
           >
             <LogOut className="w-4 h-4" />
           </button>
         </div>
       </div>
+
+      <LogoutConfirmModal
+        isOpen={isLogoutModalOpen}
+        onClose={() => setIsLogoutModalOpen(false)}
+        onConfirm={handleConfirmLogout}
+        isLoading={isSigningOut}
+      />
     </header>
   );
 }

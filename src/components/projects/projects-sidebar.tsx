@@ -1,8 +1,9 @@
 "use client";
 
-import React from "react";
+import React, { useState } from "react";
 import { useProjects } from "@/hooks/use-projects";
 import { useAuth } from "@/hooks/use-auth";
+import { LogoutConfirmModal } from "@/components/auth/logout-confirm-modal";
 import {
   FolderGit2,
   Layers,
@@ -23,6 +24,15 @@ export function ProjectsSidebar({
 }: ProjectsSidebarProps) {
   const { data: projects, isLoading, error } = useProjects();
   const { user, signOut } = useAuth();
+  const [isLogoutModalOpen, setIsLogoutModalOpen] = useState(false);
+  const [isSigningOut, setIsSigningOut] = useState(false);
+
+  const handleConfirmLogout = async () => {
+    setIsSigningOut(true);
+    await signOut();
+    setIsSigningOut(false);
+    setIsLogoutModalOpen(false);
+  };
 
   return (
     <aside className="w-64 bg-sidebar border-r border-sidebar-border flex flex-col justify-between h-[calc(100vh-4rem)] sticky top-16 shrink-0">
@@ -117,14 +127,21 @@ export function ProjectsSidebar({
             </div>
           </div>
           <button
-            onClick={() => signOut()}
-            className="p-1.5 rounded-lg text-muted-foreground hover:text-foreground hover:bg-accent transition-colors cursor-pointer"
+            onClick={() => setIsLogoutModalOpen(true)}
+            className="p-1.5 rounded-lg text-muted-foreground hover:text-destructive hover:bg-destructive/10 border border-transparent hover:border-destructive/20 transition-all cursor-pointer"
             title="Log Out"
           >
             <LogOut className="w-3.5 h-3.5" />
           </button>
         </div>
       </div>
+
+      <LogoutConfirmModal
+        isOpen={isLogoutModalOpen}
+        onClose={() => setIsLogoutModalOpen(false)}
+        onConfirm={handleConfirmLogout}
+        isLoading={isSigningOut}
+      />
     </aside>
   );
 }
