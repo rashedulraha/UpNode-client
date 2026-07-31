@@ -23,7 +23,7 @@ function ProtectedRouteGuard({ children, requireAuth = true }: ProtectedRoutePro
       const redirectTo = searchParams.get("redirectTo") || pathname;
       router.push(`/login?redirectTo=${encodeURIComponent(redirectTo)}`);
     } else if (!requireAuth && isAuthenticated) {
-      const redirectTo = searchParams.get("redirectTo") || "/";
+      const redirectTo = searchParams.get("redirectTo") || "/dashboard";
       router.push(redirectTo);
     }
   }, [isAuthenticated, isLoading, requireAuth, router, pathname, searchParams]);

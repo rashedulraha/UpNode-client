@@ -59,7 +59,7 @@ export default function RegisterPage() {
 function RegisterFormContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
-  const redirectTo = searchParams.get("redirectTo") || "/";
+  const redirectTo = searchParams.get("redirectTo") || "/dashboard";
   const { refetchSession } = useAuth();
 
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
