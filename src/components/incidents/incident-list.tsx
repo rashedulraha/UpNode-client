@@ -1,6 +1,7 @@
 "use client";
 
 import React from "react";
+import { motion, AnimatePresence } from "framer-motion";
 import { Incident, IncidentSeverity, IncidentStatus } from "@/types";
 import IncidentCard from "./incident-card";
 import { RefreshCw } from "lucide-react";
@@ -17,6 +18,21 @@ interface IncidentListProps {
   severityFilter: IncidentSeverity | "ALL";
   onSeverityFilterChange: (severity: IncidentSeverity | "ALL") => void;
 }
+
+const listContainerVariants = {
+  hidden: { opacity: 0 },
+  show: {
+    opacity: 1,
+    transition: {
+      staggerChildren: 0.05,
+    },
+  },
+};
+
+const listItemVariants = {
+  hidden: { opacity: 0, y: 12 },
+  show: { opacity: 1, y: 0, transition: { duration: 0.25 } },
+};
 
 export function IncidentList({
   incidents,
@@ -47,37 +63,41 @@ export function IncidentList({
   ];
 
   return (
-    <div className="flex flex-col h-full space-y-4">
+    <div className="flex flex-col h-full space-y-4 font-sans">
       {/* Filters Bar with 0.5px dividers */}
       <div className="p-4 sm:p-5 rounded-2xl bg-card/30 space-y-3 glass-card-floating border-[0.5px] border-border/30">
         <div className="flex items-center justify-between border-b-[0.5px] border-border/30 pb-2.5">
           <span className="text-[10px] font-mono font-semibold text-muted-foreground uppercase tracking-widest">
             Telemetry Stream
           </span>
-          <button
+          <motion.button
+            whileTap={{ scale: 0.9 }}
+            whileHover={{ scale: 1.05 }}
             onClick={onRefresh}
-            className="p-1.5 rounded-xl bg-muted/40 hover:bg-muted text-muted-foreground hover:text-foreground transition-all duration-200 hover:scale-105 active:scale-95 cursor-pointer border-[0.5px] border-border/30"
+            className="p-1.5 rounded-xl bg-muted/40 hover:bg-muted text-muted-foreground hover:text-foreground transition-colors cursor-pointer border-[0.5px] border-border/30"
             title="Refresh stream"
           >
             <RefreshCw className={`w-3.5 h-3.5 ${isLoading ? "animate-spin" : ""}`} />
-          </button>
+          </motion.button>
         </div>
 
         {/* Status Filter Chips */}
         <div className="flex items-center gap-1.5 overflow-x-auto pb-1 scrollbar-none">
           <span className="text-[10px] font-mono text-muted-foreground/60 pr-1 shrink-0 uppercase">Status:</span>
           {statusOptions.map((st) => (
-            <button
+            <motion.button
               key={st}
+              whileTap={{ scale: 0.94 }}
+              whileHover={{ scale: 1.04 }}
               onClick={() => onStatusFilterChange(st)}
-              className={`px-2.5 py-1 rounded-xl text-[11px] font-mono transition-all duration-200 cursor-pointer hover:scale-105 active:scale-95 border-[0.5px] ${
+              className={`px-2.5 py-1 rounded-xl text-[11px] font-mono transition-colors shrink-0 cursor-pointer border-[0.5px] ${
                 statusFilter === st
                   ? "bg-primary text-primary-foreground font-semibold shadow-sm border-primary/40"
                   : "bg-muted/30 text-muted-foreground hover:bg-muted hover:text-foreground border-border/30"
               }`}
             >
               {st}
-            </button>
+            </motion.button>
           ))}
         </div>
 
@@ -85,22 +105,24 @@ export function IncidentList({
         <div className="flex items-center gap-1.5 overflow-x-auto pb-1 scrollbar-none">
           <span className="text-[10px] font-mono text-muted-foreground/60 pr-1 shrink-0 uppercase">Severity:</span>
           {severityOptions.map((sev) => (
-            <button
+            <motion.button
               key={sev}
+              whileTap={{ scale: 0.94 }}
+              whileHover={{ scale: 1.04 }}
               onClick={() => onSeverityFilterChange(sev)}
-              className={`px-2.5 py-1 rounded-xl text-[11px] font-mono transition-all duration-200 cursor-pointer hover:scale-105 active:scale-95 border-[0.5px] ${
+              className={`px-2.5 py-1 rounded-xl text-[11px] font-mono transition-colors shrink-0 cursor-pointer border-[0.5px] ${
                 severityFilter === sev
                   ? "bg-muted text-foreground border-border/60 font-semibold shadow-sm"
                   : "bg-muted/30 text-muted-foreground hover:bg-muted hover:text-foreground border-border/30"
               }`}
             >
               {sev}
-            </button>
+            </motion.button>
           ))}
         </div>
       </div>
 
-      {/* Incidents Stream List */}
+      {/* Incidents Stream List with Staggered Framer Motion Animation */}
       <div className="flex-1 overflow-y-auto space-y-3.5 pr-1">
         {isLoading ? (
           <div className="space-y-3.5">
@@ -124,14 +146,24 @@ export function IncidentList({
             <p className="text-xs text-destructive/80">{error.message}</p>
           </div>
         ) : incidents.length > 0 ? (
-          incidents.map((incident) => (
-            <IncidentCard
-              key={incident.id}
-              incident={incident}
-              isSelected={selectedIncidentId === incident.id}
-              onClick={() => onSelectIncident(incident.id)}
-            />
-          ))
+          <motion.div
+            variants={listContainerVariants}
+            initial="hidden"
+            animate="show"
+            className="space-y-3.5"
+          >
+            <AnimatePresence>
+              {incidents.map((incident) => (
+                <motion.div key={incident.id} variants={listItemVariants}>
+                  <IncidentCard
+                    incident={incident}
+                    isSelected={selectedIncidentId === incident.id}
+                    onClick={() => onSelectIncident(incident.id)}
+                  />
+                </motion.div>
+              ))}
+            </AnimatePresence>
+          </motion.div>
         ) : (
           <div className="p-12 text-center rounded-2xl bg-card/30 border-[0.5px] border-border/30 space-y-3 glass-card-floating font-mono">
             <p className="text-foreground font-semibold text-sm">No Incidents Found</p>

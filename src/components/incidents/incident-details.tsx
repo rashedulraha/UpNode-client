@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState } from "react";
+import { motion, AnimatePresence } from "framer-motion";
 import { Incident, IncidentSeverity, IncidentStatus } from "@/types";
 import { useUpdateIncidentStatus } from "@/hooks/use-incidents";
 import { AiSreInsights } from "./ai-sre-insights";
@@ -80,7 +81,13 @@ export function IncidentDetails({ incident, isLoading, onClose }: IncidentDetail
   };
 
   return (
-    <div className="flex flex-col h-full bg-card/30 rounded-3xl p-6 sm:p-8 overflow-y-auto space-y-7 font-sans glass-card-floating border-[0.5px] border-border/30">
+    <motion.div
+      layoutId={`card-container-${incident.id}`}
+      initial={{ opacity: 0, scale: 0.98 }}
+      animate={{ opacity: 1, scale: 1 }}
+      transition={{ duration: 0.25, ease: "easeOut" }}
+      className="flex flex-col h-full bg-card/30 rounded-3xl p-6 sm:p-8 overflow-y-auto space-y-7 font-sans glass-card-floating border-[0.5px] border-border/30"
+    >
       {/* Header with Organic Pulsating Status Dot & Glowing Monospaced Severity */}
       <div className="flex items-start justify-between gap-4 border-b-[0.5px] border-border/30 pb-6">
         <div className="space-y-2.5">
@@ -114,12 +121,14 @@ export function IncidentDetails({ incident, isLoading, onClose }: IncidentDetail
         </div>
 
         {onClose && (
-          <button
+          <motion.button
+            whileTap={{ scale: 0.9 }}
+            whileHover={{ scale: 1.08 }}
             onClick={onClose}
-            className="p-1.5 rounded-xl text-muted-foreground hover:text-foreground hover:bg-muted/40 transition-all duration-200 hover:scale-105 active:scale-95 cursor-pointer border-[0.5px] border-border/30 shrink-0"
+            className="p-1.5 rounded-xl text-muted-foreground hover:text-foreground hover:bg-muted/40 transition-colors cursor-pointer border-[0.5px] border-border/30 shrink-0"
           >
             <X className="w-4 h-4" />
-          </button>
+          </motion.button>
         )}
       </div>
 
@@ -131,7 +140,7 @@ export function IncidentDetails({ incident, isLoading, onClose }: IncidentDetail
         </div>
       )}
 
-      {/* Lifecycle Status Switcher with 0.5px Dividers & Scale-Up Effect */}
+      {/* Lifecycle Status Switcher with Visual Haptics */}
       <div className="p-4 sm:p-5 rounded-2xl bg-muted/20 border-[0.5px] border-border/30 space-y-3">
         <div className="flex items-center justify-between">
           <span className="text-[10px] font-mono font-semibold text-muted-foreground uppercase tracking-widest">
@@ -148,11 +157,13 @@ export function IncidentDetails({ incident, isLoading, onClose }: IncidentDetail
           {statusList.map((item) => {
             const isActive = incident.status === item.status;
             return (
-              <button
+              <motion.button
                 key={item.status}
+                whileTap={{ scale: 0.94 }}
+                whileHover={{ scale: 1.03 }}
                 disabled={updateStatusMutation.isPending}
                 onClick={() => handleStatusChange(item.status)}
-                className={`p-3 rounded-xl border-[0.5px] text-left transition-all duration-200 cursor-pointer flex flex-col justify-between hover:scale-[1.02] active:scale-[0.98] ${
+                className={`p-3 rounded-xl border-[0.5px] text-left transition-colors cursor-pointer flex flex-col justify-between ${
                   isActive
                     ? "bg-primary/10 border-primary/40 text-primary font-semibold shadow-sm"
                     : "bg-card/40 border-border/30 text-muted-foreground hover:border-border/60 hover:text-foreground"
@@ -165,7 +176,7 @@ export function IncidentDetails({ incident, isLoading, onClose }: IncidentDetail
                 <span className="text-[10px] text-muted-foreground/70 leading-tight">
                   {item.desc}
                 </span>
-              </button>
+              </motion.button>
             );
           })}
         </div>
@@ -235,7 +246,7 @@ export function IncidentDetails({ incident, isLoading, onClose }: IncidentDetail
           </div>
         )}
       </div>
-    </div>
+    </motion.div>
   );
 }
 

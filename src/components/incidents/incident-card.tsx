@@ -1,6 +1,7 @@
 "use client";
 
 import React from "react";
+import { motion } from "framer-motion";
 import { Incident, IncidentSeverity } from "@/types";
 import { StatusDot } from "@/components/ui/status-dot";
 import { format } from "date-fns";
@@ -31,9 +32,13 @@ export function IncidentCard({ incident, isSelected, onClick }: IncidentCardProp
   const severityGlow = getSeverityGlowBadge(incident.severity);
 
   return (
-    <div
+    <motion.div
+      layoutId={`card-container-${incident.id}`}
       onClick={onClick}
-      className={`p-4 sm:p-5 rounded-2xl border-[0.5px] transition-all duration-200 ease-out cursor-pointer space-y-3 glass-card-floating hover:scale-[1.015] active:scale-[0.985] ${
+      whileHover={{ scale: 1.015 }}
+      whileTap={{ scale: 0.965 }}
+      transition={{ duration: 0.2, ease: "easeOut" }}
+      className={`p-4 sm:p-5 rounded-2xl border-[0.5px] cursor-pointer space-y-3 glass-card-floating ${
         isSelected
           ? "bg-card/75 border-primary/60 shadow-xl shadow-primary/10"
           : "bg-card/30 border-border/30 hover:border-border/60 hover:bg-card/50"
@@ -84,7 +89,7 @@ export function IncidentCard({ incident, isSelected, onClick }: IncidentCardProp
           <span>{formattedDate}</span>
         </div>
       </div>
-    </div>
+    </motion.div>
   );
 }
 
