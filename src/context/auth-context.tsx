@@ -33,13 +33,19 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
   const handleSignOut = useCallback(async () => {
     try {
-      await authClient.signOut();
-      startTransition(() => {
-        router.push("/login");
-        router.refresh();
-      });
+      if (typeof window !== "undefined") {
+        localStorage.removeItem("activeOrganizationId");
+        sessionStorage.clear();
+      }
+      await authClient.signOut().catch(() => {});
     } catch (err) {
-      console.error("Failed to sign out:", err);
+      console.error("Sign out error:", err);
+    } finally {
+      if (typeof window !== "undefined") {
+        window.location.href = "/login";
+      } else {
+        router.push("/login");
+      }
     }
   }, [router]);
 
