@@ -33,7 +33,7 @@ export function DashboardHeader({
   };
 
   return (
-    <header className="sticky top-0 z-40 w-full border-b border-border/40 bg-card/40 backdrop-blur-2xl frosted-border px-6 h-16 flex items-center justify-between gap-6 transition-all glass-card">
+    <header className="sticky top-0 z-40 w-full bg-card/40 backdrop-blur-2xl px-6 h-16 flex items-center justify-between gap-6 transition-all glass-card-floating">
       {/* Left: Brand Badge & Pulsating Live Status */}
       <div className="flex items-center gap-5">
         <div className="flex items-center gap-2.5">

@@ -17,10 +17,10 @@ export function IncidentCard({ incident, isSelected, onClick }: IncidentCardProp
   return (
     <div
       onClick={onClick}
-      className={`p-4 sm:p-5 rounded-2xl border transition-all cursor-pointer space-y-3 backdrop-blur-2xl glass-card frosted-border ${
+      className={`p-4 sm:p-5 rounded-2xl transition-all cursor-pointer space-y-3 glass-card-floating ${
         isSelected
-          ? "bg-card/70 border-primary/60 shadow-lg shadow-primary/5"
-          : "bg-card/30 border-border/40 hover:border-border/60 hover:bg-card/50"
+          ? "bg-card/70 border-primary/60"
+          : "bg-card/30 hover:bg-card/50"
       }`}
     >
       {/* Top Header Row: Pulsating Status Dot & Severity */}

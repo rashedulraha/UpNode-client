@@ -29,7 +29,7 @@ export function ProjectsSidebar({
   };
 
   return (
-    <aside className="w-64 bg-card/30 backdrop-blur-2xl frosted-border border-r border-border/40 flex flex-col justify-between h-[calc(100vh-4rem)] sticky top-16 shrink-0 font-sans glass-card">
+    <aside className="w-64 bg-card/30 backdrop-blur-2xl flex flex-col justify-between h-[calc(100vh-4rem)] sticky top-16 shrink-0 font-sans glass-card-floating">
       {/* Top Section: Projects navigation */}
       <div className="p-5 space-y-6 overflow-y-auto">
         <div>

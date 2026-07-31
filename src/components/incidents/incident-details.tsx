@@ -64,7 +64,7 @@ export function IncidentDetails({ incident, isLoading, onClose }: IncidentDetail
   };
 
   return (
-    <div className="flex flex-col h-full bg-card/30 backdrop-blur-2xl frosted-border glass-card border border-border/40 rounded-3xl p-6 sm:p-8 overflow-y-auto space-y-7 font-sans">
+    <div className="flex flex-col h-full bg-card/30 rounded-3xl p-6 sm:p-8 overflow-y-auto space-y-7 font-sans glass-card-floating">
       {/* Header with Pulsating Status Dot */}
       <div className="flex items-start justify-between gap-4 border-b border-border/40 pb-6">
         <div className="space-y-2">
