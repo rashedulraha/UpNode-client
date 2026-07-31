@@ -49,7 +49,7 @@ export function IncidentList({
   return (
     <div className="flex flex-col h-full space-y-4">
       {/* Filters Bar */}
-      <div className="p-4 sm:p-5 rounded-2xl bg-card/40 backdrop-blur-xl border border-border/40 space-y-3">
+      <div className="p-4 sm:p-5 rounded-2xl bg-card/30 backdrop-blur-2xl frosted-border glass-card border border-border/40 space-y-3">
         <div className="flex items-center justify-between">
           <span className="text-[10px] font-mono font-semibold text-muted-foreground uppercase tracking-widest">
             Filter Telemetry
