@@ -10,6 +10,8 @@ import { PricingSection } from "@/components/landing/pricing-section";
 import { CtaSection } from "@/components/landing/cta-section";
 import { LandingFooter } from "@/components/landing/landing-footer";
 
+import { ComparisonSection } from "@/components/landing/comparison-section";
+
 export default function Home() {
   return (
     <div className="min-h-screen bg-background text-foreground font-sans selection:bg-primary/20 selection:text-primary relative scroll-smooth">
@@ -20,6 +22,7 @@ export default function Home() {
         <IntegrationsSection />
         <ArchitectureSection />
         <FeaturesSection />
+        <ComparisonSection />
         <PricingSection />
         <CtaSection />
       </main>
