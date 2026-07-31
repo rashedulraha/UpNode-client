@@ -96,8 +96,30 @@ export interface UpdateIncidentInput {
   expectedVersion: number;
 }
 
-export interface SSEIncidentEvent {
+export type SSEIncidentEvent = {
   type: "INCIDENT_CREATED" | "INCIDENT_UPDATED" | "INCIDENT_RESOLVED";
   organizationId: string;
   data: Incident;
+};
+
+export type MemberRole = "ADMIN" | "ENGINEER" | "VIEWER";
+
+export interface Member {
+  id: string;
+  role: MemberRole;
+  organizationId: string;
+  userId: string;
+  user: {
+    id: string;
+    name: string;
+    email: string;
+    image?: string | null;
+    createdAt: string;
+  };
 }
+
+export interface InviteMemberPayload {
+  email: string;
+  role: MemberRole;
+}
+
