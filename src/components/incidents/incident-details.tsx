@@ -15,6 +15,9 @@ import {
   Layers,
   ArrowRight,
   X,
+  Sparkles,
+  Brain,
+  Wrench,
 } from "lucide-react";
 
 interface IncidentDetailsProps {
@@ -153,6 +156,45 @@ export function IncidentDetails({ incident, isLoading, onClose }: IncidentDetail
           {incident.description || "No description provided."}
         </div>
       </div>
+
+      {/* AI Root Cause & Fix Suggestion Card */}
+      {(incident.aiRootCause || incident.aiFixSuggestion) && (
+        <div className="relative overflow-hidden p-5 rounded-2xl bg-gradient-to-br from-indigo-950/40 via-background to-purple-950/30 border border-indigo-500/30 shadow-lg shadow-indigo-500/5 space-y-4">
+          <div className="absolute top-0 right-0 w-32 h-32 bg-indigo-500/10 rounded-full blur-2xl pointer-events-none" />
+
+          <div className="flex items-center gap-2 text-xs font-bold text-indigo-400 uppercase tracking-wider">
+            <Sparkles className="w-4 h-4 text-indigo-400 animate-pulse" />
+            <span>AI Automated Root Cause & Fix Suggestion</span>
+            <span className="ml-auto text-[10px] font-mono px-2 py-0.5 rounded-full bg-indigo-500/15 border border-indigo-500/30 text-indigo-300">
+              AI Powered
+            </span>
+          </div>
+
+          {incident.aiRootCause && (
+            <div className="space-y-1.5">
+              <div className="flex items-center gap-1.5 text-xs font-semibold text-foreground/90">
+                <Brain className="w-3.5 h-3.5 text-purple-400 shrink-0" />
+                <span>Potential Root Cause</span>
+              </div>
+              <div className="p-3 rounded-xl bg-background/80 border border-indigo-500/20 text-xs text-foreground/90 leading-relaxed font-mono">
+                {incident.aiRootCause}
+              </div>
+            </div>
+          )}
+
+          {incident.aiFixSuggestion && (
+            <div className="space-y-1.5">
+              <div className="flex items-center gap-1.5 text-xs font-semibold text-foreground/90">
+                <Wrench className="w-3.5 h-3.5 text-emerald-400 shrink-0" />
+                <span>Recommended Fix Suggestion</span>
+              </div>
+              <div className="p-3 rounded-xl bg-background/80 border border-emerald-500/20 text-xs text-foreground/90 leading-relaxed font-mono">
+                {incident.aiFixSuggestion}
+              </div>
+            </div>
+          )}
+        </div>
+      )}
 
       {/* Incident Metadata Overview Grid */}
       <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
