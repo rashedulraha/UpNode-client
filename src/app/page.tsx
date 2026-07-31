@@ -17,7 +17,7 @@ export default function Home() {
     <div className="min-h-screen selection:bg-white/10 selection:text-white relative scroll-smooth" style={{ background: "#000" }}>
       <LandingNavbar />
 
-      <main className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <main className="relative z-10 w-full">
         <HeroSection />
         <IntegrationsSection />
         <ArchitectureSection />
