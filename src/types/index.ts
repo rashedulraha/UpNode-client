@@ -62,6 +62,8 @@ export interface Incident {
   projectId: string;
   createdAt: string;
   updatedAt: string;
+  aiRootCause?: string | null;
+  aiFixSuggestion?: string | null;
   project?: {
     id: string;
     name: string;
