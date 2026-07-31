@@ -1,14 +1,14 @@
 "use client";
 
 import React, { useState, useEffect, useRef } from "react";
-import { motion, AnimatePresence, type Variants } from "framer-motion";
+import { motion, type Variants } from "framer-motion";
 import { ArrowRight, Check, Copy } from "lucide-react";
 import { useAuth } from "@/hooks/use-auth";
 import { useRouter } from "next/navigation";
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 interface LogLine {
-  id: string; // stable string key — no duplicate collision
+  id: string;
   ts: string;
   level: "OK" | "WARN" | "ERR" | "AI";
   msg: string;
@@ -29,8 +29,9 @@ const LOG_POOL: Omit<LogLine, "id" | "ts">[] = [
   { level: "OK",   msg: "redis.hit_rate  ratio=0.94       keys=124k" },
 ];
 
-let _uidCounter = 100; // module-level monotonic counter — always unique
-function nextUID() { return `log-${++_uidCounter}`; }
+// Monotonic counter — module-scoped, never resets, never collides
+let _uid = 0;
+function uid() { return String(++_uid); }
 
 function nowTS(): string {
   return new Date().toISOString().replace("T", " ").slice(0, 19);
@@ -39,9 +40,9 @@ function nowTS(): string {
 // ─── Monitoring Card (right column) ───────────────────────────────────────────
 function MonitoringCard() {
   const [logs, setLogs] = useState<LogLine[]>(() =>
-    LOG_POOL.slice(0, 5).map((l, i) => ({ ...l, id: `log-init-${i}`, ts: nowTS() }))
+    LOG_POOL.slice(0, 5).map((l, i) => ({ ...l, id: uid(), ts: nowTS() }))
   );
-  const poolIndexRef = useRef(5);
+  const poolIdxRef = useRef(5);
   const [cursor, setCursor] = useState(true);
   const bottomRef = useRef<HTMLDivElement>(null);
 
@@ -51,18 +52,14 @@ function MonitoringCard() {
     return () => clearInterval(t);
   }, []);
 
-  // stream new log lines — use stable monotonic id, never Date.now()
+  // stream new log lines
   useEffect(() => {
     const t = setInterval(() => {
-      const idx = poolIndexRef.current % LOG_POOL.length;
-      poolIndexRef.current += 1;
-      const entry: LogLine = {
-        ...LOG_POOL[idx],
-        id: nextUID(),
-        ts: nowTS(),
-      };
+      const idx = poolIdxRef.current % LOG_POOL.length;
+      poolIdxRef.current += 1;
+      const entry: LogLine = { ...LOG_POOL[idx], id: uid(), ts: nowTS() };
       setLogs((prev) => [...prev.slice(-10), entry]);
-    }, 2000);
+    }, 2200);
     return () => clearInterval(t);
   }, []);
 
@@ -157,28 +154,22 @@ function MonitoringCard() {
         {/* Log body */}
         <div className="relative z-10 h-52 overflow-hidden py-2">
           <div className="px-4 space-y-px">
-            <AnimatePresence initial={false}>
-              {logs.map((log) => (
-                <motion.div
-                  key={log.id}
-                  initial={{ opacity: 0, x: -8 }}
-                  animate={{ opacity: 1, x: 0 }}
-                  exit={{ opacity: 0 }}
-                  transition={{ duration: 0.2 }}
-                  className={`flex items-baseline gap-2.5 py-px border-l pl-2 font-mono text-[10px] ${levelStyle[log.level]}`}
-                  style={{ borderLeftColor: levelBorderColor[log.level] }}
+            {logs.map((log) => (
+              <div
+                key={log.id}
+                className={`flex items-baseline gap-2.5 py-px border-l pl-2 font-mono text-[10px] ${levelStyle[log.level]}`}
+                style={{ borderLeftColor: levelBorderColor[log.level] }}
+              >
+                <span className="shrink-0 text-white/18">{log.ts}</span>
+                <span
+                  className="shrink-0 px-1 rounded text-[8px] tracking-widest uppercase"
+                  style={{ border: "0.5px solid rgba(255,255,255,0.12)" }}
                 >
-                  <span className="shrink-0 text-white/18">{log.ts}</span>
-                  <span
-                    className="shrink-0 px-1 rounded text-[8px] tracking-widest uppercase"
-                    style={{ border: "0.5px solid rgba(255,255,255,0.12)" }}
-                  >
-                    {levelLabel[log.level]}
-                  </span>
-                  <span className="truncate">{log.msg}</span>
-                </motion.div>
-              ))}
-            </AnimatePresence>
+                  {levelLabel[log.level]}
+                </span>
+                <span className="truncate">{log.msg}</span>
+              </div>
+            ))}
 
             {/* Blinking cursor */}
             <div className="flex items-center gap-2 pl-2 font-mono text-[10px] text-white/25">
