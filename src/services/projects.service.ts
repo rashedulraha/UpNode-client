@@ -31,4 +31,9 @@ export const projectsService = {
     const response = await api.get(`/projects/public/${slug}/status`);
     return response.data;
   },
+
+  async subscribeToStatusUpdates(slug: string, email: string) {
+    const response = await api.post(`/projects/public/${slug}/subscribe`, { email });
+    return response.data;
+  },
 };
