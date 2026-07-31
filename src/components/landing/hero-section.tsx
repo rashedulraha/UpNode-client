@@ -44,7 +44,6 @@ function MonitoringCard() {
   );
   const poolIdxRef = useRef(5);
   const [cursor, setCursor] = useState(true);
-  const bottomRef = useRef<HTMLDivElement>(null);
 
   // blinking cursor
   useEffect(() => {
@@ -62,10 +61,6 @@ function MonitoringCard() {
     }, 2200);
     return () => clearInterval(t);
   }, []);
-
-  useEffect(() => {
-    bottomRef.current?.scrollIntoView({ behavior: "smooth" });
-  }, [logs]);
 
   const levelStyle: Record<string, string> = {
     OK:   "text-white/55",
@@ -179,7 +174,6 @@ function MonitoringCard() {
                 style={{ opacity: cursor ? 1 : 0, transition: "opacity 0.1s" }}
               />
             </div>
-            <div ref={bottomRef} />
           </div>
 
           {/* Fade out bottom */}
