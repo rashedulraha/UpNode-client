@@ -282,7 +282,7 @@ export function HeroSection() {
   return (
     <section
       id="platform"
-      className="relative py-20 sm:py-28"
+      className="relative pt-14 pb-10 sm:pt-20 sm:pb-14"
       style={{ background: "#000" }}
     >
       {/* Radial gradient sky */}
@@ -299,14 +299,14 @@ export function HeroSection() {
 
       {/* ─── Two-Column Layout ─────────────────────────────────────────────── */}
       <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-16 items-center">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12 items-start">
 
           {/* ── LEFT COLUMN: Text & CTA ──────────────────────────────────── */}
           <motion.div
             variants={containerVariants}
             initial="hidden"
             animate="visible"
-            className="space-y-8"
+            className="space-y-5 pt-2"
           >
             {/* Live badge */}
             <motion.div variants={itemVariants}>
@@ -327,18 +327,17 @@ export function HeroSection() {
             </motion.div>
 
             {/* Headline */}
-            <motion.div variants={itemVariants} className="space-y-2">
+            <motion.div variants={itemVariants}>
               <h1
-                className="text-4xl sm:text-5xl lg:text-6xl font-bold tracking-tighter leading-[1.05] text-white"
+                className="text-[2.6rem] sm:text-5xl lg:text-[3.5rem] font-bold tracking-tighter leading-[1.08] text-white"
                 style={{ fontFamily: "var(--font-sans), Inter, system-ui" }}
               >
-                Incident
-                <br />
+                Incident{" "}
                 <span className="text-white/25">intelligence,</span>
                 <br />
                 <span
                   style={{
-                    WebkitTextStroke: "1px rgba(255,255,255,0.45)",
+                    WebkitTextStroke: "1px rgba(255,255,255,0.42)",
                     color: "transparent",
                   }}
                 >
@@ -350,37 +349,36 @@ export function HeroSection() {
             {/* Subtitle */}
             <motion.p
               variants={itemVariants}
-              className="text-sm text-white/38 leading-relaxed font-sans max-w-sm"
+              className="text-[13px] text-white/35 leading-relaxed font-sans max-w-xs"
             >
-              AI-native monitoring with real-time incident routing, automated root-cause
-              analysis, and self-healing playbooks — all in one fast, austere platform.
+              AI-native monitoring with real-time incident routing, automated root-cause analysis, and self-healing playbooks.
             </motion.p>
 
             {/* CTA form */}
-            <motion.div variants={itemVariants} className="space-y-3 max-w-sm">
+            <motion.div variants={itemVariants} className="space-y-2.5 max-w-xs">
               <form onSubmit={handleStart} className="flex gap-2">
                 <input
                   type="email"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   placeholder="Work email"
-                  className="flex-1 min-w-0 px-3.5 py-2.5 text-xs font-mono text-white/70 placeholder:text-white/20 focus:outline-none transition-all"
+                  className="flex-1 min-w-0 px-3 py-2 text-xs font-mono text-white/70 placeholder:text-white/20 focus:outline-none transition-all"
                   style={{
                     background: "rgba(255,255,255,0.04)",
                     border: "0.5px solid rgba(255,255,255,0.10)",
                     borderTop: "0.5px solid rgba(255,255,255,0.18)",
-                    borderRadius: "10px",
+                    borderRadius: "9px",
                   }}
                 />
                 <motion.button
                   whileHover={{ scale: 1.02 }}
                   whileTap={{ scale: 0.97 }}
                   type="submit"
-                  className="flex items-center gap-1.5 px-4 py-2.5 text-xs font-semibold font-mono text-black whitespace-nowrap cursor-pointer"
+                  className="flex items-center gap-1.5 px-3.5 py-2 text-[11px] font-semibold font-mono text-black whitespace-nowrap cursor-pointer"
                   style={{
                     background: "rgba(255,255,255,0.95)",
                     border: "0.5px solid rgba(255,255,255,0.3)",
-                    borderRadius: "10px",
+                    borderRadius: "9px",
                   }}
                 >
                   {isAuthenticated ? "Dashboard" : "Start free"}
@@ -389,10 +387,10 @@ export function HeroSection() {
               </form>
 
               {/* Trust copy */}
-              <div className="flex flex-wrap items-center gap-3 font-mono text-[9px] text-white/22 tracking-widest uppercase">
+              <div className="flex flex-wrap items-center gap-3 font-mono text-[9px] text-white/20 tracking-widest uppercase">
                 {["14-day trial", "No credit card", "3 min setup"].map((t) => (
                   <span key={t} className="flex items-center gap-1">
-                    <span className="w-[3px] h-[3px] rounded-full bg-white/25 inline-block" />
+                    <span className="w-[3px] h-[3px] rounded-full bg-white/22 inline-block" />
                     {t}
                   </span>
                 ))}
@@ -429,8 +427,8 @@ export function HeroSection() {
             {/* Bottom stats row */}
             <motion.div
               variants={itemVariants}
-              className="flex flex-wrap items-center gap-6 pt-2"
-              style={{ borderTop: "0.5px solid rgba(255,255,255,0.07)" }}
+              className="flex flex-wrap items-center gap-5"
+              style={{ borderTop: "0.5px solid rgba(255,255,255,0.07)", paddingTop: "12px" }}
             >
               {[
                 { label: "Edge Nodes", value: "48" },
@@ -439,15 +437,15 @@ export function HeroSection() {
                 { label: "Engineers", value: "2,400+" },
               ].map((s) => (
                 <div key={s.label} className="flex flex-col gap-0.5">
-                  <span className="font-mono text-base font-bold text-white/70 tracking-tight">{s.value}</span>
-                  <span className="font-mono text-[8px] text-white/22 tracking-widest uppercase">{s.label}</span>
+                  <span className="font-mono text-sm font-bold text-white/65 tracking-tight">{s.value}</span>
+                  <span className="font-mono text-[8px] text-white/20 tracking-widest uppercase">{s.label}</span>
                 </div>
               ))}
             </motion.div>
           </motion.div>
 
           {/* ── RIGHT COLUMN: Monitoring Card ────────────────────────────── */}
-          <div className="w-full">
+          <div className="w-full pt-2">
             <MonitoringCard />
           </div>
         </div>
