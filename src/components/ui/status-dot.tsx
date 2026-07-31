@@ -81,9 +81,14 @@ export function StatusDot({
   return (
     <span className={`relative inline-flex items-center justify-center ${outerSizeClasses[size]} ${className}`}>
       {pulse && (
-        <span
-          className={`absolute inline-flex h-full w-full rounded-full opacity-75 animate-ping ${ring}`}
-        />
+        <>
+          <span
+            className={`absolute inline-flex h-full w-full rounded-full opacity-60 animate-ping ${ring}`}
+          />
+          <span
+            className={`absolute inline-flex h-3/4 w-3/4 rounded-full opacity-40 animate-pulse ${ring}`}
+          />
+        </>
       )}
       <span className={`relative inline-flex rounded-full ${sizeClasses[size]} ${dot}`} />
     </span>
