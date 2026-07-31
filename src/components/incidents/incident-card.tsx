@@ -15,21 +15,21 @@ interface IncidentCardProps {
 export function IncidentCard({ incident, isSelected, onClick }: IncidentCardProps) {
   const formattedDate = format(new Date(incident.createdAt), "MMM d, HH:mm");
 
-  const getSeverityGlowBadge = (severity: IncidentSeverity) => {
+  const getSeverityBadge = (severity: IncidentSeverity) => {
     switch (severity) {
       case "CRITICAL":
-        return "text-rose-400 bg-rose-500/10 border-rose-500/30 shadow-[0_0_12px_rgba(244,63,94,0.25)]";
+        return "text-rose-500 bg-rose-500/10 border-rose-500/30";
       case "HIGH":
-        return "text-amber-400 bg-amber-500/10 border-amber-500/30 shadow-[0_0_12px_rgba(245,158,11,0.25)]";
+        return "text-amber-500 bg-amber-500/10 border-amber-500/30";
       case "MEDIUM":
-        return "text-indigo-400 bg-indigo-500/10 border-indigo-500/30 shadow-[0_0_10px_rgba(99,102,241,0.2)]";
+        return "text-indigo-500 bg-indigo-500/10 border-indigo-500/30";
       case "LOW":
       default:
-        return "text-emerald-400 bg-emerald-500/10 border-emerald-500/30 shadow-[0_0_10px_rgba(16,185,129,0.2)]";
+        return "text-emerald-500 bg-emerald-500/10 border-emerald-500/30";
     }
   };
 
-  const severityGlow = getSeverityGlowBadge(incident.severity);
+  const severityStyle = getSeverityBadge(incident.severity);
 
   return (
     <motion.div
@@ -40,11 +40,11 @@ export function IncidentCard({ incident, isSelected, onClick }: IncidentCardProp
       transition={{ duration: 0.2, ease: "easeOut" }}
       className={`p-4 sm:p-5 rounded-2xl border-[0.5px] cursor-pointer space-y-3 glass-card-floating ${
         isSelected
-          ? "bg-card/75 border-primary/60 shadow-xl shadow-primary/10"
+          ? "bg-card/75 border-primary/60"
           : "bg-card/30 border-border/30 hover:border-border/60 hover:bg-card/50"
       }`}
     >
-      {/* Top Header Row: Pulsating Organic Status Dot & Glowing Monospaced Severity */}
+      {/* Top Header Row: Pulsating Organic Status Dot & Monospaced Severity */}
       <div className="flex items-center justify-between gap-2">
         <div className="flex items-center gap-2.5">
           <div className="flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-muted/30 border-[0.5px] border-border/30">
@@ -54,9 +54,9 @@ export function IncidentCard({ incident, isSelected, onClick }: IncidentCardProp
             </span>
           </div>
 
-          {/* Bold Uppercase Monospaced Severity Badge with Ambient Glow */}
+          {/* Bold Uppercase Monospaced Severity Badge */}
           <span
-            className={`px-2 py-0.5 rounded-md text-[10px] font-mono font-bold uppercase tracking-wider border-[0.5px] ${severityGlow}`}
+            className={`px-2 py-0.5 rounded-md text-[10px] font-mono font-bold uppercase tracking-wider border-[0.5px] ${severityStyle}`}
           >
             {incident.severity}
           </span>

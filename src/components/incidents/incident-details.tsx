@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState } from "react";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion } from "framer-motion";
 import { Incident, IncidentSeverity, IncidentStatus } from "@/types";
 import { useUpdateIncidentStatus } from "@/hooks/use-incidents";
 import { AiSreInsights } from "./ai-sre-insights";
@@ -49,21 +49,21 @@ export function IncidentDetails({ incident, isLoading, onClose }: IncidentDetail
     { status: "RESOLVED", label: "Resolved", desc: "Incident fully mitigated" },
   ];
 
-  const getSeverityGlowBadge = (severity: IncidentSeverity) => {
+  const getSeverityBadge = (severity: IncidentSeverity) => {
     switch (severity) {
       case "CRITICAL":
-        return "text-rose-400 bg-rose-500/10 border-rose-500/30 shadow-[0_0_14px_rgba(244,63,94,0.25)]";
+        return "text-rose-500 bg-rose-500/10 border-rose-500/30";
       case "HIGH":
-        return "text-amber-400 bg-amber-500/10 border-amber-500/30 shadow-[0_0_14px_rgba(245,158,11,0.25)]";
+        return "text-amber-500 bg-amber-500/10 border-amber-500/30";
       case "MEDIUM":
-        return "text-indigo-400 bg-indigo-500/10 border-indigo-500/30 shadow-[0_0_12px_rgba(99,102,241,0.2)]";
+        return "text-indigo-500 bg-indigo-500/10 border-indigo-500/30";
       case "LOW":
       default:
-        return "text-emerald-400 bg-emerald-500/10 border-emerald-500/30 shadow-[0_0_12px_rgba(16,185,129,0.2)]";
+        return "text-emerald-500 bg-emerald-500/10 border-emerald-500/30";
     }
   };
 
-  const severityGlow = getSeverityGlowBadge(incident.severity);
+  const severityStyle = getSeverityBadge(incident.severity);
 
   const handleStatusChange = async (newStatus: IncidentStatus) => {
     if (newStatus === incident.status) return;
@@ -88,7 +88,7 @@ export function IncidentDetails({ incident, isLoading, onClose }: IncidentDetail
       transition={{ duration: 0.25, ease: "easeOut" }}
       className="flex flex-col h-full bg-card/30 rounded-3xl p-6 sm:p-8 overflow-y-auto space-y-7 font-sans glass-card-floating border-[0.5px] border-border/30"
     >
-      {/* Header with Organic Pulsating Status Dot & Glowing Monospaced Severity */}
+      {/* Header with Organic Pulsating Status Dot & Monospaced Severity */}
       <div className="flex items-start justify-between gap-4 border-b-[0.5px] border-border/30 pb-6">
         <div className="space-y-2.5">
           <div className="flex items-center gap-2.5 flex-wrap">
@@ -101,9 +101,9 @@ export function IncidentDetails({ incident, isLoading, onClose }: IncidentDetail
 
             <span className="text-muted-foreground/30">•</span>
 
-            {/* Bold Uppercase Monospaced Severity Badge with Ambient Glow */}
+            {/* Bold Uppercase Monospaced Severity Badge */}
             <span
-              className={`px-2.5 py-1 rounded-md text-xs font-mono font-bold uppercase tracking-wider border-[0.5px] ${severityGlow}`}
+              className={`px-2.5 py-1 rounded-md text-xs font-mono font-bold uppercase tracking-wider border-[0.5px] ${severityStyle}`}
             >
               {incident.severity}
             </span>
@@ -165,7 +165,7 @@ export function IncidentDetails({ incident, isLoading, onClose }: IncidentDetail
                 onClick={() => handleStatusChange(item.status)}
                 className={`p-3 rounded-xl border-[0.5px] text-left transition-colors cursor-pointer flex flex-col justify-between ${
                   isActive
-                    ? "bg-primary/10 border-primary/40 text-primary font-semibold shadow-sm"
+                    ? "bg-primary/10 border-primary/40 text-primary font-semibold"
                     : "bg-card/40 border-border/30 text-muted-foreground hover:border-border/60 hover:text-foreground"
                 }`}
               >

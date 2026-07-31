@@ -77,7 +77,7 @@ export function DashboardHeader({
 
         <button
           onClick={onOpenCreateModal}
-          className="flex items-center gap-1.5 px-3.5 py-1.5 bg-primary hover:bg-primary/90 text-primary-foreground rounded-xl text-xs font-semibold transition-all cursor-pointer shadow-sm active:scale-95"
+          className="flex items-center gap-1.5 px-3.5 py-1.5 bg-primary hover:bg-primary/90 text-primary-foreground rounded-xl text-xs font-semibold transition-all cursor-pointer active:scale-95"
         >
           <Plus className="w-3.5 h-3.5" />
           <span className="hidden sm:inline">New Incident</span>

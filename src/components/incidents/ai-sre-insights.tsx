@@ -87,7 +87,7 @@ export function AiSreInsights({ incident }: AiSreInsightsProps) {
   };
 
   return (
-    <div className="w-full rounded-2xl bg-black border border-emerald-950/60 shadow-2xl overflow-hidden font-mono text-xs text-emerald-400/90 relative group">
+    <div className="w-full rounded-2xl bg-black border border-emerald-950/60 overflow-hidden font-mono text-xs text-emerald-400/90 relative group">
       {/* Claude Code Terminal Header */}
       <div className="bg-emerald-950/20 px-4 py-2 border-b border-emerald-900/30 flex items-center justify-between">
         <div className="flex items-center gap-2">
