@@ -11,11 +11,13 @@ export const api: AxiosInstance = axios.create({
   timeout: 15000,
 });
 
-// Request Interceptor: Attach headers or tokens if needed
+// Request Interceptor: Attach organization ID and credentials
 api.interceptors.request.use(
   (config: InternalAxiosRequestConfig) => {
-    // Better Auth credentials (cookies) are sent automatically due to withCredentials: true.
-    // Additional custom headers can be set here if required.
+    if (typeof window !== "undefined") {
+      const activeOrgId = localStorage.getItem("activeOrganizationId") || "org-upnode-main";
+      config.headers.set("x-organization-id", activeOrgId);
+    }
     return config;
   },
   (error: AxiosError) => {

@@ -90,8 +90,9 @@ export function useIncidentStream() {
       eventSourceRef.current = null;
     }
 
-    const serverUrl = process.env.NEXT_PUBLIC_SERVER_URL || "http://localhost:4000";
-    const streamUrl = `${serverUrl}/api/stream`;
+    const serverUrl = process.env.NEXT_PUBLIC_SERVER_URL || "http://localhost:8000";
+    const activeOrgId = (typeof window !== "undefined" && localStorage.getItem("activeOrganizationId")) || "org-upnode-main";
+    const streamUrl = `${serverUrl}/api/stream?organizationId=${encodeURIComponent(activeOrgId)}`;
 
     try {
       const eventSource = new EventSource(streamUrl, {
