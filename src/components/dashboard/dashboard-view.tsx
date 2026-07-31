@@ -76,8 +76,8 @@ export function DashboardView() {
         />
 
         {/* Main Content Area */}
-        <main className="flex-1 p-6 overflow-hidden">
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 h-[calc(100vh-7rem)]">
+        <main className="flex-1 p-6 sm:p-8 lg:p-10 overflow-hidden">
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 h-[calc(100vh-8rem)]">
             {/* Left Column: Incidents List */}
             <div className="lg:col-span-5 h-full overflow-hidden">
               <IncidentList
