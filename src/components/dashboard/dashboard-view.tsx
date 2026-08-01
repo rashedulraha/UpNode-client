@@ -100,6 +100,7 @@ export function DashboardView() {
                 incident={selectedIncident || null}
                 isLoading={isDetailLoading}
                 onClose={() => setSelectedIncidentId(null)}
+                onSelectIncident={setSelectedIncidentId}
               />
             </div>
           </div>
