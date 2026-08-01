@@ -28,14 +28,17 @@ export function useIncidentStream() {
   const updateCacheWithIncident = useCallback(
     (incident: Incident, eventType: string) => {
       // 1. Direct update for individual incident query cache if present
-      queryClient.setQueryData<Incident>(["incidents", incident.id], (oldData) => {
-        if (!oldData) return incident;
-        return {
-          ...oldData,
-          ...incident,
-          timelineEvents: incident.timelineEvents || oldData.timelineEvents,
-        };
-      });
+      queryClient.setQueryData<Incident>(
+        ["incidents", incident.id],
+        (oldData) => {
+          if (!oldData) return incident;
+          return {
+            ...oldData,
+            ...incident,
+            timelineEvents: incident.timelineEvents || oldData.timelineEvents,
+          };
+        },
+      );
 
       // 2. Update list queries cache directly or invalidate
       queryClient.setQueriesData<PaginatedIncidents>(
@@ -44,7 +47,7 @@ export function useIncidentStream() {
           if (!oldPaginatedData) return oldPaginatedData;
 
           const existingIndex = oldPaginatedData.items.findIndex(
-            (item) => item.id === incident.id
+            (item) => item.id === incident.id,
           );
 
           let newItems: Incident[];
@@ -68,7 +71,7 @@ export function useIncidentStream() {
             items: newItems,
             total: newTotal,
           };
-        }
+        },
       );
 
       // Invalidate queries to ensure complete consistency in background
@@ -78,7 +81,7 @@ export function useIncidentStream() {
         refetchType: "none",
       });
     },
-    [queryClient]
+    [queryClient],
   );
 
   const connect = useCallback(() => {
@@ -90,8 +93,12 @@ export function useIncidentStream() {
       eventSourceRef.current = null;
     }
 
-    const serverUrl = process.env.NEXT_PUBLIC_SERVER_URL || "http://localhost:8000";
-    const activeOrgId = (typeof window !== "undefined" && localStorage.getItem("activeOrganizationId")) || "org-upnode-main";
+    const serverUrl =
+      process.env.NEXT_PUBLIC_SERVER_URL || "http://localhost:8000";
+    const activeOrgId =
+      (typeof window !== "undefined" &&
+        localStorage.getItem("activeOrganizationId")) ||
+      "org-upnode-main";
     const streamUrl = `${serverUrl}/api/stream?organizationId=${encodeURIComponent(activeOrgId)}`;
 
     try {
@@ -148,7 +155,7 @@ export function useIncidentStream() {
         const maxDelay = 30000; // 30s
         const backoffDelay = Math.min(
           1000 * Math.pow(2, retryCountRef.current),
-          maxDelay
+          maxDelay,
         );
 
         retryCountRef.current += 1;
@@ -165,9 +172,11 @@ export function useIncidentStream() {
         }
 
         reconnectTimeoutRef.current = setTimeout(() => {
+          // eslint-disable-next-line react-hooks/immutability
           connect();
         }, backoffDelay);
       };
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (err: any) {
       console.error("[SSE] Error creating EventSource:", err);
       setStatus({
