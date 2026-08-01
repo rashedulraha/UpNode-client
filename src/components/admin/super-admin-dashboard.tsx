@@ -229,7 +229,7 @@ export default function SuperAdminDashboard() {
   };
 
   return (
-    <div className="min-h-full w-full bg-black text-neutral-100 font-sans p-4 sm:p-6 lg:p-8 space-y-6 relative overflow-x-hidden select-none">
+    <div className="h-full w-full bg-black text-neutral-100 font-sans p-4 sm:p-6 lg:p-8 space-y-6 relative overflow-y-auto overflow-x-hidden select-none">
       {/* Subtle Noise Texture Background Layer */}
       <div className="fixed inset-0 pointer-events-none opacity-[0.035] z-0 bg-[radial-gradient(#fff_1px,transparent_1px)] [background-size:16px_16px]" />
 

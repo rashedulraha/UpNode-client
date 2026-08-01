@@ -77,7 +77,7 @@ export function DashboardView() {
 
       {/* Body Content */}
       {isSuperAdmin && viewMode === "super_admin" ? (
-        <div className="flex-1 overflow-hidden w-full h-[calc(100vh-4rem)]">
+        <div className="flex-1 overflow-hidden w-full h-full min-h-0">
           <SuperAdminDashboard />
         </div>
       ) : (
