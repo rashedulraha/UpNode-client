@@ -42,20 +42,14 @@ export function IncidentCard({ incident, isSelected, onClick }: IncidentCardProp
       transition={{ duration: 0.1 }}
       className={`p-4 sm:p-5 rounded-none border cursor-pointer space-y-3 font-mono text-xs transition-colors min-w-0 select-none ${
         isSelected
-          ? "bg-slate-900 dark:bg-neutral-900 text-white border-slate-900 dark:border-white shadow-lg"
+          ? "bg-slate-100/80 dark:bg-neutral-900/60 text-slate-900 dark:text-white border-slate-400 dark:border-neutral-700 shadow-sm font-semibold"
           : "bg-white dark:bg-black border-slate-200 dark:border-neutral-800 hover:border-slate-400 dark:hover:border-neutral-600 hover:bg-slate-50 dark:hover:bg-neutral-900/40"
       }`}
     >
       {/* Top Header Row: Geometric Status Indicator & Severity */}
       <div className="flex items-center justify-between gap-2">
         <div className="flex items-center gap-2">
-          <div
-            className={`flex items-center gap-1.5 px-2 py-0.5 border text-[10px] uppercase font-bold ${
-              isSelected
-                ? "bg-slate-800 dark:bg-black border-slate-700 dark:border-neutral-800 text-white"
-                : "bg-slate-100 dark:bg-black border-slate-200 dark:border-neutral-800 text-slate-800 dark:text-neutral-300"
-            }`}
-          >
+          <div className="flex items-center gap-1.5 px-2 py-0.5 border border-slate-200 dark:border-neutral-800 bg-slate-100 dark:bg-black text-[10px] uppercase font-bold text-slate-800 dark:text-neutral-300">
             <span
               className={`w-1.5 h-1.5 rounded-full ${
                 incident.status === "RESOLVED"
@@ -73,48 +67,24 @@ export function IncidentCard({ incident, isSelected, onClick }: IncidentCardProp
           </span>
         </div>
 
-        <span
-          className={`text-[10px] border px-1.5 py-0.5 ${
-            isSelected
-              ? "border-slate-700 dark:border-neutral-800 bg-slate-800 dark:bg-black text-slate-300 dark:text-neutral-400"
-              : "border-slate-200 dark:border-neutral-900 bg-slate-50 dark:bg-black text-slate-500 dark:text-neutral-500"
-          }`}
-        >
+        <span className="text-[10px] border border-slate-200 dark:border-neutral-800 bg-slate-50 dark:bg-black text-slate-500 dark:text-neutral-500 px-1.5 py-0.5">
           v{incident.version}
         </span>
       </div>
 
       {/* Title & Description */}
       <div className="space-y-1 font-sans">
-        <h3
-          className={`font-semibold text-sm tracking-tight line-clamp-1 ${
-            isSelected ? "text-white" : "text-slate-900 dark:text-white"
-          }`}
-        >
+        <h3 className="font-semibold text-sm tracking-tight line-clamp-1 text-slate-900 dark:text-white">
           {incident.title}
         </h3>
-        <p
-          className={`text-xs font-mono line-clamp-2 leading-relaxed ${
-            isSelected ? "text-slate-200 dark:text-neutral-300" : "text-slate-600 dark:text-neutral-400"
-          }`}
-        >
+        <p className="text-xs font-mono line-clamp-2 leading-relaxed text-slate-600 dark:text-neutral-400">
           {incident.description}
         </p>
       </div>
 
       {/* Footer Info: Monospaced Telemetry ID & Timestamp */}
-      <div
-        className={`flex items-center justify-between pt-2.5 border-t text-[11px] font-mono ${
-          isSelected
-            ? "border-slate-800 dark:border-neutral-800 text-slate-300 dark:text-neutral-400"
-            : "border-slate-100 dark:border-neutral-900 text-slate-500 dark:text-neutral-500"
-        }`}
-      >
-        <span
-          className={`truncate font-medium ${
-            isSelected ? "text-white" : "text-slate-800 dark:text-neutral-300"
-          }`}
-        >
+      <div className="flex items-center justify-between pt-2.5 border-t border-slate-200 dark:border-neutral-800 text-[11px] font-mono text-slate-500 dark:text-neutral-500">
+        <span className="truncate font-medium text-slate-800 dark:text-neutral-300">
           {incident.project?.name || "PROJECT"}
         </span>
 
