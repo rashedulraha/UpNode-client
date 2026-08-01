@@ -4,19 +4,19 @@ import React, { useState } from "react";
 import { motion } from "framer-motion";
 
 const GLASS: React.CSSProperties = {
-  background: "rgba(255,255,255,0.025)",
+  background: "var(--lp-surface)",
   backdropFilter: "blur(20px)",
   WebkitBackdropFilter: "blur(20px)",
-  border: "0.5px solid rgba(255,255,255,0.09)",
-  borderTop: "0.5px solid rgba(255,255,255,0.17)",
+  border: "0.5px solid var(--lp-border)",
+  borderTop: "0.5px solid var(--lp-border-top)",
 };
 
 const GLASS_ACTIVE: React.CSSProperties = {
-  background: "rgba(255,255,255,0.06)",
+  background: "var(--lp-surface-hover)",
   backdropFilter: "blur(20px)",
   WebkitBackdropFilter: "blur(20px)",
-  border: "0.5px solid rgba(255,255,255,0.22)",
-  borderTop: "0.5px solid rgba(255,255,255,0.35)",
+  border: "0.5px solid var(--lp-stroke)",
+  borderTop: "0.5px solid var(--lp-border-top)",
 };
 
 const steps = [
@@ -57,7 +57,7 @@ export function ArchitectureSection() {
     <section
       id="architecture"
       className="py-24 relative"
-      style={{ background: "#000", borderBottom: "0.5px solid rgba(255,255,255,0.06)" }}
+      style={{ background: "var(--lp-bg)", borderBottom: "0.5px solid var(--lp-border)" }}
     >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-14">
         {/* Header */}
@@ -69,19 +69,19 @@ export function ArchitectureSection() {
           className="text-center space-y-4"
         >
           <div
-            className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full font-mono text-[10px] text-white/35 tracking-widest uppercase"
-            style={{ background: "rgba(255,255,255,0.03)", border: "0.5px solid rgba(255,255,255,0.09)" }}
+            className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full font-mono text-[10px] tracking-widest uppercase"
+            style={{ background: "var(--lp-surface)", border: "0.5px solid var(--lp-border)", color: "var(--lp-text-dim)" }}
           >
-            <span className="w-1 h-1 rounded-full bg-white/30" />
+            <span className="w-1 h-1 rounded-full inline-block" style={{ background: "var(--lp-text-mid)" }} />
             High-Throughput Pipeline
           </div>
-          <h2 className="text-3xl sm:text-5xl font-bold tracking-tighter text-white leading-tight">
+          <h2 className="text-3xl sm:text-5xl font-bold tracking-tighter leading-tight" style={{ color: "var(--lp-text-primary)" }}>
             Zero main-thread<br />
-            <span style={{ WebkitTextStroke: "1px rgba(255,255,255,0.35)", color: "transparent" }}>
+            <span style={{ WebkitTextStroke: "1px var(--lp-stroke)", color: "transparent" }}>
               DB lockup.
             </span>
           </h2>
-          <p className="text-white/30 text-sm max-w-lg mx-auto font-sans leading-relaxed">
+          <p className="text-sm max-w-lg mx-auto font-sans leading-relaxed" style={{ color: "var(--lp-text-mid)" }}>
             Traditional platforms lock databases under telemetry spikes. UpNode completely decouples
             ingestion with an async queue architecture.
           </p>
@@ -112,19 +112,20 @@ export function ArchitectureSection() {
                 {/* Step number + latency */}
                 <div className="flex items-center justify-between">
                   <span
-                    className="font-mono text-[10px] text-white/30 tracking-widest"
+                    className="font-mono text-[10px] tracking-widest"
                     style={{
-                      border: "0.5px solid rgba(255,255,255,0.10)",
+                      border: "0.5px solid var(--lp-border)",
                       padding: "2px 8px",
                       borderRadius: "4px",
-                      background: "rgba(255,255,255,0.03)",
+                      background: "var(--lp-surface)",
+                      color: "var(--lp-text-dim)",
                     }}
                   >
                     STAGE 0{item.step}
                   </span>
                   <span
                     className="font-mono text-[10px] tracking-widest"
-                    style={{ color: isActive ? "rgba(255,255,255,0.75)" : "rgba(255,255,255,0.28)" }}
+                    style={{ color: isActive ? "var(--lp-text-primary)" : "var(--lp-text-dim)" }}
                   >
                     {item.latency}
                   </span>
@@ -132,26 +133,26 @@ export function ArchitectureSection() {
 
                 {/* Title / Tech / Desc */}
                 <div className="space-y-1.5">
-                  <div className="font-mono text-[9px] text-white/25 tracking-widest uppercase">
+                  <div className="font-mono text-[9px] tracking-widest uppercase" style={{ color: "var(--lp-text-faint)" }}>
                     {item.tech}
                   </div>
                   <h3
                     className="text-sm font-semibold transition-colors"
-                    style={{ color: isActive ? "rgba(255,255,255,0.90)" : "rgba(255,255,255,0.60)" }}
+                    style={{ color: isActive ? "var(--lp-text-primary)" : "var(--lp-text-mid)" }}
                   >
                     {item.title}
                   </h3>
-                  <p className="text-xs text-white/30 leading-relaxed font-sans">{item.desc}</p>
+                  <p className="text-xs leading-relaxed font-sans" style={{ color: "var(--lp-text-dim)" }}>{item.desc}</p>
                 </div>
 
                 {/* Active indicator */}
                 {isActive && (
                   <div className="flex items-center gap-2">
                     <span className="relative flex h-1.5 w-1.5">
-                      <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-white/60 opacity-70" />
-                      <span className="relative inline-flex rounded-full h-1.5 w-1.5 bg-white/80" />
+                      <span className="animate-ping absolute inline-flex h-full w-full rounded-full opacity-70" style={{ background: "var(--lp-text-mid)" }} />
+                      <span className="relative inline-flex rounded-full h-1.5 w-1.5" style={{ background: "var(--lp-text-primary)" }} />
                     </span>
-                    <span className="font-mono text-[9px] text-white/35 tracking-widest uppercase">
+                    <span className="font-mono text-[9px] tracking-widest uppercase" style={{ color: "var(--lp-text-dim)" }}>
                       Selected
                     </span>
                   </div>
@@ -168,16 +169,16 @@ export function ArchitectureSection() {
               <div
                 className="w-8 h-8 rounded-full flex items-center justify-center font-mono text-[10px] transition-all cursor-pointer"
                 style={{
-                  background: active === s.step ? "rgba(255,255,255,0.15)" : "rgba(255,255,255,0.04)",
-                  border: active === s.step ? "0.5px solid rgba(255,255,255,0.40)" : "0.5px solid rgba(255,255,255,0.10)",
-                  color: active === s.step ? "rgba(255,255,255,0.85)" : "rgba(255,255,255,0.25)",
+                  background: active === s.step ? "var(--lp-surface-hover)" : "var(--lp-surface)",
+                  border: active === s.step ? "0.5px solid var(--lp-stroke)" : "0.5px solid var(--lp-border)",
+                  color: active === s.step ? "var(--lp-text-primary)" : "var(--lp-text-dim)",
                 }}
                 onClick={() => setActive(s.step)}
               >
                 {s.step}
               </div>
               {i < steps.length - 1 && (
-                <div className="flex-1 h-[0.5px] mx-1" style={{ background: "rgba(255,255,255,0.08)" }} />
+                <div className="flex-1 h-[0.5px] mx-1" style={{ background: "var(--lp-border)" }} />
               )}
             </React.Fragment>
           ))}
