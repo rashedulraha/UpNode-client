@@ -30,7 +30,7 @@ export function ProjectsSidebar({
   };
 
   return (
-    <aside className="w-56 lg:w-64 bg-white/70 dark:bg-black/80 backdrop-blur-3xl flex flex-col justify-between h-full shrink-0 font-sans border-r border-slate-200 dark:border-neutral-800 overflow-hidden">
+    <aside className="w-full lg:w-64 bg-white/70 dark:bg-black/80 backdrop-blur-3xl flex flex-col justify-between h-auto lg:h-full shrink-0 font-sans border-b lg:border-b-0 lg:border-r border-slate-200 dark:border-neutral-800 overflow-hidden">
       {/* Top Section: Projects navigation */}
       <div className="p-4 sm:p-5 space-y-6 overflow-y-auto">
         <div>
