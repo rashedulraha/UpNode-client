@@ -62,16 +62,16 @@ export function IncidentList({
   ];
 
   return (
-    <div className="flex flex-col h-full space-y-4 font-mono min-w-0 overflow-hidden text-xs">
+    <div className="flex flex-col h-full space-y-3.5 font-mono min-w-0 overflow-hidden text-xs">
       {/* Filters Bar with Sharp Square Borders */}
-      <div className="p-4 sm:p-5 rounded-none bg-neutral-950/80 border border-neutral-800 space-y-3 backdrop-blur-3xl shadow-2xl">
-        <div className="flex items-center justify-between border-b border-neutral-900 pb-2.5">
-          <span className="text-[10px] font-semibold text-neutral-500 uppercase tracking-widest">
+      <div className="p-4 sm:p-5 rounded-none bg-white dark:bg-neutral-950 border border-slate-200 dark:border-neutral-800 space-y-3 backdrop-blur-3xl shadow-sm transition-colors">
+        <div className="flex items-center justify-between border-b border-slate-200 dark:border-neutral-900 pb-2.5">
+          <span className="text-[10px] font-bold text-slate-400 dark:text-neutral-500 uppercase tracking-widest">
             [TELEMETRY_STREAM]
           </span>
           <button
             onClick={onRefresh}
-            className="px-2.5 py-1 rounded-none border border-neutral-800 bg-black text-neutral-400 hover:text-white hover:border-neutral-600 transition-colors cursor-pointer text-[10px] uppercase tracking-wider"
+            className="px-2.5 py-1 rounded-none border border-slate-200 dark:border-neutral-800 bg-slate-50 dark:bg-black text-slate-700 dark:text-neutral-400 hover:text-slate-900 dark:hover:text-white hover:border-slate-300 dark:hover:border-neutral-600 transition-colors cursor-pointer text-[10px] uppercase tracking-wider font-bold"
             title="Refresh stream"
           >
             {isLoading ? "[SYNCING...]" : "[REFRESH]"}
@@ -80,15 +80,15 @@ export function IncidentList({
 
         {/* Status Filter Chips */}
         <div className="flex items-center gap-1.5 overflow-x-auto pb-1 scrollbar-none font-mono">
-          <span className="text-[10px] text-neutral-500 pr-1 shrink-0 uppercase">STATUS:</span>
+          <span className="text-[10px] text-slate-400 dark:text-neutral-500 pr-1 shrink-0 uppercase font-bold">STATUS:</span>
           {statusOptions.map((st) => (
             <button
               key={st}
               onClick={() => onStatusFilterChange(st)}
               className={`px-2 py-0.5 rounded-none text-[10px] transition-colors shrink-0 cursor-pointer border uppercase tracking-wider ${
                 statusFilter === st
-                  ? "bg-neutral-900 text-white border-neutral-400 font-bold"
-                  : "bg-black text-neutral-400 border-neutral-800 hover:text-white hover:border-neutral-700"
+                  ? "bg-slate-900 dark:bg-neutral-900 text-white border-slate-900 dark:border-neutral-400 font-bold"
+                  : "bg-slate-50 dark:bg-black text-slate-700 dark:text-neutral-400 border-slate-200 dark:border-neutral-800 hover:text-slate-900 dark:hover:text-white hover:border-slate-300 dark:hover:border-neutral-700"
               }`}
             >
               {st}
@@ -98,15 +98,15 @@ export function IncidentList({
 
         {/* Severity Filter Chips */}
         <div className="flex items-center gap-1.5 overflow-x-auto pb-1 scrollbar-none font-mono">
-          <span className="text-[10px] text-neutral-500 pr-1 shrink-0 uppercase">SEVERITY:</span>
+          <span className="text-[10px] text-slate-400 dark:text-neutral-500 pr-1 shrink-0 uppercase font-bold">SEVERITY:</span>
           {severityOptions.map((sev) => (
             <button
               key={sev}
               onClick={() => onSeverityFilterChange(sev)}
               className={`px-2 py-0.5 rounded-none text-[10px] transition-colors shrink-0 cursor-pointer border uppercase tracking-wider ${
                 severityFilter === sev
-                  ? "bg-neutral-900 text-white border-neutral-400 font-bold"
-                  : "bg-black text-neutral-400 border-neutral-800 hover:text-white hover:border-neutral-700"
+                  ? "bg-slate-900 dark:bg-neutral-900 text-white border-slate-900 dark:border-neutral-400 font-bold"
+                  : "bg-slate-50 dark:bg-black text-slate-700 dark:text-neutral-400 border-slate-200 dark:border-neutral-800 hover:text-slate-900 dark:hover:text-white hover:border-slate-300 dark:hover:border-neutral-700"
               }`}
             >
               {sev}
@@ -122,21 +122,21 @@ export function IncidentList({
             {[1, 2, 3].map((i) => (
               <div
                 key={i}
-                className="p-5 rounded-none bg-black border border-neutral-900 animate-pulse space-y-3 font-mono"
+                className="p-5 rounded-none bg-white dark:bg-black border border-slate-200 dark:border-neutral-900 animate-pulse space-y-3 font-mono"
               >
                 <div className="flex gap-2">
-                  <div className="w-16 h-3 bg-neutral-900" />
-                  <div className="w-20 h-3 bg-neutral-900" />
+                  <div className="w-16 h-3 bg-slate-200 dark:bg-neutral-900" />
+                  <div className="w-20 h-3 bg-slate-200 dark:bg-neutral-900" />
                 </div>
-                <div className="w-3/4 h-4 bg-neutral-900" />
-                <div className="w-1/2 h-3 bg-neutral-900" />
+                <div className="w-3/4 h-4 bg-slate-200 dark:bg-neutral-900" />
+                <div className="w-1/2 h-3 bg-slate-200 dark:bg-neutral-900" />
               </div>
             ))}
           </div>
         ) : error ? (
-          <div className="p-6 rounded-none bg-black border border-rose-900/60 text-rose-300 space-y-2 text-center font-mono">
-            <p className="font-semibold text-xs">[FAILED_TO_LOAD_TELEMETRY_STREAM]</p>
-            <p className="text-[11px] text-rose-400">{error.message}</p>
+          <div className="p-6 rounded-none bg-rose-50 dark:bg-black border border-rose-200 dark:border-rose-900/60 text-rose-800 dark:text-rose-300 space-y-2 text-center font-mono">
+            <p className="font-bold text-xs">[FAILED_TO_LOAD_TELEMETRY_STREAM]</p>
+            <p className="text-[11px] text-rose-600 dark:text-rose-400">{error.message}</p>
           </div>
         ) : incidents.length > 0 ? (
           <motion.div
@@ -158,8 +158,8 @@ export function IncidentList({
             </AnimatePresence>
           </motion.div>
         ) : (
-          <div className="p-12 text-center rounded-none bg-black border border-neutral-800 space-y-3 font-mono text-neutral-500">
-            <p className="text-neutral-300 font-semibold text-xs">[NO_INCIDENTS_FOUND]</p>
+          <div className="p-12 text-center rounded-none bg-white dark:bg-black border border-slate-200 dark:border-neutral-800 space-y-3 font-mono text-slate-500 dark:text-neutral-500">
+            <p className="text-slate-800 dark:text-neutral-300 font-bold text-xs">[NO_INCIDENTS_FOUND]</p>
             <p className="text-[11px]">
               Adjust telemetry filters or report a new incident.
             </p>
