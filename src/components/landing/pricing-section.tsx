@@ -3,22 +3,22 @@
 import React, { useState } from "react";
 import Link from "next/link";
 import { motion } from "framer-motion";
-import { Check, ArrowRight } from "lucide-react";
+import { ArrowRight } from "lucide-react";
 
 const GLASS: React.CSSProperties = {
-  background: "rgba(255,255,255,0.025)",
+  background: "var(--lp-surface)",
   backdropFilter: "blur(20px)",
   WebkitBackdropFilter: "blur(20px)",
-  border: "0.5px solid rgba(255,255,255,0.09)",
-  borderTop: "0.5px solid rgba(255,255,255,0.17)",
+  border: "0.5px solid var(--lp-border)",
+  borderTop: "0.5px solid var(--lp-border-top)",
 };
 
 const GLASS_FEATURED: React.CSSProperties = {
-  background: "rgba(255,255,255,0.07)",
+  background: "var(--lp-surface-hover)",
   backdropFilter: "blur(20px)",
   WebkitBackdropFilter: "blur(20px)",
-  border: "0.5px solid rgba(255,255,255,0.22)",
-  borderTop: "0.5px solid rgba(255,255,255,0.38)",
+  border: "0.5px solid var(--lp-stroke)",
+  borderTop: "0.5px solid var(--lp-border-top)",
 };
 
 export function PricingSection() {
@@ -33,8 +33,6 @@ export function PricingSection() {
       featured: false,
       cta: "Get Started Free",
       href: "/register",
-      featureColor: "text-white/35",
-      dotColor: "bg-white/30",
       features: ["Up to 10,000 events/mo", "24-hour log retention", "Basic SSE alerts", "Community support"],
     },
     {
@@ -46,8 +44,6 @@ export function PricingSection() {
       cta: "Start 14-Day Free Trial",
       href: "/register",
       badge: "Most Popular",
-      featureColor: "text-white/55",
-      dotColor: "bg-white/60",
       features: ["500,000 events/mo", "30-day log retention", "Sub-second SSE push alerts", "BullMQ queue isolation", "Slack & PagerDuty sync"],
     },
     {
@@ -58,8 +54,6 @@ export function PricingSection() {
       featured: false,
       cta: "Contact Sales",
       href: "mailto:enterprise@upnode.io",
-      featureColor: "text-white/35",
-      dotColor: "bg-white/30",
       features: ["Unlimited telemetry events", "1-year custom log retention", "Dedicated BullMQ worker pods", "99.999% SLA & SOC2", "24/7 dedicated SRE support"],
     },
   ];
@@ -68,7 +62,7 @@ export function PricingSection() {
     <section
       id="pricing"
       className="py-24 relative"
-      style={{ background: "#000", borderBottom: "0.5px solid rgba(255,255,255,0.06)" }}
+      style={{ background: "var(--lp-bg)", borderBottom: "0.5px solid var(--lp-border)" }}
     >
       <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 space-y-14">
         {/* Header */}
@@ -80,19 +74,19 @@ export function PricingSection() {
           className="text-center space-y-4"
         >
           <div
-            className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full font-mono text-[10px] text-white/35 tracking-widest uppercase"
-            style={{ background: "rgba(255,255,255,0.03)", border: "0.5px solid rgba(255,255,255,0.09)" }}
+            className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full font-mono text-[10px] tracking-widest uppercase"
+            style={{ background: "var(--lp-surface)", border: "0.5px solid var(--lp-border)", color: "var(--lp-text-dim)" }}
           >
-            <span className="w-1 h-1 rounded-full bg-white/30" />
+            <span className="w-1 h-1 rounded-full inline-block" style={{ background: "var(--lp-text-mid)" }} />
             Transparent Pricing
           </div>
-          <h2 className="text-3xl sm:text-5xl font-bold tracking-tighter text-white leading-tight">
+          <h2 className="text-3xl sm:text-5xl font-bold tracking-tighter leading-tight" style={{ color: "var(--lp-text-primary)" }}>
             Simple, predictable plans<br />
-            <span style={{ WebkitTextStroke: "1px rgba(255,255,255,0.35)", color: "transparent" }}>
+            <span style={{ WebkitTextStroke: "1px var(--lp-stroke)", color: "transparent" }}>
               for any team.
             </span>
           </h2>
-          <p className="text-white/30 text-sm max-w-md mx-auto font-sans leading-relaxed">
+          <p className="text-sm max-w-md mx-auto font-sans leading-relaxed" style={{ color: "var(--lp-text-mid)" }}>
             Zero hidden fees. Scale telemetry ingestion as your infrastructure grows.
           </p>
 
@@ -100,24 +94,24 @@ export function PricingSection() {
           <div className="flex justify-center pt-2">
             <div
               className="flex items-center gap-0.5 p-0.5 font-mono text-[11px] rounded-xl"
-              style={{ background: "rgba(255,255,255,0.04)", border: "0.5px solid rgba(255,255,255,0.09)" }}
+              style={{ background: "var(--lp-surface)", border: "0.5px solid var(--lp-border)" }}
             >
               {(["monthly", "yearly"] as const).map((cycle) => (
                 <button
                   key={cycle}
                   onClick={() => setBillingCycle(cycle)}
-                  className={`px-4 py-1.5 rounded-lg transition-all cursor-pointer tracking-widest uppercase text-[10px] flex items-center gap-2`}
+                  className="px-4 py-1.5 rounded-lg transition-all cursor-pointer tracking-widest uppercase text-[10px] flex items-center gap-2"
                   style={
                     billingCycle === cycle
-                      ? { background: "rgba(255,255,255,0.88)", color: "#000", borderRadius: "8px" }
-                      : { color: "rgba(255,255,255,0.30)" }
+                      ? { background: "var(--lp-cta-bg)", color: "var(--lp-cta-text)", borderRadius: "8px", fontWeight: "bold" }
+                      : { color: "var(--lp-text-dim)" }
                   }
                 >
                   {cycle}
                   {cycle === "yearly" && (
                     <span
-                      className="text-[8px] font-bold text-white/50 px-1 py-0.5 rounded"
-                      style={{ border: "0.5px solid rgba(255,255,255,0.15)" }}
+                      className="text-[8px] font-bold px-1 py-0.5 rounded"
+                      style={{ border: "0.5px solid var(--lp-border)", color: "var(--lp-text-dim)" }}
                     >
                       -20%
                     </span>
@@ -149,8 +143,8 @@ export function PricingSection() {
             >
               {plan.badge && (
                 <div
-                  className="absolute -top-3 right-5 px-3 py-0.5 rounded-full font-mono text-[9px] tracking-widest uppercase text-black font-bold"
-                  style={{ background: "rgba(255,255,255,0.90)" }}
+                  className="absolute -top-3 right-5 px-3 py-0.5 rounded-full font-mono text-[9px] tracking-widest uppercase font-bold"
+                  style={{ background: "var(--lp-cta-bg)", color: "var(--lp-cta-text)" }}
                 >
                   {plan.badge}
                 </div>
@@ -160,32 +154,32 @@ export function PricingSection() {
                 <div className="space-y-1">
                   <h3
                     className="text-base font-semibold"
-                    style={{ color: plan.featured ? "rgba(255,255,255,0.90)" : "rgba(255,255,255,0.60)" }}
+                    style={{ color: plan.featured ? "var(--lp-text-primary)" : "var(--lp-text-mid)" }}
                   >
                     {plan.name}
                   </h3>
-                  <p className="text-xs text-white/28 font-sans">{plan.desc}</p>
+                  <p className="text-xs font-sans" style={{ color: "var(--lp-text-dim)" }}>{plan.desc}</p>
                 </div>
 
                 <div className="flex items-baseline gap-1">
                   <span
                     className="text-3xl font-bold tracking-tight"
-                    style={{ color: plan.featured ? "rgba(255,255,255,0.90)" : "rgba(255,255,255,0.60)" }}
+                    style={{ color: "var(--lp-text-primary)" }}
                   >
                     {plan.price !== "Custom" ? `$${plan.price}` : plan.price}
                   </span>
                   {plan.unit && (
-                    <span className="font-mono text-[11px] text-white/22">{plan.unit}</span>
+                    <span className="font-mono text-[11px]" style={{ color: "var(--lp-text-dim)" }}>{plan.unit}</span>
                   )}
                 </div>
 
                 <ul
                   className="space-y-2 pt-3"
-                  style={{ borderTop: "0.5px solid rgba(255,255,255,0.07)" }}
+                  style={{ borderTop: "0.5px solid var(--lp-border)" }}
                 >
                   {plan.features.map((f) => (
-                    <li key={f} className={`flex items-center gap-2.5 font-mono text-[11px] ${plan.featureColor}`}>
-                      <span className={`w-1 h-1 rounded-full shrink-0 ${plan.dotColor}`} />
+                    <li key={f} className="flex items-center gap-2.5 font-mono text-[11px]" style={{ color: plan.featured ? "var(--lp-text-primary)" : "var(--lp-text-mid)" }}>
+                      <span className="w-1 h-1 rounded-full shrink-0 inline-block" style={{ background: plan.featured ? "var(--lp-text-primary)" : "var(--lp-text-dim)" }} />
                       {f}
                     </li>
                   ))}
@@ -197,8 +191,8 @@ export function PricingSection() {
                 className="w-full py-2.5 rounded-xl font-mono text-[11px] font-semibold tracking-wider text-center flex items-center justify-center gap-1.5 transition-all cursor-pointer active:scale-95"
                 style={
                   plan.featured
-                    ? { background: "rgba(255,255,255,0.92)", color: "#000", border: "0.5px solid rgba(255,255,255,0.3)" }
-                    : { background: "rgba(255,255,255,0.04)", color: "rgba(255,255,255,0.45)", border: "0.5px solid rgba(255,255,255,0.10)" }
+                    ? { background: "var(--lp-cta-bg)", color: "var(--lp-cta-text)", border: "0.5px solid var(--lp-border-top)" }
+                    : { background: "var(--lp-surface)", color: "var(--lp-text-mid)", border: "0.5px solid var(--lp-border)" }
                 }
               >
                 {plan.cta}
