@@ -4,7 +4,6 @@ import React from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Incident, IncidentSeverity, IncidentStatus } from "@/types";
 import IncidentCard from "./incident-card";
-import { RefreshCw } from "lucide-react";
 
 interface IncidentListProps {
   incidents: Incident[];
@@ -30,8 +29,8 @@ const listContainerVariants = {
 };
 
 const listItemVariants = {
-  hidden: { opacity: 0, y: 12 },
-  show: { opacity: 1, y: 0, transition: { duration: 0.25 } },
+  hidden: { opacity: 0, y: 8 },
+  show: { opacity: 1, y: 0, transition: { duration: 0.2 } },
 };
 
 export function IncidentList({
@@ -63,94 +62,88 @@ export function IncidentList({
   ];
 
   return (
-    <div className="flex flex-col h-full space-y-4 font-sans min-w-0 overflow-hidden">
-      {/* Filters Bar with 1px dividers */}
-      <div className="p-4 sm:p-5 rounded-2xl bg-white/70 dark:bg-black/80 space-y-3 backdrop-blur-3xl border border-slate-200 dark:border-neutral-800 shadow-sm">
-        <div className="flex items-center justify-between border-b border-slate-200 dark:border-neutral-800 pb-2.5">
-          <span className="text-[10px] font-mono font-semibold text-slate-400 dark:text-neutral-500 uppercase tracking-widest">
+    <div className="flex flex-col h-full space-y-4 font-mono min-w-0 overflow-hidden text-xs">
+      {/* Filters Bar with Sharp Square Borders */}
+      <div className="p-4 sm:p-5 rounded-none bg-neutral-950/80 border border-neutral-800 space-y-3 backdrop-blur-3xl shadow-2xl">
+        <div className="flex items-center justify-between border-b border-neutral-900 pb-2.5">
+          <span className="text-[10px] font-semibold text-neutral-500 uppercase tracking-widest">
             [TELEMETRY_STREAM]
           </span>
-          <motion.button
-            whileTap={{ scale: 0.9 }}
-            whileHover={{ scale: 1.05 }}
+          <button
             onClick={onRefresh}
-            className="p-1.5 rounded-xl bg-slate-100 dark:bg-neutral-900 hover:bg-slate-200 dark:hover:bg-neutral-800 text-slate-600 dark:text-neutral-400 hover:text-slate-900 dark:hover:text-white transition-colors cursor-pointer border border-slate-200 dark:border-neutral-800"
+            className="px-2.5 py-1 rounded-none border border-neutral-800 bg-black text-neutral-400 hover:text-white hover:border-neutral-600 transition-colors cursor-pointer text-[10px] uppercase tracking-wider"
             title="Refresh stream"
           >
-            <RefreshCw className={`w-3.5 h-3.5 ${isLoading ? "animate-spin" : ""}`} />
-          </motion.button>
+            {isLoading ? "[SYNCING...]" : "[REFRESH]"}
+          </button>
         </div>
 
         {/* Status Filter Chips */}
         <div className="flex items-center gap-1.5 overflow-x-auto pb-1 scrollbar-none font-mono">
-          <span className="text-[10px] text-slate-400 dark:text-neutral-500 pr-1 shrink-0 uppercase">STATUS:</span>
+          <span className="text-[10px] text-neutral-500 pr-1 shrink-0 uppercase">STATUS:</span>
           {statusOptions.map((st) => (
-            <motion.button
+            <button
               key={st}
-              whileTap={{ scale: 0.94 }}
-              whileHover={{ scale: 1.04 }}
               onClick={() => onStatusFilterChange(st)}
-              className={`px-2.5 py-1 rounded-xl text-[11px] transition-colors shrink-0 cursor-pointer border ${
+              className={`px-2 py-0.5 rounded-none text-[10px] transition-colors shrink-0 cursor-pointer border uppercase tracking-wider ${
                 statusFilter === st
-                  ? "bg-slate-900 dark:bg-white text-white dark:text-slate-900 border-slate-900 dark:border-white font-bold shadow-sm"
-                  : "bg-slate-100 dark:bg-neutral-900 text-slate-600 dark:text-neutral-400 hover:bg-slate-200 dark:hover:bg-neutral-800 hover:text-slate-900 dark:hover:text-white border-slate-200 dark:border-neutral-800"
+                  ? "bg-neutral-900 text-white border-neutral-400 font-bold"
+                  : "bg-black text-neutral-400 border-neutral-800 hover:text-white hover:border-neutral-700"
               }`}
             >
               {st}
-            </motion.button>
+            </button>
           ))}
         </div>
 
         {/* Severity Filter Chips */}
         <div className="flex items-center gap-1.5 overflow-x-auto pb-1 scrollbar-none font-mono">
-          <span className="text-[10px] text-slate-400 dark:text-neutral-500 pr-1 shrink-0 uppercase">SEVERITY:</span>
+          <span className="text-[10px] text-neutral-500 pr-1 shrink-0 uppercase">SEVERITY:</span>
           {severityOptions.map((sev) => (
-            <motion.button
+            <button
               key={sev}
-              whileTap={{ scale: 0.94 }}
-              whileHover={{ scale: 1.04 }}
               onClick={() => onSeverityFilterChange(sev)}
-              className={`px-2.5 py-1 rounded-xl text-[11px] transition-colors shrink-0 cursor-pointer border ${
+              className={`px-2 py-0.5 rounded-none text-[10px] transition-colors shrink-0 cursor-pointer border uppercase tracking-wider ${
                 severityFilter === sev
-                  ? "bg-slate-900 dark:bg-white text-white dark:text-slate-900 border-slate-900 dark:border-white font-bold shadow-sm"
-                  : "bg-slate-100 dark:bg-neutral-900 text-slate-600 dark:text-neutral-400 hover:bg-slate-200 dark:hover:bg-neutral-800 hover:text-slate-900 dark:hover:text-white border-slate-200 dark:border-neutral-800"
+                  ? "bg-neutral-900 text-white border-neutral-400 font-bold"
+                  : "bg-black text-neutral-400 border-neutral-800 hover:text-white hover:border-neutral-700"
               }`}
             >
               {sev}
-            </motion.button>
+            </button>
           ))}
         </div>
       </div>
 
-      {/* Incidents Stream List with Staggered Framer Motion Animation */}
-      <div className="flex-1 overflow-y-auto space-y-3.5 px-2 py-1">
+      {/* Incidents Stream List */}
+      <div className="flex-1 overflow-y-auto space-y-3 px-1 py-1">
         {isLoading ? (
-          <div className="space-y-3.5">
-            {[1, 2, 3, 4].map((i) => (
+          <div className="space-y-3">
+            {[1, 2, 3].map((i) => (
               <div
                 key={i}
-                className="p-5 rounded-2xl bg-card/30 border-[0.5px] border-border/30 animate-pulse space-y-3 glass-card-floating"
+                className="p-5 rounded-none bg-black border border-neutral-900 animate-pulse space-y-3 font-mono"
               >
                 <div className="flex gap-2">
-                  <div className="w-16 h-4 bg-muted/60 rounded-full" />
-                  <div className="w-20 h-4 bg-muted/60 rounded-full" />
+                  <div className="w-16 h-3 bg-neutral-900" />
+                  <div className="w-20 h-3 bg-neutral-900" />
                 </div>
-                <div className="w-3/4 h-5 bg-muted/60 rounded" />
-                <div className="w-1/2 h-3 bg-muted/40 rounded" />
+                <div className="w-3/4 h-4 bg-neutral-900" />
+                <div className="w-1/2 h-3 bg-neutral-900" />
               </div>
             ))}
           </div>
         ) : error ? (
-          <div className="p-6 rounded-2xl bg-destructive/10 border-[0.5px] border-destructive/20 text-destructive space-y-2 text-center font-mono">
-            <p className="font-semibold text-sm">Failed to load telemetry stream</p>
-            <p className="text-xs text-destructive/80">{error.message}</p>
+          <div className="p-6 rounded-none bg-black border border-rose-900/60 text-rose-300 space-y-2 text-center font-mono">
+            <p className="font-semibold text-xs">[FAILED_TO_LOAD_TELEMETRY_STREAM]</p>
+            <p className="text-[11px] text-rose-400">{error.message}</p>
           </div>
         ) : incidents.length > 0 ? (
           <motion.div
             variants={listContainerVariants}
             initial="hidden"
             animate="show"
-            className="space-y-3.5"
+            className="space-y-3"
           >
             <AnimatePresence>
               {incidents.map((incident) => (
@@ -165,10 +158,10 @@ export function IncidentList({
             </AnimatePresence>
           </motion.div>
         ) : (
-          <div className="p-12 text-center rounded-2xl bg-card/30 border-[0.5px] border-border/30 space-y-3 glass-card-floating font-mono">
-            <p className="text-foreground font-semibold text-sm">No Incidents Found</p>
-            <p className="text-muted-foreground text-xs">
-              Adjust telemetry filters or create a new incident.
+          <div className="p-12 text-center rounded-none bg-black border border-neutral-800 space-y-3 font-mono text-neutral-500">
+            <p className="text-neutral-300 font-semibold text-xs">[NO_INCIDENTS_FOUND]</p>
+            <p className="text-[11px]">
+              Adjust telemetry filters or report a new incident.
             </p>
           </div>
         )}

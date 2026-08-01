@@ -1,7 +1,6 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { motion, AnimatePresence } from "framer-motion";
 import { Incident } from "@/types";
 import { useUpdateIncidentStatus } from "@/hooks/use-incidents";
 
@@ -17,14 +16,14 @@ export function AiSreInsights({ incident }: AiSreInsightsProps) {
   const [displayedText, setDisplayedText] = useState("");
   const updateStatusMutation = useUpdateIncidentStatus();
 
-  // Root cause text (from backend or fallback heuristic)
+  // Root cause text
   const rootCauseText =
     incident.aiRootCause ||
     `[AI_SRE_DIAGNOSTIC] Anomalous HTTP telemetry pattern detected. Connection pool exhaustion on target project "${
       incident.project?.name || "Service"
     }". High latency spikes (>1450ms) correlated with Redis key eviction failures.`;
 
-  // Fix suggestion text (from backend or fallback heuristic)
+  // Fix suggestion text
   const fixSuggestionText =
     incident.aiFixSuggestion ||
     `upnode-cli scale-pool --target="${incident.projectId}" --max-connections=50 --flush-cache`;
@@ -87,13 +86,12 @@ export function AiSreInsights({ incident }: AiSreInsightsProps) {
   };
 
   return (
-    <div className="w-full rounded-2xl bg-black border border-slate-800 dark:border-neutral-800 overflow-hidden font-mono text-xs text-emerald-400/90 relative group shadow-2xl">
+    <div className="w-full rounded-none bg-black border border-neutral-800 overflow-hidden font-mono text-xs text-emerald-400/90 relative group shadow-2xl">
       {/* Terminal Header */}
-      <div className="bg-slate-900 dark:bg-neutral-950 px-4 py-2.5 border-b border-slate-800 dark:border-neutral-800 flex items-center justify-between">
+      <div className="bg-neutral-950 px-4 py-2 border-b border-neutral-800 flex items-center justify-between">
         <div className="flex items-center gap-2">
-          {/* Geometric status dot */}
-          <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse shadow-[0_0_8px_rgba(52,211,153,0.8)]" />
-          <span className="text-[11px] font-mono text-emerald-400 font-bold tracking-wider">
+          <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse shadow-[0_0_6px_rgba(52,211,153,0.8)]" />
+          <span className="text-[11px] font-mono text-emerald-400 font-bold tracking-wider uppercase">
             AI_SRE_DIAGNOSTIC_ENGINE [v2.4]
           </span>
         </div>
@@ -102,7 +100,7 @@ export function AiSreInsights({ incident }: AiSreInsightsProps) {
           <button
             onClick={handleReAnalyze}
             disabled={isAnalyzing}
-            className="px-2.5 py-1 rounded border border-neutral-800 bg-black text-neutral-400 hover:text-white transition-colors cursor-pointer disabled:opacity-40 uppercase"
+            className="px-2 py-0.5 border border-neutral-800 bg-black text-neutral-400 hover:text-white transition-colors cursor-pointer disabled:opacity-40 uppercase"
           >
             {isAnalyzing ? "[STREAMING...]" : "[RE_ANALYZE]"}
           </button>
@@ -122,7 +120,7 @@ export function AiSreInsights({ incident }: AiSreInsightsProps) {
         </div>
 
         {/* Recommended Fix Command Box */}
-        <div className="p-3 rounded-xl bg-neutral-950 border border-neutral-900 space-y-2">
+        <div className="p-3 rounded-none bg-neutral-950 border border-neutral-900 space-y-2">
           <div className="flex items-center justify-between text-[10px] text-neutral-500 uppercase tracking-widest">
             <span>RECOMMENDED_REMEDIATION_CLI</span>
             <button
@@ -133,7 +131,7 @@ export function AiSreInsights({ incident }: AiSreInsightsProps) {
             </button>
           </div>
 
-          <div className="p-2 rounded bg-black border border-neutral-800 text-emerald-300 text-[11px] font-mono select-all break-all">
+          <div className="p-2 rounded-none bg-black border border-neutral-800 text-emerald-300 text-[11px] font-mono select-all break-all">
             {fixSuggestionText}
           </div>
 
@@ -147,7 +145,7 @@ export function AiSreInsights({ incident }: AiSreInsightsProps) {
               <button
                 onClick={handleApplyFix}
                 disabled={isApplyingFix || incident.status === "RESOLVED"}
-                className="px-3 py-1.5 rounded border border-emerald-500/40 bg-emerald-950/60 hover:bg-emerald-900 text-emerald-200 text-xs font-mono font-bold transition-all cursor-pointer disabled:opacity-40 uppercase tracking-wider shadow-[0_0_12px_rgba(16,185,129,0.2)]"
+                className="px-3 py-1 border border-emerald-600/60 bg-emerald-950/60 hover:bg-emerald-900 text-emerald-200 text-xs font-mono font-bold transition-all cursor-pointer disabled:opacity-40 uppercase tracking-wider shadow-[0_0_12px_rgba(16,185,129,0.2)]"
               >
                 {isApplyingFix ? "[APPLYING_REMEDIATION...]" : "[AUTO_APPLY_FIX]"}
               </button>

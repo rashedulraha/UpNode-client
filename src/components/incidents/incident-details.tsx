@@ -5,7 +5,6 @@ import { motion, AnimatePresence } from "framer-motion";
 import { Incident, IncidentSeverity, IncidentStatus } from "@/types";
 import { useUpdateIncidentStatus } from "@/hooks/use-incidents";
 import { AiSreInsights } from "./ai-sre-insights";
-import { StatusDot } from "@/components/ui/status-dot";
 
 interface IncidentDetailsProps {
   incident: Incident | null;
@@ -58,16 +57,16 @@ function EmptyWorkspaceDropzone({
   };
 
   return (
-    <div className="flex flex-col h-full space-y-5 font-sans">
+    <div className="flex flex-col h-full space-y-5 font-mono text-xs">
       {/* Interactive Pitch-Black DND Workspace Box */}
       <div
         onDragOver={handleDragOver}
         onDragLeave={handleDragLeave}
         onDrop={handleDrop}
-        className={`flex-1 flex flex-col items-center justify-center p-8 text-center rounded-3xl border transition-all backdrop-blur-3xl relative overflow-hidden ${
+        className={`flex-1 flex flex-col items-center justify-center p-8 text-center rounded-none border transition-all backdrop-blur-3xl relative overflow-hidden ${
           isDragOver
-            ? "border-emerald-500/60 bg-emerald-950/20 scale-[1.01] shadow-2xl shadow-emerald-500/10"
-            : "border-slate-200 dark:border-neutral-800 bg-white/70 dark:bg-black/80 hover:border-slate-400 dark:hover:border-neutral-700"
+            ? "border-neutral-400 bg-neutral-900 scale-[1.005] shadow-2xl"
+            : "border-neutral-800 bg-black/80 hover:border-neutral-700"
         }`}
       >
         <AnimatePresence>
@@ -76,37 +75,37 @@ function EmptyWorkspaceDropzone({
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
-              className="absolute inset-0 bg-emerald-500/5 pointer-events-none"
+              className="absolute inset-0 bg-neutral-900/40 pointer-events-none"
             />
           )}
         </AnimatePresence>
 
-        <div className="p-4 rounded-2xl bg-black border border-neutral-800 font-mono text-emerald-400 mb-4 shrink-0 shadow-lg">
-          <span className="text-xl">⌘_AI_DIAGNOSTIC</span>
+        <div className="p-4 rounded-none bg-black border border-neutral-800 font-mono text-neutral-200 mb-4 shrink-0 shadow-lg">
+          <span className="text-sm font-bold">⌘_AI_DIAGNOSTIC_WORKSPACE</span>
         </div>
 
         <div className="space-y-2 max-w-sm font-mono">
-          <h3 className="text-sm font-bold text-slate-900 dark:text-white uppercase tracking-wider">
+          <h3 className="text-xs font-bold text-white uppercase tracking-wider">
             [TELEMETRY_DIAGNOSTIC_WORKSPACE]
           </h3>
-          <p className="text-xs text-slate-500 dark:text-neutral-400 leading-relaxed">
+          <p className="text-[11px] text-neutral-500 leading-relaxed">
             DRAG &amp; DROP ANY INCIDENT CARD FROM STREAM OR LOCAL LOG FILES (.LOG, .JSON) HERE FOR INSTANT AI ANALYSIS.
           </p>
         </div>
 
         {/* Quick Drop Target Badge */}
-        <div className="mt-6 flex items-center gap-2 px-3 py-1.5 rounded-full bg-slate-100 dark:bg-neutral-900 border border-slate-200 dark:border-neutral-800 text-[10px] font-mono text-slate-600 dark:text-neutral-400">
-          <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
+        <div className="mt-6 flex items-center gap-2 px-3 py-1 border border-neutral-800 bg-black text-[10px] font-mono text-neutral-400">
+          <span className="w-1.5 h-1.5 rounded-full bg-white animate-pulse" />
           <span>DND_WORKSPACE_ACTIVE</span>
         </div>
 
         {droppedFile && (
-          <div className="mt-6 p-4 rounded-2xl bg-black border border-neutral-800 text-left w-full max-w-md font-mono text-xs space-y-2">
-            <div className="flex items-center justify-between text-emerald-400 font-bold">
+          <div className="mt-6 p-4 rounded-none bg-black border border-neutral-800 text-left w-full max-w-md font-mono text-xs space-y-2">
+            <div className="flex items-center justify-between text-neutral-200 font-bold">
               <span className="truncate">LOG_PARSED: {droppedFile.name}</span>
-              <span className="text-[10px] border border-emerald-500/30 px-2 py-0.5 rounded bg-emerald-950/40">READY</span>
+              <span className="text-[10px] border border-neutral-700 px-2 py-0.5 rounded-none bg-neutral-900">READY</span>
             </div>
-            <pre className="p-2.5 rounded-xl bg-neutral-950 text-[10px] text-emerald-500/90 overflow-x-auto max-h-32 border border-neutral-900">
+            <pre className="p-2.5 rounded-none bg-neutral-950 text-[10px] text-emerald-400 overflow-x-auto max-h-32 border border-neutral-900">
               {droppedFile.content}
             </pre>
           </div>
@@ -114,30 +113,30 @@ function EmptyWorkspaceDropzone({
       </div>
 
       {/* Telemetry Stream Metrics Card */}
-      <div className="p-5 rounded-3xl bg-white/70 dark:bg-black/80 border border-slate-200 dark:border-neutral-800 backdrop-blur-3xl space-y-4 font-mono shrink-0 shadow-sm">
-        <div className="flex items-center justify-between border-b border-slate-200 dark:border-neutral-800 pb-3">
+      <div className="p-5 rounded-none bg-neutral-950/80 border border-neutral-800 backdrop-blur-3xl space-y-4 font-mono shrink-0 shadow-2xl">
+        <div className="flex items-center justify-between border-b border-neutral-900 pb-3">
           <div className="flex items-center gap-2">
-            <span className="text-xs font-bold text-slate-900 dark:text-white uppercase tracking-wider">
+            <span className="text-xs font-bold text-white uppercase tracking-wider">
               [SYSTEM_STREAM_METRICS]
             </span>
           </div>
-          <span className="text-[10px] px-2 py-0.5 rounded border border-emerald-500/30 bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 font-bold">
+          <span className="text-[10px] px-2 py-0.5 border border-neutral-700 bg-black text-neutral-300 font-bold">
             OPERATIONAL
           </span>
         </div>
 
         <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 text-xs">
-          <div className="p-3 rounded-2xl bg-slate-100/60 dark:bg-neutral-900/60 border border-slate-200/60 dark:border-neutral-800 space-y-1">
-            <span className="text-[9px] text-slate-500 dark:text-neutral-500 uppercase">SSE STREAM</span>
-            <p className="font-bold text-slate-900 dark:text-white">Active (100ms)</p>
+          <div className="p-3 rounded-none bg-black border border-neutral-900 space-y-1">
+            <span className="text-[9px] text-neutral-500 uppercase">SSE STREAM</span>
+            <p className="font-bold text-white">Active (100ms)</p>
           </div>
-          <div className="p-3 rounded-2xl bg-slate-100/60 dark:bg-neutral-900/60 border border-slate-200/60 dark:border-neutral-800 space-y-1">
-            <span className="text-[9px] text-slate-500 dark:text-neutral-500 uppercase">AVG MTTD</span>
-            <p className="font-bold text-slate-900 dark:text-white">&lt; 4.2s</p>
+          <div className="p-3 rounded-none bg-black border border-neutral-900 space-y-1">
+            <span className="text-[9px] text-neutral-500 uppercase">AVG MTTD</span>
+            <p className="font-bold text-white">&lt; 4.2s</p>
           </div>
-          <div className="p-3 rounded-2xl bg-slate-100/60 dark:bg-neutral-900/60 border border-slate-200/60 dark:border-neutral-800 space-y-1">
-            <span className="text-[9px] text-slate-500 dark:text-neutral-500 uppercase">EDGE NODES</span>
-            <p className="font-bold text-slate-900 dark:text-white">48 Online</p>
+          <div className="p-3 rounded-none bg-black border border-neutral-900 space-y-1">
+            <span className="text-[9px] text-neutral-500 uppercase">EDGE NODES</span>
+            <p className="font-bold text-white">48 Online</p>
           </div>
         </div>
       </div>
@@ -156,8 +155,8 @@ export function IncidentDetails({
 
   if (isLoading) {
     return (
-      <div className="flex flex-col items-center justify-center h-full p-8 text-slate-500 dark:text-neutral-400 gap-3 font-mono">
-        <span className="text-xs uppercase">[LOADING_TELEMETRY_DIAGNOSTICS...]</span>
+      <div className="flex flex-col items-center justify-center h-full p-8 text-neutral-500 gap-3 font-mono text-xs">
+        <span>[LOADING_TELEMETRY_DIAGNOSTICS...]</span>
       </div>
     );
   }
@@ -176,14 +175,14 @@ export function IncidentDetails({
   const getSeverityBadge = (severity: IncidentSeverity) => {
     switch (severity) {
       case "CRITICAL":
-        return "text-rose-600 dark:text-rose-400 bg-rose-50 dark:bg-rose-950/40 border-rose-200 dark:border-rose-900/60";
+        return "text-rose-400 border-rose-900/60 bg-rose-950/40 font-bold";
       case "HIGH":
-        return "text-amber-600 dark:text-amber-400 bg-amber-50 dark:bg-amber-950/40 border-amber-200 dark:border-amber-900/60";
+        return "text-amber-400 border-amber-900/60 bg-amber-950/40 font-bold";
       case "MEDIUM":
-        return "text-indigo-600 dark:text-indigo-400 bg-indigo-50 dark:bg-indigo-950/40 border-indigo-200 dark:border-indigo-900/60";
+        return "text-indigo-400 border-indigo-900/60 bg-indigo-950/40 font-bold";
       case "LOW":
       default:
-        return "text-emerald-600 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-950/40 border-emerald-200 dark:border-emerald-900/60";
+        return "text-neutral-400 border-neutral-800 bg-neutral-900 font-bold";
     }
   };
 
@@ -206,40 +205,43 @@ export function IncidentDetails({
 
   return (
     <motion.div
-      initial={{ opacity: 0, x: 20 }}
+      initial={{ opacity: 0, x: 12 }}
       animate={{ opacity: 1, x: 0 }}
-      exit={{ opacity: 0, x: 20 }}
-      transition={{ duration: 0.2, ease: "easeOut" }}
-      className="flex flex-col h-full bg-white/80 dark:bg-black/80 rounded-3xl p-6 sm:p-8 overflow-y-auto space-y-7 font-sans backdrop-blur-3xl border border-slate-200 dark:border-neutral-800 min-w-0 shadow-xl"
+      exit={{ opacity: 0, x: 12 }}
+      transition={{ duration: 0.15, ease: "easeOut" }}
+      className="flex flex-col h-full bg-black/80 rounded-none p-6 sm:p-8 overflow-y-auto space-y-7 font-mono text-xs backdrop-blur-3xl border border-neutral-800 min-w-0 shadow-2xl select-none"
     >
-      {/* Header with Organic Pulsating Status Dot & Monospaced Severity */}
-      <div className="flex items-start justify-between gap-4 border-b border-slate-200 dark:border-neutral-800 pb-6 font-mono">
+      {/* Header with Geometric Status Indicator & Severity */}
+      <div className="flex items-start justify-between gap-4 border-b border-neutral-900 pb-6">
         <div className="space-y-2.5">
           <div className="flex items-center gap-2.5 flex-wrap">
-            <div className="flex items-center gap-1.5 px-3 py-1 rounded-full bg-slate-100 dark:bg-neutral-900 border border-slate-200 dark:border-neutral-800">
-              <StatusDot variant={incident.status} size="sm" />
-              <span className="text-xs font-bold uppercase tracking-wider text-slate-800 dark:text-neutral-200">
+            <div className="flex items-center gap-1.5 px-2.5 py-0.5 border border-neutral-800 bg-black">
+              <span
+                className={`w-1.5 h-1.5 rounded-full ${
+                  incident.status === "RESOLVED"
+                    ? "bg-neutral-500"
+                    : "bg-white animate-pulse"
+                }`}
+              />
+              <span className="font-bold uppercase text-neutral-200">
                 [{incident.status}]
               </span>
             </div>
 
-            <span className="text-slate-300 dark:text-neutral-700">•</span>
+            <span className="text-neutral-700">•</span>
 
-            {/* Bold Uppercase Monospaced Severity Badge */}
-            <span
-              className={`px-2.5 py-1 rounded-md text-xs font-bold uppercase tracking-wider border ${severityStyle}`}
-            >
+            <span className={`px-2 py-0.5 border text-[10px] uppercase ${severityStyle}`}>
               {incident.severity}
             </span>
 
-            <span className="text-slate-300 dark:text-neutral-700">•</span>
+            <span className="text-neutral-700">•</span>
 
-            <span className="text-[11px] text-slate-500 dark:text-neutral-400">
+            <span className="text-[11px] text-neutral-500">
               {incident.id}
             </span>
           </div>
 
-          <h2 className="text-xl sm:text-2xl font-bold text-slate-900 dark:text-white tracking-tight leading-tight font-sans">
+          <h2 className="text-xl sm:text-2xl font-light text-white tracking-tight leading-tight font-mono uppercase">
             {incident.title}
           </h2>
         </div>
@@ -247,7 +249,7 @@ export function IncidentDetails({
         {onClose && (
           <button
             onClick={onClose}
-            className="px-2.5 py-1 border border-slate-300 dark:border-neutral-800 rounded-lg text-slate-500 dark:text-neutral-400 hover:text-slate-900 dark:hover:text-white font-mono text-xs uppercase cursor-pointer"
+            className="px-2.5 py-1 border border-neutral-800 bg-black text-neutral-400 hover:text-white font-mono text-[11px] uppercase cursor-pointer"
           >
             [CLOSE]
           </button>
@@ -255,24 +257,24 @@ export function IncidentDetails({
       </div>
 
       {mutationError && (
-        <div className="p-3.5 rounded-2xl bg-rose-50 dark:bg-rose-950/40 border border-rose-200 dark:border-rose-900/60 text-rose-800 dark:text-rose-300 font-mono text-xs">
+        <div className="p-3 border border-rose-900/60 bg-neutral-950 text-rose-300 font-mono text-xs">
           [ERR]: {mutationError}
         </div>
       )}
 
       {/* Description */}
       <div className="space-y-2">
-        <h3 className="text-[10px] font-mono font-semibold text-slate-400 dark:text-neutral-500 uppercase tracking-widest">
+        <h3 className="text-[10px] font-semibold text-neutral-500 uppercase tracking-widest">
           [INCIDENT_SUMMARY]
         </h3>
-        <p className="text-xs text-slate-700 dark:text-neutral-300 leading-relaxed font-sans">
+        <p className="text-xs text-neutral-300 leading-relaxed font-mono">
           {incident.description}
         </p>
       </div>
 
       {/* AI SRE DIAGNOSTICS CENTERPIECE */}
       <div className="space-y-2">
-        <h3 className="text-[10px] font-mono font-semibold text-slate-400 dark:text-neutral-500 uppercase tracking-widest">
+        <h3 className="text-[10px] font-semibold text-neutral-500 uppercase tracking-widest">
           [AI_SRE_ROOT_CAUSE_DIAGNOSTICS]
         </h3>
         <AiSreInsights incident={incident} />
@@ -280,25 +282,25 @@ export function IncidentDetails({
 
       {/* Status Update Lifecycle Pipeline */}
       <div className="space-y-3 font-mono">
-        <h3 className="text-[10px] font-semibold text-slate-400 dark:text-neutral-500 uppercase tracking-widest">
+        <h3 className="text-[10px] font-semibold text-neutral-500 uppercase tracking-widest">
           [INCIDENT_STATUS_LIFECYCLE]
         </h3>
 
-        <div className="grid grid-cols-2 sm:grid-cols-4 gap-2.5">
+        <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
           {statusList.map((item) => {
             const isActive = incident.status === item.status;
             return (
               <button
                 key={item.status}
                 onClick={() => handleStatusChange(item.status)}
-                className={`p-3 rounded-2xl border text-left transition-all cursor-pointer ${
+                className={`p-3 border text-left transition-all cursor-pointer rounded-none uppercase ${
                   isActive
-                    ? "bg-slate-900 dark:bg-white text-white dark:text-slate-900 border-slate-900 dark:border-white font-bold shadow-md"
-                    : "bg-slate-100/60 dark:bg-neutral-900/60 border-slate-200 dark:border-neutral-800 text-slate-600 dark:text-neutral-400 hover:border-slate-400 dark:hover:border-neutral-700"
+                    ? "bg-neutral-900 text-white border-neutral-400 font-bold shadow-sm"
+                    : "bg-black text-neutral-400 border-neutral-800 hover:border-neutral-700 hover:text-white"
                 }`}
               >
-                <div className="text-xs font-bold uppercase">{item.label}</div>
-                <div className="text-[10px] opacity-75 mt-0.5 line-clamp-1">{item.desc}</div>
+                <div className="text-[11px] font-bold">[{item.label}]</div>
+                <div className="text-[9px] text-neutral-500 mt-1 line-clamp-1">{item.desc}</div>
               </button>
             );
           })}
