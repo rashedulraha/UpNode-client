@@ -7,6 +7,9 @@ export interface Project {
   description?: string;
   url?: string;
   createdAt: string;
+  maintenanceMode: boolean;
+  maintenanceStart?: string | null;
+  maintenanceEnd?: string | null;
 }
 
 export interface CreateProjectInput {
@@ -14,6 +17,22 @@ export interface CreateProjectInput {
   slug?: string;
   description?: string;
   url?: string;
+}
+
+export interface MaintenanceWindowInput {
+  maintenanceMode?: boolean;
+  maintenanceStart?: string | null;
+  maintenanceEnd?: string | null;
+}
+
+export interface MaintenanceState {
+  id: string;
+  name: string;
+  maintenanceMode: boolean;
+  maintenanceStart: string | null;
+  maintenanceEnd: string | null;
+  isCurrentlyInMaintenance: boolean;
+  isScheduledWindowActive: boolean;
 }
 
 export const projectsService = {
@@ -44,4 +63,18 @@ export const projectsService = {
     const response = await api.post(`/projects/public/${slug}/subscribe`, { email });
     return response.data;
   },
+
+  async getMaintenanceState(projectId: string): Promise<MaintenanceState> {
+    const response = await api.get<MaintenanceState>(`/projects/${projectId}/maintenance`);
+    return response.data;
+  },
+
+  async updateMaintenanceWindow(
+    projectId: string,
+    payload: MaintenanceWindowInput
+  ): Promise<{ success: boolean; project: MaintenanceState; message: string }> {
+    const response = await api.patch(`/projects/${projectId}/maintenance`, payload);
+    return response.data;
+  },
 };
+
