@@ -33,19 +33,18 @@ export function IncidentCard({ incident, isSelected, onClick }: IncidentCardProp
 
   return (
     <motion.div
-      layoutId={`card-container-${incident.id}`}
       onClick={onClick}
       draggable={true}
       onDragStartCapture={(e: React.DragEvent<HTMLDivElement>) => {
         e.dataTransfer.setData("text/plain", incident.id);
         e.dataTransfer.setData("application/json", JSON.stringify(incident));
       }}
-      whileHover={{ scale: 1.015 }}
-      whileTap={{ scale: 0.965 }}
-      transition={{ duration: 0.2, ease: "easeOut" }}
-      className={`p-4 sm:p-5 rounded-2xl border-[0.5px] cursor-pointer space-y-3 glass-card-floating transition-all ${
+      whileHover={{ scale: 1.01 }}
+      whileTap={{ scale: 0.98 }}
+      transition={{ duration: 0.15 }}
+      className={`p-4 sm:p-5 rounded-2xl border-[0.5px] cursor-pointer space-y-3 glass-card-floating transition-all min-w-0 ${
         isSelected
-          ? "bg-card/75 border-primary/60 shadow-lg shadow-primary/5"
+          ? "bg-card/75 border-primary/60 shadow-lg shadow-primary/5 ring-1 ring-primary/30"
           : "bg-card/30 border-border/30 hover:border-border/60 hover:bg-card/50"
       }`}
     >
