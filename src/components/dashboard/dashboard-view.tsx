@@ -55,7 +55,7 @@ export function DashboardView() {
   }, [paginatedIncidents?.items, searchQuery]);
 
   return (
-    <div className="flex flex-col min-h-screen bg-background text-foreground font-sans">
+    <div className="h-screen max-h-screen w-screen overflow-hidden flex flex-col bg-background text-foreground font-sans">
       {/* Top Header */}
       <DashboardHeader
         streamStatus={streamStatus}
@@ -65,7 +65,7 @@ export function DashboardView() {
       />
 
       {/* Body: Sidebar + Main Content Split */}
-      <div className="flex flex-1 overflow-hidden">
+      <div className="flex flex-1 h-[calc(100vh-4rem)] overflow-hidden">
         {/* Projects Sidebar */}
         <ProjectsSidebar
           selectedProjectId={selectedProjectId}
@@ -76,8 +76,8 @@ export function DashboardView() {
         />
 
         {/* Main Content Area */}
-        <main className="flex-1 p-6 sm:p-8 lg:p-10 overflow-hidden">
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 h-[calc(100vh-8rem)]">
+        <main className="flex-1 p-4 sm:p-6 lg:p-8 overflow-hidden h-full flex flex-col">
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 h-full overflow-hidden">
             {/* Left Column: Incidents List */}
             <div className="lg:col-span-5 h-full overflow-hidden">
               <IncidentList
