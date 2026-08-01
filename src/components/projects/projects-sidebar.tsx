@@ -6,7 +6,7 @@ import { useProjects } from "@/hooks/use-projects";
 import { useAuth } from "@/hooks/use-auth";
 import { LogoutConfirmModal } from "@/components/auth/logout-confirm-modal";
 import { StatusDot } from "@/components/ui/status-dot";
-import { LogOut, Users, Activity } from "lucide-react";
+import { LogOut, Users, Activity, Bell } from "lucide-react";
 
 interface ProjectsSidebarProps {
   selectedProjectId: string | null;
@@ -67,6 +67,19 @@ export function ProjectsSidebar({
               </div>
               <span className="text-[9px] font-mono px-1.5 py-0.5 rounded bg-muted/60 text-muted-foreground uppercase">
                 RBAC
+              </span>
+            </Link>
+
+            <Link
+              href="/dashboard/settings/integrations"
+              className="w-full flex items-center justify-between px-3 py-2 rounded-xl text-xs font-medium text-muted-foreground hover:bg-muted/50 hover:text-foreground border border-transparent transition-all cursor-pointer"
+            >
+              <div className="flex items-center gap-2.5">
+                <Bell className="w-3.5 h-3.5" />
+                <span>Integrations</span>
+              </div>
+              <span className="text-[9px] font-mono px-1.5 py-0.5 rounded bg-primary/20 text-primary uppercase font-semibold">
+                ALERT
               </span>
             </Link>
           </div>
