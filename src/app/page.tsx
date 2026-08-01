@@ -14,7 +14,7 @@ import { ComparisonSection } from "@/components/landing/comparison-section";
 
 export default function Home() {
   return (
-    <div className="min-h-screen selection:bg-white/10 selection:text-white relative scroll-smooth" style={{ background: "#000" }}>
+    <div className="min-h-screen selection:bg-primary selection:text-primary-foreground relative scroll-smooth transition-colors" style={{ background: "var(--lp-bg)", color: "var(--lp-text-primary)" }}>
       <LandingNavbar />
 
       <main className="relative z-10 w-full">
