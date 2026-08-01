@@ -125,27 +125,29 @@ export function ProjectsSidebar({
 
       {/* Modal for creating a new project */}
       {isModalOpen && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm">
-          <div className="w-full max-w-md bg-white dark:bg-neutral-950 border border-slate-200 dark:border-neutral-800 rounded-2xl shadow-2xl overflow-hidden animate-in fade-in zoom-in duration-200">
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/60 dark:bg-black/80 backdrop-blur-md font-mono">
+          <div className="w-full max-w-md p-6 border border-slate-300 dark:border-neutral-800 bg-white dark:bg-black shadow-2xl space-y-5 rounded-none">
             {/* Modal Header */}
-            <div className="flex items-center justify-between px-6 py-4 border-b border-slate-100 dark:border-neutral-900 bg-slate-50/50 dark:bg-neutral-900/50">
-              <div className="flex items-center gap-2.5">
-                <div className="p-2 rounded-xl bg-slate-200/50 dark:bg-neutral-800 text-slate-900 dark:text-white border border-slate-300 dark:border-neutral-700">
-                  <Folder className="w-5 h-5" />
-                </div>
-                <h2 className="font-bold text-lg text-slate-900 dark:text-white">Create New Project</h2>
+            <div className="flex items-center justify-between border-b border-slate-200 dark:border-neutral-800 pb-3">
+              <div className="flex items-center gap-2">
+                <Folder className="w-4 h-4 text-slate-900 dark:text-white" />
+                <h3 className="text-sm font-bold text-slate-900 dark:text-white uppercase tracking-wider">
+                  [CREATE_NEW_PROJECT]
+                </h3>
               </div>
               <button
                 onClick={() => setIsModalOpen(false)}
-                className="p-1 rounded-lg text-slate-500 hover:text-slate-900 dark:text-neutral-400 dark:hover:text-white hover:bg-slate-200 dark:hover:bg-neutral-800 transition-colors cursor-pointer"
+                className="text-slate-500 dark:text-neutral-400 hover:text-slate-900 dark:hover:text-white transition-colors cursor-pointer text-xs font-mono"
               >
-                <X className="w-5 h-5" />
+                [X]
               </button>
             </div>
 
-            <form onSubmit={handleCreateProject} className="p-6 space-y-4">
-              <div className="space-y-1.5">
-                <label className="block text-xs font-medium text-slate-500 dark:text-neutral-400">Project Name</label>
+            <form onSubmit={handleCreateProject} className="space-y-4 text-xs font-mono">
+              <div className="space-y-1">
+                <label className="block text-[10px] text-slate-500 dark:text-neutral-400 uppercase font-mono font-bold">
+                  [PROJECT_NAME]
+                </label>
                 <input
                   type="text"
                   required
@@ -162,53 +164,57 @@ export function ProjectsSidebar({
                       );
                     }
                   }}
-                  className="w-full px-3.5 py-2 bg-white dark:bg-neutral-950 border border-slate-300 dark:border-neutral-800 rounded-xl text-sm placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-slate-900 dark:focus:ring-white transition-all text-slate-900 dark:text-white"
+                  className="w-full px-3 py-2 bg-slate-50 dark:bg-neutral-950 border border-slate-300 dark:border-neutral-800 text-slate-900 dark:text-white focus:outline-none focus:border-slate-900 dark:focus:border-white font-mono text-xs rounded-none"
                 />
               </div>
 
-              <div className="space-y-1.5">
-                <label className="block text-xs font-medium text-slate-500 dark:text-neutral-400">Project Slug</label>
+              <div className="space-y-1">
+                <label className="block text-[10px] text-slate-500 dark:text-neutral-400 uppercase font-mono font-bold">
+                  [PROJECT_SLUG]
+                </label>
                 <input
                   type="text"
                   required
                   placeholder="api-gateway"
                   value={projectSlug}
                   onChange={(e) => setProjectSlug(e.target.value)}
-                  className="w-full px-3.5 py-2 bg-white dark:bg-neutral-950 border border-slate-300 dark:border-neutral-800 rounded-xl text-sm placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-slate-900 dark:focus:ring-white transition-all text-slate-900 dark:text-white"
+                  className="w-full px-3 py-2 bg-slate-50 dark:bg-neutral-950 border border-slate-300 dark:border-neutral-800 text-slate-900 dark:text-white focus:outline-none focus:border-slate-900 dark:focus:border-white font-mono text-xs rounded-none"
                 />
               </div>
 
-              <div className="space-y-1.5">
-                <label className="block text-xs font-medium text-slate-500 dark:text-neutral-400">Description</label>
+              <div className="space-y-1">
+                <label className="block text-[10px] text-slate-500 dark:text-neutral-400 uppercase font-mono font-bold">
+                  [DESCRIPTION]
+                </label>
                 <textarea
                   placeholder="Service monitoring details..."
                   value={projectDescription}
                   onChange={(e) => setProjectDescription(e.target.value)}
-                  className="w-full px-3.5 py-2 bg-white dark:bg-neutral-950 border border-slate-300 dark:border-neutral-800 rounded-xl text-sm placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-slate-900 dark:focus:ring-white transition-all text-slate-900 dark:text-white h-20"
+                  className="w-full px-3 py-2 bg-slate-50 dark:bg-neutral-950 border border-slate-300 dark:border-neutral-800 text-slate-900 dark:text-white focus:outline-none focus:border-slate-900 dark:focus:border-white font-mono text-xs rounded-none h-20"
                 />
               </div>
 
               {/* Actions */}
-              <div className="flex items-center justify-end gap-3 pt-4 border-t border-slate-100 dark:border-neutral-900">
+              <div className="flex items-center justify-end gap-3 pt-3 border-t border-slate-200 dark:border-neutral-800">
                 <button
                   type="button"
                   onClick={() => setIsModalOpen(false)}
-                  className="px-4 py-2 bg-slate-100 dark:bg-neutral-900 hover:bg-slate-200 dark:hover:bg-neutral-800 text-slate-700 dark:text-neutral-400 hover:text-slate-900 dark:hover:text-white rounded-xl text-xs font-semibold transition-colors cursor-pointer"
+                  className="px-4 py-2 border border-slate-300 dark:border-neutral-800 bg-slate-100 dark:bg-black text-slate-700 dark:text-neutral-400 hover:text-slate-900 dark:hover:text-white uppercase font-mono text-xs rounded-none cursor-pointer"
                 >
-                  Cancel
+                  [CANCEL]
                 </button>
                 <button
                   type="submit"
                   disabled={createProjectMutation.isPending}
-                  className="px-4 py-2 bg-slate-900 dark:bg-white hover:bg-slate-800 dark:hover:bg-neutral-200 text-white dark:text-black rounded-xl text-xs font-semibold transition-colors flex items-center gap-2 cursor-pointer shadow-lg shadow-slate-900/20 dark:shadow-white/10"
+                  className="px-4 py-2 border border-slate-900 dark:border-white bg-slate-900 dark:bg-white text-white dark:text-black font-bold uppercase font-mono text-xs hover:opacity-90 rounded-none disabled:opacity-50 cursor-pointer flex items-center gap-2"
                 >
                   {createProjectMutation.isPending ? (
                     <>
-                      <Loader2 className="w-3.5 h-3.5 animate-spin" /> Creating...
+                      <Loader2 className="w-3.5 h-3.5 animate-spin" /> [CREATING...]
                     </>
                   ) : (
                     <>
-                      <Plus className="w-3.5 h-3.5" /> Create Project
+                      <Plus className="w-3.5 h-3.5" /> [CREATE_PROJECT]
                     </>
                   )}
                 </button>

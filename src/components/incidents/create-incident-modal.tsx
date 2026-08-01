@@ -59,73 +59,79 @@ export function CreateIncidentModal({ isOpen, onClose }: CreateIncidentModalProp
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm">
-      <div className="w-full max-w-lg bg-card border border-border rounded-2xl shadow-2xl overflow-hidden animate-in fade-in zoom-in duration-200">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/60 dark:bg-black/80 backdrop-blur-md font-mono">
+      <div className="w-full max-w-lg p-6 border border-slate-300 dark:border-neutral-800 bg-white dark:bg-black shadow-2xl space-y-5 rounded-none">
         {/* Modal Header */}
-        <div className="flex items-center justify-between px-6 py-4 border-b border-border bg-background/60">
-          <div className="flex items-center gap-2.5">
-            <div className="p-2 rounded-xl bg-primary/15 text-primary border border-primary/30">
-              <ShieldAlert className="w-5 h-5" />
-            </div>
-            <h2 className="font-bold text-lg text-foreground">Report New Incident</h2>
+        <div className="flex items-center justify-between border-b border-slate-200 dark:border-neutral-800 pb-3">
+          <div className="flex items-center gap-2">
+            <ShieldAlert className="w-4 h-4 text-slate-900 dark:text-white" />
+            <h3 className="text-sm font-bold text-slate-900 dark:text-white uppercase tracking-wider">
+              [REPORT_NEW_INCIDENT]
+            </h3>
           </div>
           <button
             onClick={onClose}
-            className="p-1 rounded-lg text-muted-foreground hover:text-foreground hover:bg-accent transition-colors cursor-pointer"
+            className="text-slate-500 dark:text-neutral-400 hover:text-slate-900 dark:hover:text-white transition-colors cursor-pointer text-xs font-mono"
           >
-            <X className="w-5 h-5" />
+            [X]
           </button>
         </div>
 
         {/* Form */}
-        <form onSubmit={handleSubmit(onSubmit)} className="p-6 space-y-4">
+        <form onSubmit={handleSubmit(onSubmit)} className="space-y-4 text-xs font-mono">
           {errorMessage && (
-            <div className="p-3 rounded-xl bg-destructive/10 border border-destructive/30 text-destructive text-xs flex items-center gap-2">
+            <div className="p-3 rounded-none bg-rose-50 dark:bg-rose-950/40 border border-rose-200 dark:border-rose-900/60 text-rose-600 dark:text-rose-400 text-xs font-mono flex items-center gap-2">
               <AlertCircle className="w-4 h-4 shrink-0" />
               <span>{errorMessage}</span>
             </div>
           )}
 
           {/* Project Selection */}
-          <div className="space-y-1.5">
-            <label className="block text-xs font-medium text-muted-foreground">Target Project</label>
+          <div className="space-y-1">
+            <label className="block text-[10px] text-slate-500 dark:text-neutral-400 uppercase font-mono font-bold">
+              [TARGET_PROJECT]
+            </label>
             <select
               {...register("projectId")}
-              className={`w-full px-3.5 py-2 bg-background border rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-primary transition-all text-foreground ${
-                errors.projectId ? "border-destructive" : "border-border"
+              className={`w-full px-3 py-2 bg-slate-50 dark:bg-neutral-950 border border-slate-300 dark:border-neutral-800 text-slate-900 dark:text-white focus:outline-none focus:border-slate-900 dark:focus:border-white font-mono text-xs rounded-none ${
+                errors.projectId ? "border-rose-500" : ""
               }`}
             >
-              <option value="">-- Select Project --</option>
+              <option value="">-- SELECT PROJECT --</option>
               {projects?.map((p) => (
                 <option key={p.id} value={p.id}>
                   {p.name}
                 </option>
               ))}
             </select>
-            {errors.projectId && <p className="text-xs text-destructive">{errors.projectId.message}</p>}
+            {errors.projectId && <p className="text-[10px] text-rose-500 font-mono">{errors.projectId.message}</p>}
           </div>
 
           {/* Title */}
-          <div className="space-y-1.5">
-            <label className="block text-xs font-medium text-muted-foreground">Incident Title</label>
+          <div className="space-y-1">
+            <label className="block text-[10px] text-slate-500 dark:text-neutral-400 uppercase font-mono font-bold">
+              [INCIDENT_TITLE]
+            </label>
             <input
               {...register("title")}
               type="text"
               placeholder="e.g. Database Connection Timeouts"
-              className={`w-full px-3.5 py-2 bg-background border rounded-xl text-sm placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary transition-all text-foreground ${
-                errors.title ? "border-destructive" : "border-border"
+              className={`w-full px-3 py-2 bg-slate-50 dark:bg-neutral-950 border border-slate-300 dark:border-neutral-800 text-slate-900 dark:text-white focus:outline-none focus:border-slate-900 dark:focus:border-white font-mono text-xs rounded-none ${
+                errors.title ? "border-rose-500" : ""
               }`}
             />
-            {errors.title && <p className="text-xs text-destructive">{errors.title.message}</p>}
+            {errors.title && <p className="text-[10px] text-rose-500 font-mono">{errors.title.message}</p>}
           </div>
 
           {/* Severity & Initial Status */}
           <div className="grid grid-cols-2 gap-3">
-            <div className="space-y-1.5">
-              <label className="block text-xs font-medium text-muted-foreground">Severity</label>
+            <div className="space-y-1">
+              <label className="block text-[10px] text-slate-500 dark:text-neutral-400 uppercase font-mono font-bold">
+                [SEVERITY]
+              </label>
               <select
                 {...register("severity")}
-                className="w-full px-3.5 py-2 bg-background border border-border rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-primary transition-all text-foreground"
+                className="w-full px-3 py-2 bg-slate-50 dark:bg-neutral-950 border border-slate-300 dark:border-neutral-800 text-slate-900 dark:text-white focus:outline-none focus:border-slate-900 dark:focus:border-white font-mono text-xs rounded-none"
               >
                 <option value="LOW">LOW</option>
                 <option value="MEDIUM">MEDIUM</option>
@@ -134,11 +140,13 @@ export function CreateIncidentModal({ isOpen, onClose }: CreateIncidentModalProp
               </select>
             </div>
 
-            <div className="space-y-1.5">
-              <label className="block text-xs font-medium text-muted-foreground">Initial Status</label>
+            <div className="space-y-1">
+              <label className="block text-[10px] text-slate-500 dark:text-neutral-400 uppercase font-mono font-bold">
+                [INITIAL_STATUS]
+              </label>
               <select
                 {...register("status")}
-                className="w-full px-3.5 py-2 bg-background border border-border rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-primary transition-all text-foreground"
+                className="w-full px-3 py-2 bg-slate-50 dark:bg-neutral-950 border border-slate-300 dark:border-neutral-800 text-slate-900 dark:text-white focus:outline-none focus:border-slate-900 dark:focus:border-white font-mono text-xs rounded-none"
               >
                 <option value="INVESTIGATING">INVESTIGATING</option>
                 <option value="IDENTIFIED">IDENTIFIED</option>
@@ -149,40 +157,42 @@ export function CreateIncidentModal({ isOpen, onClose }: CreateIncidentModalProp
           </div>
 
           {/* Description */}
-          <div className="space-y-1.5">
-            <label className="block text-xs font-medium text-muted-foreground">Description / Diagnostic Details</label>
+          <div className="space-y-1">
+            <label className="block text-[10px] text-slate-500 dark:text-neutral-400 uppercase font-mono font-bold">
+              [DESCRIPTION_DIAGNOSTIC_DETAILS]
+            </label>
             <textarea
               {...register("description")}
               rows={3}
               placeholder="Describe the symptoms, impacted services, and error trace..."
-              className={`w-full px-3.5 py-2 bg-background border rounded-xl text-sm placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary transition-all text-foreground ${
-                errors.description ? "border-destructive" : "border-border"
+              className={`w-full px-3 py-2 bg-slate-50 dark:bg-neutral-950 border border-slate-300 dark:border-neutral-800 text-slate-900 dark:text-white focus:outline-none focus:border-slate-900 dark:focus:border-white font-mono text-xs rounded-none h-20 ${
+                errors.description ? "border-rose-500" : ""
               }`}
             />
-            {errors.description && <p className="text-xs text-destructive">{errors.description.message}</p>}
+            {errors.description && <p className="text-[10px] text-rose-500 font-mono">{errors.description.message}</p>}
           </div>
 
           {/* Actions */}
-          <div className="flex items-center justify-end gap-3 pt-4 border-t border-border">
+          <div className="flex items-center justify-end gap-3 pt-3 border-t border-slate-200 dark:border-neutral-800">
             <button
               type="button"
               onClick={onClose}
-              className="px-4 py-2 bg-muted hover:bg-accent text-muted-foreground hover:text-foreground rounded-xl text-xs font-semibold transition-colors cursor-pointer"
+              className="px-4 py-2 border border-slate-300 dark:border-neutral-800 bg-slate-100 dark:bg-black text-slate-700 dark:text-neutral-400 hover:text-slate-900 dark:hover:text-white uppercase font-mono text-xs rounded-none cursor-pointer"
             >
-              Cancel
+              [CANCEL]
             </button>
             <button
               type="submit"
               disabled={isSubmitting || createMutation.isPending}
-              className="px-4 py-2 bg-primary hover:bg-primary/90 text-primary-foreground rounded-xl text-xs font-semibold transition-colors flex items-center gap-2 cursor-pointer shadow-lg shadow-primary/20"
+              className="px-4 py-2 border border-slate-900 dark:border-white bg-slate-900 dark:bg-white text-white dark:text-black font-bold uppercase font-mono text-xs hover:opacity-90 rounded-none disabled:opacity-50 cursor-pointer flex items-center gap-2"
             >
               {isSubmitting || createMutation.isPending ? (
                 <>
-                  <Loader2 className="w-3.5 h-3.5 animate-spin" /> Creating...
+                  <Loader2 className="w-3.5 h-3.5 animate-spin" /> [SUBMITTING...]
                 </>
               ) : (
                 <>
-                  <Plus className="w-3.5 h-3.5" /> Submit Incident
+                  <Plus className="w-3.5 h-3.5" /> [SUBMIT_INCIDENT]
                 </>
               )}
             </button>
