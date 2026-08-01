@@ -63,7 +63,10 @@ export function DashboardView() {
   }, [paginatedIncidents?.items, searchQuery]);
 
   return (
-    <div className="h-screen max-h-screen w-full max-w-full overflow-x-hidden overflow-y-hidden flex flex-col bg-background text-foreground font-sans">
+    <div className="h-screen max-h-screen w-full max-w-full overflow-x-hidden overflow-y-hidden flex flex-col bg-slate-50 dark:bg-black text-slate-900 dark:text-neutral-100 font-sans relative selection:bg-slate-800">
+      {/* Background Noise Layer */}
+      <div className="fixed inset-0 pointer-events-none opacity-[0.035] z-0 bg-[radial-gradient(#000_1px,transparent_1px)] dark:bg-[radial-gradient(#fff_1px,transparent_1px)] [background-size:16px_16px]" />
+
       {/* Top Header */}
       <DashboardHeader
         streamStatus={streamStatus}
