@@ -16,6 +16,8 @@ import {
   Layers,
   Sparkles,
 } from "lucide-react";
+import { MaintenanceSettings } from "@/components/settings/maintenance-settings";
+
 
 export function IntegrationsSettings() {
   const [loading, setLoading] = useState(true);
@@ -258,6 +260,14 @@ export function IntegrationsSettings() {
                       className="w-full px-3 py-2 bg-background/60 border border-border/30 rounded-xl text-xs font-mono text-foreground placeholder:text-muted-foreground/40 focus:outline-none focus:ring-1 focus:ring-primary"
                     />
                   </div>
+                </div>
+
+                {/* Maintenance Window — per project */}
+                <div className="pt-3 mt-1" style={{ borderTop: "0.5px solid var(--border, rgba(255,255,255,0.08))" }}>
+                  <MaintenanceSettings
+                    projectId={proj.id}
+                    projectName={proj.name}
+                  />
                 </div>
               </div>
             ))}
