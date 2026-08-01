@@ -120,12 +120,16 @@ export function DashboardHeader({
         </button>
 
         <div className="flex items-center gap-2 pl-2 sm:pl-3 border-l border-slate-200 dark:border-neutral-800">
-          <div className="flex items-center gap-2 px-2.5 py-1 rounded-none bg-slate-100 dark:bg-black border border-slate-200 dark:border-neutral-800 text-xs font-mono text-slate-800 dark:text-neutral-200">
+          <Link
+            href="/dashboard/settings/profile"
+            className="flex items-center gap-2 px-2.5 py-1 rounded-none bg-slate-100 dark:bg-black border border-slate-200 dark:border-neutral-800 hover:border-slate-400 dark:hover:border-neutral-600 text-xs font-mono text-slate-800 dark:text-neutral-200 transition-colors cursor-pointer"
+            title="Profile & Security Settings"
+          >
             <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 dark:bg-white animate-pulse" />
             <span className="hidden xl:inline max-w-[120px] truncate text-[11px] font-bold">
               {user?.name || user?.email}
             </span>
-          </div>
+          </Link>
         </div>
       </div>
     </header>
