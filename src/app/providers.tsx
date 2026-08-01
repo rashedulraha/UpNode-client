@@ -5,6 +5,7 @@ import { QueryClientProvider } from "@tanstack/react-query";
 import { ThemeProvider as NextThemesProvider } from "next-themes";
 import { getQueryClient } from "@/lib/query-client";
 import { AuthProvider } from "@/context/auth-context";
+import { Toaster } from "@/components/ui/toast";
 
 export function Providers({ children }: { children: React.ReactNode }) {
   // Obtain QueryClient instance (safe for Next.js App Router SSR)
@@ -18,7 +19,10 @@ export function Providers({ children }: { children: React.ReactNode }) {
         enableSystem={false}
         disableTransitionOnChange
       >
-        <AuthProvider>{children}</AuthProvider>
+        <AuthProvider>
+          {children}
+          <Toaster />
+        </AuthProvider>
       </NextThemesProvider>
     </QueryClientProvider>
   );
