@@ -28,6 +28,9 @@ import {
 } from "lucide-react";
 import { ThemeToggle } from "@/components/ui/theme-toggle";
 import { useAuth } from "@/hooks/use-auth";
+import { authClient } from "@/lib/auth-client";
+import { LogoutConfirmModal } from "@/components/auth/logout-confirm-modal";
+import { toast } from "@/components/ui/toast";
 import {
   profileService,
   ActiveSession,
@@ -113,7 +116,7 @@ function Toast({ msg, type }: { msg: string; type: "success" | "error" }) {
       initial={{ opacity: 0, y: -6 }}
       animate={{ opacity: 1, y: 0 }}
       exit={{ opacity: 0, y: -6 }}
-      className={`flex items-center gap-2.5 px-4 py-2.5 rounded-xl text-xs font-mono border ${
+      className={`flex items-center gap-2.5 px-4 py-2.5 rounded-none text-xs font-mono border ${
         type === "success"
           ? "bg-emerald-500/10 border-emerald-500/30 text-emerald-600 dark:text-emerald-400"
           : "bg-rose-500/10 border-rose-500/30 text-rose-600 dark:text-rose-400"
@@ -152,7 +155,7 @@ function Section({
       initial={{ opacity: 0, y: 12 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.25 }}
-      className="p-6 rounded-2xl bg-white/70 dark:bg-black/60 border border-slate-200 dark:border-neutral-800 backdrop-blur-3xl space-y-6 shadow-sm font-mono relative overflow-hidden"
+      className="p-6 rounded-none bg-white/70 dark:bg-black/60 border border-slate-200 dark:border-neutral-800 backdrop-blur-3xl space-y-6 shadow-sm font-mono relative overflow-hidden"
     >
       {/* Top subtle highlight line */}
       <div className="absolute top-0 inset-x-0 h-[1px] bg-gradient-to-r from-transparent via-slate-300 dark:via-neutral-700 to-transparent" />
@@ -212,7 +215,7 @@ function Field({
           value={value}
           onChange={(e) => onChange(e.target.value)}
           placeholder={placeholder}
-          className="w-full px-3.5 py-2.5 bg-white dark:bg-black border border-slate-200 dark:border-neutral-800 rounded-xl text-xs text-slate-900 dark:text-white placeholder:text-slate-400 dark:placeholder:text-neutral-600 focus:border-slate-500 dark:focus:border-neutral-500 focus:outline-none transition-all font-mono"
+          className="w-full px-3.5 py-2.5 bg-white dark:bg-black border border-slate-200 dark:border-neutral-800 rounded-none text-xs text-slate-900 dark:text-white placeholder:text-slate-400 dark:placeholder:text-neutral-600 focus:border-slate-500 dark:focus:border-neutral-500 focus:outline-none transition-all font-mono"
         />
         {suffix && (
           <div className="absolute right-3 top-1/2 -translate-y-1/2">
@@ -323,8 +326,8 @@ function ProfileSection({ onSuccess }: { onSuccess: (msg: string) => void }) {
     >
       <form onSubmit={handleSubmit} className="space-y-6">
         {/* User Card Header */}
-        <div className="flex items-center gap-4 p-4 bg-slate-50 dark:bg-black border border-slate-200 dark:border-neutral-800 rounded-xl">
-          <div className="w-14 h-14 rounded-xl border border-slate-300 dark:border-neutral-700 bg-slate-200 dark:bg-neutral-900 flex items-center justify-center text-lg font-bold font-mono text-slate-800 dark:text-neutral-200 shrink-0 overflow-hidden">
+        <div className="flex items-center gap-4 p-4 bg-slate-50 dark:bg-black border border-slate-200 dark:border-neutral-800 rounded-none">
+          <div className="w-14 h-14 rounded-none border border-slate-300 dark:border-neutral-700 bg-slate-200 dark:bg-neutral-900 flex items-center justify-center text-lg font-bold font-mono text-slate-800 dark:text-neutral-200 shrink-0 overflow-hidden">
             {image ? (
               // eslint-disable-next-line @next/next/no-img-element
               <img
@@ -393,6 +396,30 @@ function PasswordSection({ onSuccess }: { onSuccess: (msg: string) => void }) {
   const [showNext, setShowNext] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+
+  const { user } = useAuth();
+  const [resetLoading, setResetLoading] = useState(false);
+
+  const handleSendResetEmail = async () => {
+    if (!user?.email) return;
+    setResetLoading(true);
+    setError(null);
+    try {
+      const result = await authClient.requestPasswordReset({
+        email: user.email,
+        redirectTo: `${window.location.origin}/reset-password`,
+      });
+      if (result.error) {
+        setError(result.error.message || "Failed to send reset password email.");
+      } else {
+        onSuccess("RESET PASSWORD EMAIL SENT");
+      }
+    } catch (err: any) {
+      setError(err.message || "Failed to send reset password email.");
+    } finally {
+      setResetLoading(false);
+    }
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -511,7 +538,15 @@ function PasswordSection({ onSuccess }: { onSuccess: (msg: string) => void }) {
           {error && <Toast msg={error} type="error" />}
         </AnimatePresence>
 
-        <div className="flex justify-end">
+        <div className="flex justify-between items-center pt-2 font-mono">
+          <button
+            type="button"
+            onClick={handleSendResetEmail}
+            disabled={resetLoading || !user?.email}
+            className="text-[11px] text-slate-500 hover:text-slate-900 dark:text-neutral-400 dark:hover:text-white hover:underline transition-all cursor-pointer disabled:opacity-50 uppercase font-bold"
+          >
+            {resetLoading ? "[SENDING...]" : "[FORGOT_OR_RESET_PASSWORD_BY_EMAIL]"}
+          </button>
           <SubmitButton loading={loading} label="[UPDATE_PASSWORD]" />
         </div>
       </form>
@@ -601,7 +636,7 @@ function SessionsSection({ onSuccess }: { onSuccess: (msg: string) => void }) {
                   initial={{ opacity: 0 }}
                   animate={{ opacity: 1 }}
                   exit={{ opacity: 0, height: 0 }}
-                  className={`flex flex-col sm:flex-row sm:items-center justify-between gap-3 p-4 rounded-xl border transition-all ${
+                  className={`flex flex-col sm:flex-row sm:items-center justify-between gap-3 p-4 rounded-none border transition-all ${
                     isCurrent
                       ? "bg-slate-100/80 dark:bg-neutral-900/80 border-slate-300 dark:border-neutral-700 shadow-sm"
                       : "bg-slate-50 dark:bg-black border-slate-200 dark:border-neutral-800 hover:border-slate-300 dark:hover:border-neutral-700"
@@ -609,7 +644,7 @@ function SessionsSection({ onSuccess }: { onSuccess: (msg: string) => void }) {
                 >
                   <div className="flex items-center gap-3 min-w-0">
                     <div
-                      className={`w-9 h-9 rounded-lg border flex items-center justify-center shrink-0 ${
+                      className={`w-9 h-9 rounded-none border flex items-center justify-center shrink-0 ${
                         isCurrent
                           ? "bg-slate-900 text-white dark:bg-white dark:text-slate-900 border-slate-900 dark:border-white"
                           : "bg-slate-100 dark:bg-neutral-900 border-slate-200 dark:border-neutral-800 text-slate-600 dark:text-neutral-400"
@@ -747,10 +782,10 @@ function NotificationsSection({
           {notifItems.map((item) => (
             <div
               key={item.key}
-              className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 p-4 rounded-xl bg-slate-50 dark:bg-black border border-slate-200 dark:border-neutral-800"
+              className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 p-4 rounded-none bg-slate-50 dark:bg-black border border-slate-200 dark:border-neutral-800"
             >
               <div className="flex items-start gap-3 min-w-0">
-                <div className="w-8 h-8 rounded-lg border border-slate-200 dark:border-neutral-800 bg-slate-100 dark:bg-neutral-900 text-slate-800 dark:text-neutral-200 flex items-center justify-center shrink-0 mt-0.5">
+                <div className="w-8 h-8 rounded-none border border-slate-200 dark:border-neutral-800 bg-slate-100 dark:bg-neutral-900 text-slate-800 dark:text-neutral-200 flex items-center justify-center shrink-0 mt-0.5">
                   {item.icon}
                 </div>
                 <div className="space-y-0.5 min-w-0">
@@ -788,17 +823,24 @@ export default function ProfilePage() {
   const [activeSection, setActiveSection] = useState<
     "profile" | "password" | "sessions" | "notifications"
   >("profile");
-  const [globalMsg, setGlobalMsg] = useState<{
-    text: string;
-    type: "success" | "error";
-  } | null>(null);
-  const toastTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const { signOut } = useAuth();
+  const [isLogoutModalOpen, setIsLogoutModalOpen] = useState(false);
+  const [isSigningOut, setIsSigningOut] = useState(false);
+
+  const handleConfirmLogout = async () => {
+    setIsSigningOut(true);
+    await signOut();
+    setIsSigningOut(false);
+    setIsLogoutModalOpen(false);
+  };
 
   const showToast = useCallback(
     (text: string, type: "success" | "error" = "success") => {
-      if (toastTimer.current) clearTimeout(toastTimer.current);
-      setGlobalMsg({ text, type });
-      toastTimer.current = setTimeout(() => setGlobalMsg(null), 4000);
+      toast.add({
+        title: type === "success" ? "SUCCESS" : "ERROR",
+        description: text,
+        type: type,
+      });
     },
     [],
   );
@@ -853,12 +895,7 @@ export default function ProfilePage() {
         </div>
       </header>
 
-      {/* Toast alert banner */}
-      <div className="sticky top-[53px] z-10 px-6 pt-3">
-        <AnimatePresence>
-          {globalMsg && <Toast msg={globalMsg.text} type={globalMsg.type} />}
-        </AnimatePresence>
-      </div>
+
 
       {/* Main Content Area */}
       <main className="flex-1 max-w-6xl w-full mx-auto p-6 sm:p-8 space-y-7 relative z-10">
@@ -907,6 +944,14 @@ export default function ProfilePage() {
                 </button>
               );
             })}
+
+            <button
+              onClick={() => setIsLogoutModalOpen(true)}
+              className="flex items-center gap-1.5 px-3 py-1.5 text-xs whitespace-nowrap border border-rose-500/20 bg-rose-500/5 text-rose-600 dark:text-rose-400 hover:bg-rose-500/10 hover:border-rose-500/40 uppercase font-bold"
+            >
+              <LogOut className="w-3 h-3" />
+              <span>[05_SIGN_OUT]</span>
+            </button>
           </div>
         </div>
 
@@ -934,6 +979,16 @@ export default function ProfilePage() {
                   </button>
                 );
               })}
+
+              <div className="pt-2 border-t border-slate-200 dark:border-neutral-800">
+                <button
+                  onClick={() => setIsLogoutModalOpen(true)}
+                  className="w-full flex items-center gap-2.5 px-3 py-2 text-xs transition-all cursor-pointer border border-rose-500/20 bg-rose-500/5 text-rose-600 dark:text-rose-400 hover:bg-rose-500/10 hover:border-rose-500/40 uppercase font-bold"
+                >
+                  <LogOut className="w-3.5 h-3.5" />
+                  <span>[05_SIGN_OUT]</span>
+                </button>
+              </div>
             </div>
           </aside>
 
@@ -988,6 +1043,13 @@ export default function ProfilePage() {
           </div>
         </div>
       </main>
+
+      <LogoutConfirmModal
+        isOpen={isLogoutModalOpen}
+        onClose={() => setIsLogoutModalOpen(false)}
+        onConfirm={handleConfirmLogout}
+        isLoading={isSigningOut}
+      />
     </div>
   );
 }
