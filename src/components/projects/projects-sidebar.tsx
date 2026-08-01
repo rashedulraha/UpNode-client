@@ -1,11 +1,12 @@
 "use client";
 
 import React, { useState } from "react";
+import Link from "next/link";
 import { useProjects } from "@/hooks/use-projects";
 import { useAuth } from "@/hooks/use-auth";
 import { LogoutConfirmModal } from "@/components/auth/logout-confirm-modal";
 import { StatusDot } from "@/components/ui/status-dot";
-import { LogOut } from "lucide-react";
+import { LogOut, Users, Activity } from "lucide-react";
 
 interface ProjectsSidebarProps {
   selectedProjectId: string | null;
@@ -36,24 +37,39 @@ export function ProjectsSidebar({
           <h2 className="text-[10px] font-mono font-semibold text-muted-foreground uppercase tracking-widest px-2 mb-3">
             Navigation
           </h2>
-          <button
-            onClick={() => onSelectProject(null)}
-            className={`w-full flex items-center justify-between px-3 py-2 rounded-xl text-xs font-medium transition-all cursor-pointer ${
-              selectedProjectId === null
-                ? "bg-primary/10 text-primary border border-primary/20 font-semibold"
-                : "text-muted-foreground hover:bg-muted/50 hover:text-foreground border border-transparent"
-            }`}
-          >
-            <div className="flex items-center gap-2.5">
-              <span className="w-1.5 h-1.5 rounded-full bg-primary" />
-              <span>All Projects</span>
-            </div>
-            {selectedProjectId === null && (
-              <span className="text-[10px] font-mono px-1.5 py-0.5 rounded bg-primary/20 text-primary">
-                ALL
+          <div className="space-y-1.5">
+            <button
+              onClick={() => onSelectProject(null)}
+              className={`w-full flex items-center justify-between px-3 py-2 rounded-xl text-xs font-medium transition-all cursor-pointer ${
+                selectedProjectId === null
+                  ? "bg-primary/10 text-primary border border-primary/20 font-semibold"
+                  : "text-muted-foreground hover:bg-muted/50 hover:text-foreground border border-transparent"
+              }`}
+            >
+              <div className="flex items-center gap-2.5">
+                <Activity className="w-3.5 h-3.5" />
+                <span>All Telemetry</span>
+              </div>
+              {selectedProjectId === null && (
+                <span className="text-[10px] font-mono px-1.5 py-0.5 rounded bg-primary/20 text-primary">
+                  ALL
+                </span>
+              )}
+            </button>
+
+            <Link
+              href="/dashboard/settings/team"
+              className="w-full flex items-center justify-between px-3 py-2 rounded-xl text-xs font-medium text-muted-foreground hover:bg-muted/50 hover:text-foreground border border-transparent transition-all cursor-pointer"
+            >
+              <div className="flex items-center gap-2.5">
+                <Users className="w-3.5 h-3.5" />
+                <span>Team &amp; Roles</span>
+              </div>
+              <span className="text-[9px] font-mono px-1.5 py-0.5 rounded bg-muted/60 text-muted-foreground uppercase">
+                RBAC
               </span>
-            )}
-          </button>
+            </Link>
+          </div>
         </div>
 
         {/* Project List */}
