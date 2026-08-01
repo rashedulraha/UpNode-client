@@ -3,6 +3,8 @@ export interface User {
   email: string;
   name?: string | null;
   image?: string | null;
+  role?: string;
+  isBlocked?: boolean;
   emailVerified: boolean;
   createdAt: Date | string;
   updatedAt: Date | string;
@@ -156,6 +158,42 @@ export interface PublicProjectStatusData {
   uptimePercentage: number;
   avgLatencyMs: number;
   activeIncidents: Incident[];
+  resolvedIncidents?: Incident[];
   past7DaysIncidents: Incident[];
   recentMetrics: PingMetric[];
+  uptimeHistory90Days?: {
+    date: string;
+    isUp: boolean;
+    uptimePercentage: number;
+    avgLatencyMs: number;
+    status: string;
+  }[];
+}
+
+export interface AdminOrganization {
+  id: string;
+  name: string;
+  slug: string;
+  createdAt: string;
+  updatedAt: string;
+  _count: {
+    members: number;
+    projects: number;
+  };
+}
+
+export interface AdminUser {
+  id: string;
+  name: string;
+  email: string;
+  role: string;
+  isBlocked: boolean;
+  createdAt: string;
+  members: {
+    organization: {
+      id: string;
+      name: string;
+      slug: string;
+    };
+  }[];
 }
