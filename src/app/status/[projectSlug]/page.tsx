@@ -3,27 +3,7 @@
 import React, { useEffect, useState } from "react";
 import { useParams } from "next/navigation";
 import { projectsService } from "@/services/projects.service";
-import { PublicProjectStatusData, SystemStatusType } from "@/types";
-import {
-  CheckCircle2,
-  AlertTriangle,
-  AlertOctagon,
-  Activity,
-  Globe,
-  Clock,
-  RefreshCw,
-  Zap,
-  Radio,
-  Loader2,
-  Calendar,
-  Mail,
-  Bell,
-  X,
-  Check,
-  ShieldCheck,
-  Server,
-  Layers,
-} from "lucide-react";
+import { PublicProjectStatusData, SystemStatusType, Incident } from "@/types";
 import { format, formatDistanceToNow, subDays } from "date-fns";
 import { ThemeToggle } from "@/components/ui/theme-toggle";
 import Link from "next/link";
@@ -57,7 +37,7 @@ export default function PublicStatusPage() {
       setErrorMsg(
         err.response?.data?.message ||
           err.message ||
-          "Failed to load status page. Please check the project URL."
+          "Failed to load status page. Please verify the project URL."
       );
     } finally {
       setIsLoading(false);
@@ -67,7 +47,7 @@ export default function PublicStatusPage() {
   useEffect(() => {
     fetchStatus();
 
-    // Auto refresh every 60 seconds
+    // Real-time polling every 60 seconds
     const interval = setInterval(() => {
       fetchStatus();
     }, 60000);
@@ -88,7 +68,7 @@ export default function PublicStatusPage() {
 
     try {
       const res = await projectsService.subscribeToStatusUpdates(projectSlug, subscribeEmail);
-      setSubscribeSuccessMsg(res.message || "Successfully subscribed to real-time status updates!");
+      setSubscribeSuccessMsg(res.message || "Subscribed to real-time status updates.");
       setSubscribeEmail("");
     } catch (err: any) {
       setSubscribeErrorMsg(
@@ -99,367 +79,341 @@ export default function PublicStatusPage() {
     }
   };
 
-  // Generate 90-Day Uptime Calendar Data
-  const generate90DayCalendar = () => {
+  // Build or fall back 90 days array
+  const get90DayHistory = () => {
+    if (data?.uptimeHistory90Days && data.uptimeHistory90Days.length === 90) {
+      return data.uptimeHistory90Days;
+    }
+
     const days = [];
     const today = new Date();
-
-    // Map recent metrics/incidents by date string YYYY-MM-DD
     const incidentDates = new Set(
-      (data?.past7DaysIncidents || []).map((inc) =>
+      [...(data?.activeIncidents || []), ...(data?.past7DaysIncidents || []), ...(data?.resolvedIncidents || [])].map((inc) =>
         format(new Date(inc.createdAt), "yyyy-MM-dd")
       )
     );
 
     for (let i = 89; i >= 0; i--) {
-      const date = subDays(today, i);
-      const dateStr = format(date, "yyyy-MM-dd");
+      const d = subDays(today, i);
+      const dateStr = format(d, "yyyy-MM-dd");
       const hasIncident = incidentDates.has(dateStr);
-
-      // Generate realistic daily uptime stats
       const isUp = !hasIncident;
-      const uptime = isUp ? 100 : 94.2;
-      const latency = isUp ? Math.floor(12 + Math.random() * 20) : Math.floor(450 + Math.random() * 300);
 
       days.push({
-        date,
-        dateStr,
+        date: dateStr,
         isUp,
-        uptime,
-        latency,
+        uptimePercentage: isUp ? 100 : 96.4,
+        avgLatencyMs: isUp ? Math.floor(14 + (i % 7) * 3) : Math.floor(320 + (i % 5) * 40),
+        status: isUp ? "OPERATIONAL" : "DEGRADED",
       });
     }
 
     return days;
   };
 
-  const renderStatusBanner = (status: SystemStatusType) => {
+  const getSystemStatusLabel = (status: SystemStatusType) => {
     switch (status) {
       case "OPERATIONAL":
-        return (
-          <motion.div
-            initial={{ opacity: 0, y: -10 }}
-            animate={{ opacity: 1, y: 0 }}
-            className="p-6 sm:p-8 rounded-3xl bg-emerald-500/10 border border-emerald-500/20 text-emerald-500 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 shadow-sm"
-          >
-            <div className="flex items-center gap-4">
-              <div className="p-3 rounded-2xl bg-emerald-500/20 text-emerald-500 shrink-0">
-                <CheckCircle2 className="w-8 h-8" />
-              </div>
-              <div>
-                <h2 className="text-xl sm:text-2xl font-bold tracking-tight text-emerald-500">
-                  All Systems Operational
-                </h2>
-                <p className="text-xs sm:text-sm text-emerald-500/80 mt-1">
-                  All infrastructure nodes and monitors are functioning normally without disruption.
-                </p>
-              </div>
-            </div>
-
-            <button
-              onClick={() => setIsSubscribeOpen(true)}
-              className="px-4 py-2.5 rounded-xl bg-emerald-500 hover:bg-emerald-600 text-white font-semibold text-xs flex items-center gap-2 transition-all cursor-pointer shadow-md shadow-emerald-500/20 whitespace-nowrap self-stretch sm:self-auto justify-center"
-            >
-              <Bell className="w-4 h-4" />
-              <span>Subscribe to Updates</span>
-            </button>
-          </motion.div>
-        );
-
+        return {
+          title: "All Systems Operational",
+          subtitle: "All services are functioning within optimal telemetry parameters.",
+          badgeBg: "bg-emerald-500/10 text-emerald-400 border-emerald-500/20",
+          dotBg: "bg-emerald-400",
+        };
       case "DEGRADED_PERFORMANCE":
-        return (
-          <motion.div
-            initial={{ opacity: 0, y: -10 }}
-            animate={{ opacity: 1, y: 0 }}
-            className="p-6 sm:p-8 rounded-3xl bg-amber-500/10 border border-amber-500/20 text-amber-500 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 shadow-sm"
-          >
-            <div className="flex items-center gap-4">
-              <div className="p-3 rounded-2xl bg-amber-500/20 text-amber-500 shrink-0">
-                <AlertTriangle className="w-8 h-8" />
-              </div>
-              <div>
-                <h2 className="text-xl sm:text-2xl font-bold tracking-tight text-amber-500">
-                  System Degraded Performance
-                </h2>
-                <p className="text-xs sm:text-sm text-amber-500/80 mt-1">
-                  Some services are experiencing increased response latency or intermittent errors.
-                </p>
-              </div>
-            </div>
-
-            <button
-              onClick={() => setIsSubscribeOpen(true)}
-              className="px-4 py-2.5 rounded-xl bg-amber-500 hover:bg-amber-600 text-white font-semibold text-xs flex items-center gap-2 transition-all cursor-pointer shadow-md shadow-amber-500/20 whitespace-nowrap self-stretch sm:self-auto justify-center"
-            >
-              <Bell className="w-4 h-4" />
-              <span>Get Incident Alerts</span>
-            </button>
-          </motion.div>
-        );
-
+        return {
+          title: "Degraded Performance",
+          subtitle: "Increased latency or minor performance anomalies detected.",
+          badgeBg: "bg-amber-500/10 text-amber-400 border-amber-500/20",
+          dotBg: "bg-amber-400",
+        };
       case "PARTIAL_OUTAGE":
+        return {
+          title: "Partial Outage",
+          subtitle: "Disruption detected across non-critical endpoints.",
+          badgeBg: "bg-orange-500/10 text-orange-400 border-orange-500/20",
+          dotBg: "bg-orange-400",
+        };
       case "MAJOR_OUTAGE":
       default:
-        return (
-          <motion.div
-            initial={{ opacity: 0, y: -10 }}
-            animate={{ opacity: 1, y: 0 }}
-            className="p-6 sm:p-8 rounded-3xl bg-destructive/10 border border-destructive/20 text-destructive flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 shadow-sm"
-          >
-            <div className="flex items-center gap-4">
-              <div className="p-3 rounded-2xl bg-destructive/20 text-destructive shrink-0">
-                <AlertOctagon className="w-8 h-8" />
-              </div>
-              <div>
-                <h2 className="text-xl sm:text-2xl font-bold tracking-tight text-destructive">
-                  Ongoing Incident Detected
-                </h2>
-                <p className="text-xs sm:text-sm text-destructive/80 mt-1">
-                  Engineers are actively investigating system disruptions. See live updates below.
-                </p>
-              </div>
-            </div>
-
-            <button
-              onClick={() => setIsSubscribeOpen(true)}
-              className="px-4 py-2.5 rounded-xl bg-destructive hover:bg-destructive/90 text-destructive-foreground font-semibold text-xs flex items-center gap-2 transition-all cursor-pointer shadow-md shadow-destructive/20 whitespace-nowrap self-stretch sm:self-auto justify-center"
-            >
-              <Bell className="w-4 h-4" />
-              <span>Subscribe to Updates</span>
-            </button>
-          </motion.div>
-        );
+        return {
+          title: "Major System Outage",
+          subtitle: "Engineers are actively investigating active service disruptions.",
+          badgeBg: "bg-rose-500/10 text-rose-400 border-rose-500/20",
+          dotBg: "bg-rose-400",
+        };
     }
   };
 
-  const getSeverityBadge = (severity: string) => {
+  const formatSeverity = (severity: string) => {
     switch (severity) {
       case "CRITICAL":
-        return <span className="px-2.5 py-0.5 rounded-full bg-destructive/10 border border-destructive/20 text-destructive text-[10px] font-bold">CRITICAL</span>;
+        return "bg-rose-500/10 text-rose-400 border-rose-500/30";
       case "HIGH":
-        return <span className="px-2.5 py-0.5 rounded-full bg-orange-500/10 border border-orange-500/20 text-orange-500 text-[10px] font-bold">HIGH</span>;
+        return "bg-orange-500/10 text-orange-400 border-orange-500/30";
       case "MEDIUM":
-        return <span className="px-2.5 py-0.5 rounded-full bg-amber-500/10 border border-amber-500/20 text-amber-500 text-[10px] font-bold">MEDIUM</span>;
+        return "bg-amber-500/10 text-amber-400 border-amber-500/30";
       case "LOW":
       default:
-        return <span className="px-2.5 py-0.5 rounded-full bg-blue-500/10 border border-blue-500/20 text-blue-500 text-[10px] font-bold">LOW</span>;
+        return "bg-blue-500/10 text-blue-400 border-blue-500/30";
     }
   };
 
-  const getStatusBadge = (status: string) => {
+  const formatStatusPill = (status: string) => {
     switch (status) {
       case "INVESTIGATING":
-        return <span className="px-2 py-0.5 rounded-full bg-amber-500/10 text-amber-500 text-[10px] font-mono font-medium border border-amber-500/20">INVESTIGATING</span>;
+        return "bg-amber-500/10 text-amber-400 border-amber-500/30";
       case "IDENTIFIED":
-        return <span className="px-2 py-0.5 rounded-full bg-blue-500/10 text-blue-500 text-[10px] font-mono font-medium border border-blue-500/20">IDENTIFIED</span>;
+        return "bg-blue-500/10 text-blue-400 border-blue-500/30";
       case "MONITORING":
-        return <span className="px-2 py-0.5 rounded-full bg-purple-500/10 text-purple-500 text-[10px] font-mono font-medium border border-purple-500/20">MONITORING</span>;
+        return "bg-purple-500/10 text-purple-400 border-purple-500/30";
       case "RESOLVED":
       default:
-        return <span className="px-2 py-0.5 rounded-full bg-emerald-500/10 text-emerald-500 text-[10px] font-mono font-medium border border-emerald-500/20">RESOLVED</span>;
+        return "bg-emerald-500/10 text-emerald-400 border-emerald-500/30";
     }
   };
 
   if (isLoading && !data) {
     return (
-      <div className="min-h-screen bg-background text-foreground flex flex-col items-center justify-center font-sans">
-        <Loader2 className="w-8 h-8 animate-spin text-primary" />
-        <p className="text-xs text-muted-foreground mt-3 font-mono">Loading System Status Page...</p>
+      <div className="min-h-screen bg-neutral-950 text-neutral-200 flex flex-col items-center justify-center font-mono text-xs relative overflow-hidden">
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-96 h-96 bg-neutral-800/20 rounded-full blur-3xl pointer-events-none" />
+        <div className="flex items-center gap-3 px-4 py-2 rounded-full bg-white/5 border border-white/10 backdrop-blur-2xl">
+          <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
+          <span className="tracking-widest uppercase text-[10px] text-neutral-400 font-semibold">
+            Connecting to Telemetry...
+          </span>
+        </div>
       </div>
     );
   }
 
   if (errorMsg || !data) {
     return (
-      <div className="min-h-screen bg-background text-foreground flex flex-col items-center justify-center p-6 text-center font-sans">
-        <div className="p-4 rounded-full bg-destructive/10 text-destructive mb-4">
-          <AlertOctagon className="w-8 h-8" />
+      <div className="min-h-screen bg-neutral-950 text-neutral-200 flex flex-col items-center justify-center p-6 text-center font-sans relative overflow-hidden">
+        <div className="max-w-md w-full p-8 rounded-3xl bg-neutral-900/40 border border-white/10 backdrop-blur-2xl shadow-2xl space-y-4">
+          <span className="px-3 py-1 rounded-full bg-rose-500/10 text-rose-400 border border-rose-500/20 text-[10px] font-mono tracking-widest uppercase font-semibold">
+            404 NOT FOUND
+          </span>
+          <h2 className="text-xl font-medium tracking-tight text-white">Status Page Unavailable</h2>
+          <p className="text-xs text-neutral-400 font-mono leading-relaxed">
+            {errorMsg || "The requested project telemetry node was not found or has been removed."}
+          </p>
+          <Link
+            href="/"
+            className="inline-block mt-4 px-5 py-2.5 bg-white text-neutral-950 font-semibold rounded-2xl text-xs hover:bg-neutral-200 transition-all shadow-lg"
+          >
+            Return to UpNode
+          </Link>
         </div>
-        <h2 className="text-xl font-bold text-foreground">Status Page Not Found</h2>
-        <p className="text-xs text-muted-foreground mt-2 max-w-sm">
-          {errorMsg || "The status page you requested does not exist or has been removed."}
-        </p>
-        <Link
-          href="/"
-          className="mt-6 px-4 py-2 bg-primary text-primary-foreground font-semibold rounded-xl text-xs hover:bg-primary/90 transition-all"
-        >
-          Return to UpNode Home
-        </Link>
       </div>
     );
   }
 
-  const calendarDays = generate90DayCalendar();
+  const history90Days = get90DayHistory();
+  const statusInfo = getSystemStatusLabel(data.systemStatus);
+
+  // Ongoing incidents: status != RESOLVED
+  const ongoingIncidents = data.activeIncidents || [];
+  // Resolved incidents: status == RESOLVED or from resolvedIncidents array
+  const resolvedIncidentsList: Incident[] =
+    data.resolvedIncidents ||
+    (data.past7DaysIncidents || []).filter((inc) => inc.status === "RESOLVED");
 
   return (
-    <div className="min-h-screen bg-background text-foreground font-sans flex flex-col selection:bg-primary selection:text-primary-foreground relative">
-      {/* Top Public Header */}
-      <header className="border-b border-border bg-card/60 backdrop-blur-md sticky top-0 z-30 px-6 py-4">
+    <div className="min-h-screen bg-neutral-950 text-neutral-100 font-sans selection:bg-white selection:text-neutral-950 relative overflow-x-hidden">
+      {/* Subtle Ambient Background Blur Accents */}
+      <div className="fixed top-0 left-1/2 -translate-x-1/2 w-[800px] h-[400px] bg-gradient-to-b from-white/5 via-white/[0.02] to-transparent blur-3xl pointer-events-none z-0" />
+      <div className="fixed bottom-0 right-1/4 w-[500px] h-[300px] bg-emerald-500/[0.03] blur-3xl pointer-events-none z-0" />
+
+      {/* Top Header */}
+      <header className="sticky top-0 z-40 border-b border-white/10 bg-neutral-950/60 backdrop-blur-2xl px-6 py-5">
         <div className="max-w-4xl mx-auto flex items-center justify-between">
-          <div className="flex items-center gap-3">
-            <div className="p-2 rounded-xl bg-primary/10 text-primary border border-primary/20">
-              <Activity className="w-5 h-5" />
-            </div>
-            <div>
-              <h1 className="text-base font-bold text-foreground tracking-tight">
+          <div className="space-y-0.5">
+            <div className="flex items-center gap-3">
+              <h1 className="text-lg font-medium tracking-tight text-white">
                 {data.project.name}
               </h1>
-              <p className="text-[11px] text-muted-foreground font-mono flex items-center gap-1.5">
-                <Radio className="w-3 h-3 text-emerald-500 animate-pulse" />
-                Public Status Page
-              </p>
+              <span className="px-2.5 py-0.5 rounded-full bg-white/5 border border-white/10 text-[10px] font-mono tracking-widest text-neutral-400 uppercase">
+                SYSTEM STATUS
+              </span>
             </div>
+            {data.project.url && (
+              <p className="text-xs font-mono text-neutral-400 tracking-tight">
+                {data.project.url}
+              </p>
+            )}
           </div>
 
           <div className="flex items-center gap-3">
             <button
               onClick={() => setIsSubscribeOpen(true)}
-              className="px-3 py-1.5 rounded-xl bg-primary hover:bg-primary/90 text-primary-foreground font-semibold text-xs flex items-center gap-1.5 transition-all cursor-pointer shadow-sm"
+              className="px-4 py-2 rounded-2xl bg-white/10 hover:bg-white/15 border border-white/15 text-white font-mono text-xs tracking-tight transition-all cursor-pointer backdrop-blur-md"
             >
-              <Mail className="w-3.5 h-3.5" />
-              <span className="hidden sm:inline">Subscribe to Updates</span>
+              Get Incident Alerts
             </button>
             <ThemeToggle />
             <button
               onClick={() => fetchStatus()}
               disabled={isLoading}
-              title="Refresh Status"
-              className="p-2 rounded-xl bg-muted/60 hover:bg-muted border border-border text-muted-foreground hover:text-foreground transition-all cursor-pointer disabled:opacity-50"
+              className="px-3 py-2 rounded-2xl bg-white/5 hover:bg-white/10 border border-white/10 text-neutral-400 hover:text-white font-mono text-xs transition-all cursor-pointer disabled:opacity-50"
             >
-              <RefreshCw className={`w-3.5 h-3.5 ${isLoading ? "animate-spin" : ""}`} />
+              {isLoading ? "Refreshing..." : "Refresh"}
             </button>
           </div>
         </div>
       </header>
 
-      {/* Main Status Container */}
-      <main className="flex-1 max-w-4xl w-full mx-auto p-6 sm:p-10 space-y-10">
-        {/* Status Banner */}
-        {renderStatusBanner(data.systemStatus)}
-
-        {/* Primary Monitor Performance Bar & Metrics */}
-        <section className="p-6 sm:p-8 rounded-3xl bg-card border border-border space-y-6 shadow-sm">
-          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-            <div>
-              <h3 className="text-sm font-bold text-foreground flex items-center gap-2">
-                <Globe className="w-4 h-4 text-primary" />
-                Primary HTTP Endpoint Monitor
-              </h3>
-              <p className="text-xs text-muted-foreground mt-0.5">
-                {data.project.url ? (
-                  <span className="font-mono text-muted-foreground">{data.project.url}</span>
-                ) : (
-                  "Automated 5-minute telemetry check"
-                )}
+      {/* Main Container */}
+      <main className="relative z-10 max-w-4xl w-full mx-auto px-6 py-12 space-y-12">
+        {/* Real-time System Status Banner */}
+        <section className="p-8 sm:p-10 rounded-3xl bg-neutral-900/40 border border-white/10 backdrop-blur-2xl shadow-2xl space-y-6">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-6">
+            <div className="space-y-2">
+              <span className="text-[10px] font-mono tracking-[0.2em] uppercase text-neutral-500 font-semibold block">
+                CURRENT TELEMETRY STATUS
+              </span>
+              <div className="flex items-center gap-3">
+                <span className={`w-3 h-3 rounded-full ${statusInfo.dotBg} animate-pulse shrink-0`} />
+                <h2 className="text-2xl sm:text-3xl font-medium tracking-tight text-white">
+                  {statusInfo.title}
+                </h2>
+              </div>
+              <p className="text-xs font-mono text-neutral-400 max-w-xl">
+                {statusInfo.subtitle}
               </p>
             </div>
 
-            <div className="flex items-center gap-4 text-xs">
-              <div className="text-right">
-                <span className="text-[10px] text-muted-foreground block uppercase font-mono">SLA Uptime</span>
-                <span className="font-bold text-foreground font-mono text-sm">{data.uptimePercentage}%</span>
+            <div className="flex items-center gap-6 border-t sm:border-t-0 sm:border-l border-white/10 pt-4 sm:pt-0 sm:pl-8 font-mono">
+              <div>
+                <span className="text-[10px] text-neutral-500 uppercase tracking-widest block font-semibold">
+                  SLA UPTIME
+                </span>
+                <span className="text-xl font-medium text-white tracking-tight">
+                  {data.uptimePercentage}%
+                </span>
               </div>
-              <div className="w-px h-8 bg-border" />
-              <div className="text-right">
-                <span className="text-[10px] text-muted-foreground block uppercase font-mono">Avg Latency</span>
-                <span className="font-bold text-foreground font-mono text-sm flex items-center gap-1">
-                  <Zap className="w-3 h-3 text-amber-500" />
+              <div>
+                <span className="text-[10px] text-neutral-500 uppercase tracking-widest block font-semibold">
+                  LATENCY
+                </span>
+                <span className="text-xl font-medium text-white tracking-tight">
                   {data.avgLatencyMs}ms
-                </span>
-              </div>
-            </div>
-          </div>
-
-          {/* 90-DAY UPTIME CALENDAR GRID */}
-          <div className="space-y-3 pt-2">
-            <div className="flex items-center justify-between text-[11px] font-mono text-muted-foreground">
-              <span className="flex items-center gap-1">
-                <Calendar className="w-3.5 h-3.5 text-primary" /> 90 days ago
-              </span>
-              <span className="text-emerald-500 font-semibold">{data.uptimePercentage}% Uptime</span>
-              <span>Today</span>
-            </div>
-
-            {/* 90 small vertical bars */}
-            <div className="flex items-center gap-1 sm:gap-1.5 h-10 overflow-hidden">
-              {calendarDays.map((day, idx) => (
-                <div
-                  key={idx}
-                  title={`${format(day.date, "MMM d, yyyy")}: ${
-                    day.isUp ? "Operational (100%)" : "Degraded Performance"
-                  } | Latency: ${day.latency}ms`}
-                  className={`flex-1 h-full rounded-sm transition-all cursor-pointer hover:scale-110 hover:z-10 ${
-                    day.isUp
-                      ? "bg-emerald-500/80 hover:bg-emerald-400"
-                      : "bg-destructive hover:bg-destructive/80"
-                  }`}
-                />
-              ))}
-            </div>
-
-            <div className="flex items-center justify-between text-[10px] font-mono text-muted-foreground pt-1 border-t border-border/40">
-              <span>Hover over bars to inspect daily latency logs</span>
-              <div className="flex items-center gap-3">
-                <span className="flex items-center gap-1">
-                  <span className="w-2 h-2 rounded-full bg-emerald-500" /> Operational
-                </span>
-                <span className="flex items-center gap-1">
-                  <span className="w-2 h-2 rounded-full bg-destructive" /> Outage
                 </span>
               </div>
             </div>
           </div>
         </section>
 
-        {/* Active Incidents Section */}
-        {data.activeIncidents.length > 0 && (
-          <section className="space-y-4">
-            <h3 className="text-sm font-bold text-foreground flex items-center gap-2">
-              <AlertTriangle className="w-4 h-4 text-amber-500" />
-              Active System Incidents
-            </h3>
+        {/* 90-Day Uptime Bars Section */}
+        <section className="p-8 sm:p-10 rounded-3xl bg-neutral-900/40 border border-white/10 backdrop-blur-2xl shadow-2xl space-y-6">
+          <div className="flex items-center justify-between font-mono text-xs">
+            <div>
+              <h3 className="text-sm font-medium text-white font-sans tracking-tight">
+                90-Day Uptime Performance
+              </h3>
+              <p className="text-[11px] text-neutral-400 mt-0.5">
+                Daily health metrics aggregated over the past 90 days.
+              </p>
+            </div>
+            <div className="text-right">
+              <span className="text-emerald-400 font-semibold tracking-wider">
+                {data.uptimePercentage}% UPTIME
+              </span>
+            </div>
+          </div>
 
+          {/* 90 Bars Grid */}
+          <div className="space-y-3">
+            <div className="flex items-center gap-1 sm:gap-1.5 h-12 overflow-hidden py-1">
+              {history90Days.map((day, idx) => (
+                <div
+                  key={idx}
+                  title={`${day.date}: ${day.isUp ? "Operational (100%)" : "Degraded Performance"} | ${day.avgLatencyMs}ms`}
+                  className={`flex-1 h-full rounded-sm transition-all duration-200 cursor-pointer hover:scale-125 hover:z-20 ${
+                    day.isUp
+                      ? "bg-emerald-500/80 hover:bg-emerald-400"
+                      : "bg-rose-500 hover:bg-rose-400"
+                  }`}
+                />
+              ))}
+            </div>
+
+            <div className="flex items-center justify-between text-[10px] font-mono text-neutral-500 pt-2 border-t border-white/5">
+              <span>90 DAYS AGO</span>
+              <div className="flex items-center gap-4">
+                <span className="flex items-center gap-1.5">
+                  <span className="w-1.5 h-1.5 rounded-full bg-emerald-400" /> OPERATIONAL
+                </span>
+                <span className="flex items-center gap-1.5">
+                  <span className="w-1.5 h-1.5 rounded-full bg-rose-500" /> OUTAGE
+                </span>
+              </div>
+              <span>TODAY</span>
+            </div>
+          </div>
+        </section>
+
+        {/* Ongoing Incidents Section */}
+        <section className="space-y-4">
+          <div className="flex items-center justify-between border-b border-white/10 pb-3">
+            <h3 className="text-xs font-mono tracking-[0.2em] uppercase text-neutral-400 font-semibold">
+              ONGOING INCIDENTS ({ongoingIncidents.length})
+            </h3>
+          </div>
+
+          {ongoingIncidents.length === 0 ? (
+            <div className="p-8 rounded-3xl bg-neutral-900/20 border border-white/5 backdrop-blur-2xl text-center space-y-1">
+              <p className="text-xs font-mono text-neutral-400">
+                No active system incidents reported at this time.
+              </p>
+            </div>
+          ) : (
             <div className="space-y-4">
-              {data.activeIncidents.map((incident) => (
+              {ongoingIncidents.map((incident) => (
                 <div
                   key={incident.id}
-                  className="p-6 rounded-3xl bg-card border border-destructive/20 space-y-4 shadow-sm"
+                  className="p-6 sm:p-8 rounded-3xl bg-neutral-900/40 border border-rose-500/30 backdrop-blur-2xl shadow-2xl space-y-5"
                 >
-                  <div className="flex items-start justify-between gap-3">
-                    <div>
-                      <div className="flex items-center gap-2">
-                        {getSeverityBadge(incident.severity)}
-                        {getStatusBadge(incident.status)}
-                      </div>
-                      <h4 className="text-base font-bold text-foreground mt-2">
-                        {incident.title}
-                      </h4>
+                  <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 font-mono">
+                    <div className="flex items-center gap-2">
+                      <span className={`px-2.5 py-0.5 rounded-full text-[10px] uppercase font-semibold border ${formatSeverity(incident.severity)}`}>
+                        {incident.severity}
+                      </span>
+                      <span className={`px-2.5 py-0.5 rounded-full text-[10px] uppercase font-semibold border ${formatStatusPill(incident.status)}`}>
+                        {incident.status}
+                      </span>
                     </div>
-
-                    <span className="text-[11px] text-muted-foreground font-mono shrink-0">
-                      {formatDistanceToNow(new Date(incident.createdAt), { addSuffix: true })}
+                    <span className="text-[11px] text-neutral-500">
+                      Opened {formatDistanceToNow(new Date(incident.createdAt), { addSuffix: true })}
                     </span>
                   </div>
 
-                  <p className="text-xs text-muted-foreground leading-relaxed">
-                    {incident.description}
-                  </p>
+                  <div>
+                    <h4 className="text-base font-medium text-white tracking-tight">
+                      {incident.title}
+                    </h4>
+                    <p className="text-xs text-neutral-400 mt-1 leading-relaxed font-sans">
+                      {incident.description}
+                    </p>
+                  </div>
 
-                  {/* Timeline updates for active incident */}
+                  {/* Timeline History */}
                   {incident.timelineEvents && incident.timelineEvents.length > 0 && (
-                    <div className="pt-4 border-t border-border space-y-3">
-                      <span className="text-[11px] font-semibold text-foreground uppercase tracking-wider block">
-                        Incident Updates:
+                    <div className="pt-4 border-t border-white/10 space-y-3 font-mono">
+                      <span className="text-[10px] tracking-widest uppercase text-neutral-500 font-semibold block">
+                        TIMELINE UPDATES
                       </span>
-                      {incident.timelineEvents.map((evt) => (
-                        <div key={evt.id} className="pl-4 border-l-2 border-primary/40 space-y-1">
+                      {incident.timelineEvents.map((event) => (
+                        <div key={event.id} className="pl-4 border-l border-white/20 space-y-1">
                           <div className="flex items-center gap-2 text-[11px]">
-                            {getStatusBadge(evt.status)}
-                            <span className="text-muted-foreground font-mono">
-                              {format(new Date(evt.createdAt), "MMM d, HH:mm")}
+                            <span className={`px-2 py-0.5 rounded-md text-[9px] uppercase font-semibold border ${formatStatusPill(event.status)}`}>
+                              {event.status}
+                            </span>
+                            <span className="text-neutral-500">
+                              {format(new Date(event.createdAt), "MMM d, HH:mm")}
                             </span>
                           </div>
-                          <p className="text-xs text-foreground">{evt.message}</p>
+                          <p className="text-xs text-neutral-200 font-sans">{event.message}</p>
                         </div>
                       ))}
                     </div>
@@ -467,69 +421,70 @@ export default function PublicStatusPage() {
                 </div>
               ))}
             </div>
-          </section>
-        )}
+          )}
+        </section>
 
-        {/* 7-Day Incident History Section */}
-        <section className="space-y-6">
-          <div className="flex items-center justify-between">
-            <h3 className="text-sm font-bold text-foreground flex items-center gap-2">
-              <Calendar className="w-4 h-4 text-primary" />
-              Past 7 Days Incident History
+        {/* Resolved Incidents History Section */}
+        <section className="space-y-4">
+          <div className="flex items-center justify-between border-b border-white/10 pb-3">
+            <h3 className="text-xs font-mono tracking-[0.2em] uppercase text-neutral-400 font-semibold">
+              RESOLVED INCIDENTS HISTORY ({resolvedIncidentsList.length})
             </h3>
-            <span className="text-xs text-muted-foreground font-mono">Verified Records</span>
           </div>
 
-          {data.past7DaysIncidents.length === 0 ? (
-            <div className="p-8 text-center rounded-3xl bg-muted/20 border border-border border-dashed space-y-2">
-              <CheckCircle2 className="w-6 h-6 text-emerald-500 mx-auto" />
-              <p className="text-xs font-semibold text-foreground">No Incidents Reported in the Last 7 Days</p>
-              <p className="text-[11px] text-muted-foreground">
-                All services operated smoothly with 100% availability.
+          {resolvedIncidentsList.length === 0 ? (
+            <div className="p-8 rounded-3xl bg-neutral-900/20 border border-white/5 backdrop-blur-2xl text-center space-y-1">
+              <p className="text-xs font-mono text-neutral-400">
+                No past resolved incidents recorded.
               </p>
             </div>
           ) : (
-            <div className="space-y-6">
-              {data.past7DaysIncidents.map((incident) => (
+            <div className="space-y-4">
+              {resolvedIncidentsList.map((incident) => (
                 <div
                   key={incident.id}
-                  className="p-6 rounded-3xl bg-card border border-border space-y-4 shadow-sm"
+                  className="p-6 sm:p-8 rounded-3xl bg-neutral-900/40 border border-white/10 backdrop-blur-2xl shadow-2xl space-y-5"
                 >
-                  <div className="flex items-start justify-between gap-3">
-                    <div>
-                      <div className="flex items-center gap-2">
-                        {getSeverityBadge(incident.severity)}
-                        {getStatusBadge(incident.status)}
-                      </div>
-                      <h4 className="text-sm font-bold text-foreground mt-1.5">
-                        {incident.title}
-                      </h4>
+                  <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 font-mono">
+                    <div className="flex items-center gap-2">
+                      <span className={`px-2.5 py-0.5 rounded-full text-[10px] uppercase font-semibold border ${formatSeverity(incident.severity)}`}>
+                        {incident.severity}
+                      </span>
+                      <span className={`px-2.5 py-0.5 rounded-full text-[10px] uppercase font-semibold border ${formatStatusPill(incident.status)}`}>
+                        {incident.status}
+                      </span>
                     </div>
-
-                    <span className="text-[11px] text-muted-foreground font-mono shrink-0">
-                      {format(new Date(incident.createdAt), "MMM d, yyyy")}
+                    <span className="text-[11px] text-neutral-500">
+                      Resolved on {format(new Date(incident.updatedAt || incident.createdAt), "MMM d, yyyy")}
                     </span>
                   </div>
 
-                  <p className="text-xs text-muted-foreground leading-relaxed">
-                    {incident.description}
-                  </p>
+                  <div>
+                    <h4 className="text-base font-medium text-white tracking-tight">
+                      {incident.title}
+                    </h4>
+                    <p className="text-xs text-neutral-400 mt-1 leading-relaxed font-sans">
+                      {incident.description}
+                    </p>
+                  </div>
 
-                  {/* Incident Timeline Log Entries */}
+                  {/* Timeline History */}
                   {incident.timelineEvents && incident.timelineEvents.length > 0 && (
-                    <div className="pt-3 border-t border-border/60 space-y-2.5">
+                    <div className="pt-4 border-t border-white/10 space-y-3 font-mono">
+                      <span className="text-[10px] tracking-widest uppercase text-neutral-500 font-semibold block">
+                        INCIDENT TIMELINE HISTORY
+                      </span>
                       {incident.timelineEvents.map((event) => (
-                        <div key={event.id} className="flex items-start gap-3 text-xs">
-                          <Clock className="w-3.5 h-3.5 text-muted-foreground shrink-0 mt-0.5" />
-                          <div className="flex-1">
-                            <div className="flex items-center gap-2">
-                              <span className="font-semibold text-foreground">{event.message}</span>
-                              {getStatusBadge(event.status)}
-                            </div>
-                            <span className="text-[11px] text-muted-foreground font-mono mt-0.5 block">
+                        <div key={event.id} className="pl-4 border-l border-white/15 space-y-1">
+                          <div className="flex items-center gap-2 text-[11px]">
+                            <span className={`px-2 py-0.5 rounded-md text-[9px] uppercase font-semibold border ${formatStatusPill(event.status)}`}>
+                              {event.status}
+                            </span>
+                            <span className="text-neutral-500">
                               {format(new Date(event.createdAt), "MMM d, yyyy - HH:mm:ss")}
                             </span>
                           </div>
+                          <p className="text-xs text-neutral-300 font-sans">{event.message}</p>
                         </div>
                       ))}
                     </div>
@@ -541,10 +496,18 @@ export default function PublicStatusPage() {
         </section>
       </main>
 
-      {/* Footer */}
-      <footer className="border-t border-border py-8 text-center text-xs text-muted-foreground font-mono space-y-2">
-        <p>Powered by UpNode Infrastructure Telemetry Platform</p>
-        <p className="text-[11px] opacity-70">
+      {/* Powered by UpNode Branding Footer */}
+      <footer className="relative z-10 border-t border-white/10 py-12 text-center space-y-3 font-mono text-xs text-neutral-500">
+        <div className="flex items-center justify-center gap-2 text-neutral-400">
+          <span className="w-1.5 h-1.5 rounded-full bg-emerald-400" />
+          <span className="font-sans font-medium tracking-tight text-white text-sm">
+            Powered by UpNode
+          </span>
+        </div>
+        <p className="text-[11px] text-neutral-600 max-w-sm mx-auto">
+          Automated real-time infrastructure telemetry, SSL expiration monitoring, and incident orchestration.
+        </p>
+        <p className="text-[10px] text-neutral-600 pt-2">
           Last checked {formatDistanceToNow(lastRefreshed, { addSuffix: true })}
         </p>
       </footer>
@@ -552,92 +515,72 @@ export default function PublicStatusPage() {
       {/* EMAIL SUBSCRIBE MODAL */}
       <AnimatePresence>
         {isSubscribeOpen && (
-          <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-background/80 backdrop-blur-sm">
+          <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-neutral-950/80 backdrop-blur-xl">
             <motion.div
               initial={{ opacity: 0, scale: 0.95 }}
               animate={{ opacity: 1, scale: 1 }}
               exit={{ opacity: 0, scale: 0.95 }}
-              className="w-full max-w-md p-6 rounded-3xl bg-card border border-border shadow-2xl space-y-5 relative"
+              className="w-full max-w-md p-8 rounded-3xl bg-neutral-900/90 border border-white/15 shadow-2xl space-y-6 relative font-sans backdrop-blur-2xl"
             >
               <button
                 onClick={() => setIsSubscribeOpen(false)}
-                className="absolute top-5 right-5 p-1.5 rounded-xl text-muted-foreground hover:text-foreground hover:bg-muted transition-colors cursor-pointer"
+                className="absolute top-6 right-6 font-mono text-xs text-neutral-400 hover:text-white transition-colors cursor-pointer"
               >
-                <X className="w-4 h-4" />
+                [ESC]
               </button>
 
-              <div className="flex items-center gap-3">
-                <div className="p-2.5 rounded-2xl bg-primary/10 text-primary border border-primary/20">
-                  <Mail className="w-5 h-5" />
-                </div>
-                <div>
-                  <h3 className="text-base font-bold text-foreground">Subscribe to Updates</h3>
-                  <p className="text-xs text-muted-foreground">
-                    Get real-time email alerts for {data.project.name}
-                  </p>
-                </div>
+              <div className="space-y-1">
+                <span className="text-[10px] font-mono tracking-widest uppercase text-neutral-500 font-semibold block">
+                  REAL-TIME ALERTS
+                </span>
+                <h3 className="text-xl font-medium tracking-tight text-white">Subscribe to Updates</h3>
+                <p className="text-xs text-neutral-400 font-mono">
+                  Receive email notifications for {data.project.name} incidents.
+                </p>
               </div>
 
               {subscribeSuccessMsg ? (
-                <div className="p-4 rounded-2xl bg-emerald-500/10 border border-emerald-500/20 text-emerald-500 text-xs space-y-2 text-center">
-                  <CheckCircle2 className="w-6 h-6 mx-auto text-emerald-500" />
-                  <p className="font-semibold text-sm text-emerald-500">{subscribeSuccessMsg}</p>
-                  <p className="text-emerald-500/80 text-[11px]">
-                    Integrated with Resend & BullMQ notification pipeline.
-                  </p>
+                <div className="p-5 rounded-2xl bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 text-xs space-y-3 text-center font-mono">
+                  <p className="font-semibold text-sm">{subscribeSuccessMsg}</p>
                   <button
                     onClick={() => {
                       setSubscribeSuccessMsg(null);
                       setIsSubscribeOpen(false);
                     }}
-                    className="mt-3 px-4 py-2 bg-emerald-500 text-white rounded-xl font-semibold text-xs transition-all cursor-pointer"
+                    className="mt-2 px-5 py-2 bg-emerald-500 text-neutral-950 font-semibold rounded-xl text-xs transition-all cursor-pointer"
                   >
-                    Done
+                    Close
                   </button>
                 </div>
               ) : (
-                <form onSubmit={handleSubscribeSubmit} className="space-y-4">
+                <form onSubmit={handleSubscribeSubmit} className="space-y-4 font-mono">
                   {subscribeErrorMsg && (
-                    <div className="p-3 rounded-xl bg-destructive/10 border border-destructive/20 text-destructive text-xs">
+                    <div className="p-3 rounded-xl bg-rose-500/10 border border-rose-500/20 text-rose-400 text-xs">
                       {subscribeErrorMsg}
                     </div>
                   )}
 
                   <div className="space-y-1.5">
-                    <label className="block text-xs font-medium text-foreground">
-                      Work Email Address
+                    <label className="block text-xs text-neutral-300">
+                      Work Email
                     </label>
                     <input
                       type="email"
                       required
                       value={subscribeEmail}
                       onChange={(e) => setSubscribeEmail(e.target.value)}
-                      placeholder="name@company.com"
+                      placeholder="engineer@company.com"
                       disabled={isSubmittingSubscribe}
-                      className="w-full px-4 py-2.5 bg-muted/60 border border-border rounded-xl text-xs text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary focus:bg-background transition-all"
+                      className="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-2xl text-xs text-white placeholder:text-neutral-600 focus:outline-none focus:border-white/30 transition-all font-mono"
                     />
                   </div>
-
-                  <p className="text-[11px] text-muted-foreground leading-relaxed">
-                    By subscribing, you will receive emails whenever an incident is created, updated, or resolved on this project.
-                  </p>
 
                   <button
                     type="submit"
                     disabled={isSubmittingSubscribe}
-                    className="w-full py-2.5 px-4 bg-primary hover:bg-primary/90 text-primary-foreground font-semibold rounded-xl text-xs transition-all flex items-center justify-center gap-2 cursor-pointer disabled:opacity-50 shadow-md shadow-primary/20"
+                    className="w-full py-3 px-4 bg-white hover:bg-neutral-200 text-neutral-950 font-semibold rounded-2xl text-xs transition-all flex items-center justify-center gap-2 cursor-pointer disabled:opacity-50 shadow-lg font-sans"
                   >
-                    {isSubmittingSubscribe ? (
-                      <>
-                        <Loader2 className="w-3.5 h-3.5 animate-spin" />
-                        Subscribing...
-                      </>
-                    ) : (
-                      <>
-                        <Bell className="w-3.5 h-3.5" />
-                        Subscribe
-                      </>
-                    )}
+                    {isSubmittingSubscribe ? "Subscribing..." : "Subscribe to Alerts"}
                   </button>
                 </form>
               )}
