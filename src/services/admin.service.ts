@@ -26,4 +26,27 @@ export const adminService = {
     const response = await api.delete<{ success: boolean; message: string }>(`/admin/organizations/${organizationId}`);
     return response.data;
   },
+
+  async getStats(): Promise<{
+    totalOrganizations: number;
+    totalUsers: number;
+    totalProjects: number;
+    activeIncidents: number;
+    globalOutages: number;
+    redisStatus: string;
+    latency: number;
+    uptimePercentage: number;
+  }> {
+    const response = await api.get<{
+      totalOrganizations: number;
+      totalUsers: number;
+      totalProjects: number;
+      activeIncidents: number;
+      globalOutages: number;
+      redisStatus: string;
+      latency: number;
+      uptimePercentage: number;
+    }>("/admin/stats");
+    return response.data;
+  },
 };

@@ -24,6 +24,17 @@ export default function SuperAdminDashboard() {
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
   const [successMsg, setSuccessMsg] = useState<string | null>(null);
 
+  const [stats, setStats] = useState<{
+    totalOrganizations: number;
+    totalUsers: number;
+    totalProjects: number;
+    activeIncidents: number;
+    globalOutages: number;
+    redisStatus: string;
+    latency: number;
+    uptimePercentage: number;
+  } | null>(null);
+
   // Search state
   const [orgSearch, setOrgSearch] = useState<string>("");
   const [userSearch, setUserSearch] = useState<string>("");
@@ -49,12 +60,14 @@ export default function SuperAdminDashboard() {
     try {
       setIsLoading(true);
       setErrorMsg(null);
-      const [orgsData, usersData] = await Promise.all([
+      const [orgsData, usersData, statsData] = await Promise.all([
         adminService.getAllOrganizations(),
         adminService.getAllUsers(),
+        adminService.getStats(),
       ]);
       setOrganizations(orgsData || []);
       setUsers(usersData || []);
+      setStats(statsData || null);
     } catch (err: any) {
       setErrorMsg(
         err.response?.data?.error ||
@@ -304,12 +317,12 @@ export default function SuperAdminDashboard() {
                 TOTAL ORGANIZATIONS
               </span>
               <span className="text-3xl font-light text-slate-900 dark:text-white tracking-tight mt-1 block">
-                {organizations.length.toString().padStart(2, "0")}
+                {(stats?.totalOrganizations ?? organizations.length).toString().padStart(2, "0")}
               </span>
               <div className="text-[11px] text-slate-500 dark:text-neutral-600 mt-2">
                 PROJECTS_ATTACHED:{" "}
                 <span className="text-slate-800 dark:text-neutral-300">
-                  {totalProjects}
+                  {stats?.totalProjects ?? totalProjects}
                 </span>
               </div>
             </div>
@@ -320,15 +333,17 @@ export default function SuperAdminDashboard() {
               </span>
               <div className="flex items-baseline gap-3 mt-1">
                 <span className="text-3xl font-light text-slate-900 dark:text-white tracking-tight">
-                  {activeIncidents.toString().padStart(2, "0")}
+                  {(stats?.activeIncidents ?? 0).toString().padStart(2, "0")}
                 </span>
                 <span className="text-[10px] text-slate-500 dark:text-neutral-500 uppercase">
-                  [NOMINAL]
+                  {(stats?.activeIncidents ?? 0) > 0 ? "[OUTAGE]" : "[NOMINAL]"}
                 </span>
               </div>
               <div className="text-[11px] text-slate-500 dark:text-neutral-600 mt-2">
                 GLOBAL_OUTAGES:{" "}
-                <span className="text-slate-800 dark:text-neutral-300">0</span>
+                <span className="text-slate-800 dark:text-neutral-300">
+                  {stats?.globalOutages ?? 0}
+                </span>
               </div>
             </div>
 
@@ -338,16 +353,16 @@ export default function SuperAdminDashboard() {
               </span>
               <div className="flex items-baseline gap-2 mt-1">
                 <span className="text-3xl font-light text-slate-900 dark:text-white tracking-tight">
-                  99.98%
+                  {stats?.uptimePercentage ?? "99.98"}%
                 </span>
                 <span className="text-xs text-slate-500 dark:text-neutral-400">
-                  / 18ms
+                  / {stats?.latency ?? 18}ms
                 </span>
               </div>
               <div className="text-[11px] text-slate-500 dark:text-neutral-600 mt-2">
                 REDIS_BROKER:{" "}
                 <span className="text-slate-800 dark:text-neutral-300">
-                  CONNECTED
+                  {stats?.redisStatus ?? "CONNECTED"}
                 </span>
               </div>
             </div>
