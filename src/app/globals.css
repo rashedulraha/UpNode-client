@@ -116,22 +116,22 @@
   --status-maintenance: oklch(0.65 0.19 210);
 
   /* ─── Landing Page Theme Tokens (Light Mode) ─── */
-  --lp-bg:           var(--background);
-  --lp-bg-alt:       oklch(0.965 0.005 260);
-  --lp-surface:      rgba(0, 0, 0, 0.035);
-  --lp-surface-hover:rgba(0, 0, 0, 0.07);
-  --lp-border:       rgba(0, 0, 0, 0.10);
-  --lp-border-top:   rgba(0, 0, 0, 0.18);
-  --lp-text-primary: rgba(0, 0, 0, 0.90);
-  --lp-text-mid:     rgba(0, 0, 0, 0.60);
-  --lp-text-dim:     rgba(0, 0, 0, 0.45);
-  --lp-text-faint:   rgba(0, 0, 0, 0.25);
-  --lp-dot:          rgba(0, 0, 0, 0.22);
-  --lp-scan-line:    rgba(0, 0, 0, 0.06);
-  --lp-cta-bg:       oklch(0.14 0.02 260);
+  --lp-bg:           #f8fafc;
+  --lp-bg-alt:       #f1f5f9;
+  --lp-surface:      rgba(255, 255, 255, 0.95);
+  --lp-surface-hover:rgba(241, 245, 249, 0.85);
+  --lp-border:       #e2e8f0;
+  --lp-border-top:   #cbd5e1;
+  --lp-text-primary: #0f172a;
+  --lp-text-mid:     #475569;
+  --lp-text-dim:     #64748b;
+  --lp-text-faint:   #94a3b8;
+  --lp-dot:          #94a3b8;
+  --lp-scan-line:    rgba(15, 23, 42, 0.08);
+  --lp-cta-bg:       #0f172a;
   --lp-cta-text:     #ffffff;
-  --lp-nav-bg:       rgba(251, 251, 253, 0.85);
-  --lp-stroke:       rgba(0, 0, 0, 0.18);
+  --lp-nav-bg:       rgba(255, 255, 255, 0.85);
+  --lp-stroke:       #cbd5e1;
 }
 
 .dark {
@@ -175,23 +175,23 @@
   --status-degraded: oklch(0.8 0.18 85);
   --status-maintenance: oklch(0.7 0.19 210);
 
-  /* ─── Landing Page Theme Tokens (Dark Mode) ─── */
-  --lp-bg:           var(--background);
-  --lp-bg-alt:       oklch(0.15 0.01 260);
-  --lp-surface:      rgba(255, 255, 255, 0.035);
-  --lp-surface-hover:rgba(255, 255, 255, 0.07);
-  --lp-border:       rgba(255, 255, 255, 0.10);
-  --lp-border-top:   rgba(255, 255, 255, 0.20);
-  --lp-text-primary: rgba(255, 255, 255, 0.92);
-  --lp-text-mid:     rgba(255, 255, 255, 0.60);
-  --lp-text-dim:     rgba(255, 255, 255, 0.45);
-  --lp-text-faint:   rgba(255, 255, 255, 0.25);
-  --lp-dot:          rgba(255, 255, 255, 0.22);
+  /* ─── Landing Page Theme Tokens (Dark Mode - Match Dashboard) ─── */
+  --lp-bg:           #000000;
+  --lp-bg-alt:       #0a0a0a;
+  --lp-surface:      rgba(23, 23, 23, 0.8);
+  --lp-surface-hover:rgba(38, 38, 38, 0.9);
+  --lp-border:       #262626;
+  --lp-border-top:   #404040;
+  --lp-text-primary: #f5f5f5;
+  --lp-text-mid:     #a3a3a3;
+  --lp-text-dim:     #737373;
+  --lp-text-faint:   #525252;
+  --lp-dot:          #525252;
   --lp-scan-line:    rgba(255, 255, 255, 0.08);
-  --lp-cta-bg:       rgba(255, 255, 255, 0.95);
+  --lp-cta-bg:       #ffffff;
   --lp-cta-text:     #000000;
-  --lp-nav-bg:       rgba(24, 26, 33, 0.85);
-  --lp-stroke:       rgba(255, 255, 255, 0.25);
+  --lp-nav-bg:       rgba(0, 0, 0, 0.85);
+  --lp-stroke:       #404040;
 }
 
 @layer base {
