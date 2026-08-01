@@ -18,7 +18,9 @@ export default function SuperAdminDashboard() {
   const [organizations, setOrganizations] = useState<AdminOrganization[]>([]);
   const [users, setUsers] = useState<AdminUser[]>([]);
   const [isLoading, setIsLoading] = useState<boolean>(true);
-  const [activeTab, setActiveTab] = useState<"orgs" | "users" | "terminal">("orgs");
+  const [activeTab, setActiveTab] = useState<"orgs" | "users" | "terminal">(
+    "orgs",
+  );
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
   const [successMsg, setSuccessMsg] = useState<string | null>(null);
 
@@ -30,7 +32,9 @@ export default function SuperAdminDashboard() {
   // SSE Live Terminal Log Stream State
   const [logs, setLogs] = useState<LogEntry[]>([]);
   const [isPaused, setIsPaused] = useState<boolean>(false);
-  const [logFilter, setLogFilter] = useState<"all" | "info" | "warn" | "error">("all");
+  const [logFilter, setLogFilter] = useState<"all" | "info" | "warn" | "error">(
+    "all",
+  );
   const terminalEndRef = useRef<HTMLDivElement | null>(null);
 
   // Confirmation Modal
@@ -53,7 +57,11 @@ export default function SuperAdminDashboard() {
       setOrganizations(orgsData || []);
       setUsers(usersData || []);
     } catch (err: any) {
-      setErrorMsg(err.response?.data?.error || err.message || "Failed to load global admin telemetry.");
+      setErrorMsg(
+        err.response?.data?.error ||
+          err.message ||
+          "Failed to load global admin telemetry.",
+      );
     } finally {
       setIsLoading(false);
     }
@@ -68,20 +76,25 @@ export default function SuperAdminDashboard() {
     let eventSource: EventSource | null = null;
 
     try {
-      const baseUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:4000/api";
+      const baseUrl =
+        process.env.NEXT_PUBLIC_API_URL || "http://localhost:4000/api";
       const streamUrl = `${baseUrl}/stream/admin`;
       eventSource = new EventSource(streamUrl, { withCredentials: true });
 
-      setLogs((prev) => [
-        ...prev,
-        {
-          id: Math.random().toString(),
-          timestamp: new Date().toISOString(),
-          type: "SYS_INIT",
-          content: "AI SRE Engine listening on Redis pub/sub channels: INCIDENT_CHANNEL, METRIC_CHANNEL",
-          level: "sys",
-        },
-      ]);
+      setLogs((prev) => {
+        if (prev.some((l) => l.type === "SYS_INIT")) return prev;
+        return [
+          ...prev,
+          {
+            id: Math.random().toString(),
+            timestamp: new Date().toISOString(),
+            type: "SYS_INIT",
+            content:
+              "AI SRE Engine listening on Redis pub/sub channels: INCIDENT_CHANNEL, METRIC_CHANNEL",
+            level: "sys",
+          },
+        ];
+      });
 
       eventSource.addEventListener("connected", (e: MessageEvent) => {
         if (isPaused) return;
@@ -93,7 +106,8 @@ export default function SuperAdminDashboard() {
               id: Math.random().toString(),
               timestamp: new Date().toISOString(),
               type: "BROKER_ACK",
-              content: data.message || "Connected to global Redis pub/sub broker.",
+              content:
+                data.message || "Connected to global Redis pub/sub broker.",
               level: "sys",
             },
           ]);
@@ -108,7 +122,10 @@ export default function SuperAdminDashboard() {
           const payload = data.payload || {};
           let level: "info" | "warn" | "error" = "info";
 
-          if (channel.includes("INCIDENT") || payload.type?.includes("INCIDENT")) {
+          if (
+            channel.includes("INCIDENT") ||
+            payload.type?.includes("INCIDENT")
+          ) {
             level = "warn";
           }
 
@@ -134,7 +151,8 @@ export default function SuperAdminDashboard() {
               id: Math.random().toString(),
               timestamp: new Date().toISOString(),
               type: "AI_DIAG",
-              content: "AI SRE: System latency within baseline limits (18ms). Zero high-severity outages detected.",
+              content:
+                "AI SRE: System latency within baseline limits (18ms). Zero high-severity outages detected.",
               level: "info",
             },
           ]);
@@ -179,7 +197,9 @@ export default function SuperAdminDashboard() {
       setModalAction(null);
       await fetchData();
     } catch (err: any) {
-      setErrorMsg(err.response?.data?.error || err.message || "OPERATION_FAILED");
+      setErrorMsg(
+        err.response?.data?.error || err.message || "OPERATION_FAILED",
+      );
     } finally {
       setIsSubmittingAction(false);
     }
@@ -190,7 +210,7 @@ export default function SuperAdminDashboard() {
     return organizations.filter(
       (org) =>
         org.name.toLowerCase().includes(orgSearch.toLowerCase()) ||
-        org.slug.toLowerCase().includes(orgSearch.toLowerCase())
+        org.slug.toLowerCase().includes(orgSearch.toLowerCase()),
     );
   }, [organizations, orgSearch]);
 
@@ -209,7 +229,10 @@ export default function SuperAdminDashboard() {
     return logs.filter((l) => l.level === logFilter);
   }, [logs, logFilter]);
 
-  const totalProjects = organizations.reduce((acc, org) => acc + (org._count?.projects || 0), 0);
+  const totalProjects = organizations.reduce(
+    (acc, org) => acc + (org._count?.projects || 0),
+    0,
+  );
   const activeIncidents = 0; // Baseline zero outages
 
   // Container variants for staggered entrance
@@ -255,7 +278,9 @@ export default function SuperAdminDashboard() {
                   <span className="w-1.5 h-1.5 rounded-full bg-slate-900 dark:bg-white animate-pulse shadow-sm dark:shadow-[0_0_8px_rgba(255,255,255,0.8)]" />
                   ROOT // PLATFORM CONTROL
                 </span>
-                <span className="text-xs font-mono text-slate-500 dark:text-neutral-500">[STATUS: OPERATIONAL]</span>
+                <span className="text-xs font-mono text-slate-500 dark:text-neutral-500">
+                  [STATUS: OPERATIONAL]
+                </span>
               </div>
               <h1 className="text-2xl sm:text-3xl font-extralight tracking-tight text-slate-900 dark:text-white font-mono uppercase">
                 UpNode System Telemetry
@@ -281,7 +306,10 @@ export default function SuperAdminDashboard() {
                 {organizations.length.toString().padStart(2, "0")}
               </span>
               <div className="text-[11px] text-slate-500 dark:text-neutral-600 mt-2">
-                PROJECTS_ATTACHED: <span className="text-slate-800 dark:text-neutral-300">{totalProjects}</span>
+                PROJECTS_ATTACHED:{" "}
+                <span className="text-slate-800 dark:text-neutral-300">
+                  {totalProjects}
+                </span>
               </div>
             </div>
 
@@ -293,10 +321,13 @@ export default function SuperAdminDashboard() {
                 <span className="text-3xl font-light text-slate-900 dark:text-white tracking-tight">
                   {activeIncidents.toString().padStart(2, "0")}
                 </span>
-                <span className="text-[10px] text-slate-500 dark:text-neutral-500 uppercase">[NOMINAL]</span>
+                <span className="text-[10px] text-slate-500 dark:text-neutral-500 uppercase">
+                  [NOMINAL]
+                </span>
               </div>
               <div className="text-[11px] text-slate-500 dark:text-neutral-600 mt-2">
-                GLOBAL_OUTAGES: <span className="text-slate-800 dark:text-neutral-300">0</span>
+                GLOBAL_OUTAGES:{" "}
+                <span className="text-slate-800 dark:text-neutral-300">0</span>
               </div>
             </div>
 
@@ -305,11 +336,18 @@ export default function SuperAdminDashboard() {
                 GLOBAL TRAFFIC / LATENCY
               </span>
               <div className="flex items-baseline gap-2 mt-1">
-                <span className="text-3xl font-light text-slate-900 dark:text-white tracking-tight">99.98%</span>
-                <span className="text-xs text-slate-500 dark:text-neutral-400">/ 18ms</span>
+                <span className="text-3xl font-light text-slate-900 dark:text-white tracking-tight">
+                  99.98%
+                </span>
+                <span className="text-xs text-slate-500 dark:text-neutral-400">
+                  / 18ms
+                </span>
               </div>
               <div className="text-[11px] text-slate-500 dark:text-neutral-600 mt-2">
-                REDIS_BROKER: <span className="text-slate-800 dark:text-neutral-300">CONNECTED</span>
+                REDIS_BROKER:{" "}
+                <span className="text-slate-800 dark:text-neutral-300">
+                  CONNECTED
+                </span>
               </div>
             </div>
           </div>
@@ -322,7 +360,10 @@ export default function SuperAdminDashboard() {
             className="p-3 border border-emerald-300 dark:border-neutral-700 bg-emerald-50 dark:bg-neutral-900/90 text-emerald-800 dark:text-neutral-200 font-mono text-xs flex items-center justify-between"
           >
             <span>[SYS_MSG]: {successMsg}</span>
-            <button onClick={() => setSuccessMsg(null)} className="text-emerald-600 dark:text-neutral-500 hover:opacity-75">
+            <button
+              onClick={() => setSuccessMsg(null)}
+              className="text-emerald-600 dark:text-neutral-500 hover:opacity-75"
+            >
               [X]
             </button>
           </motion.div>
@@ -334,7 +375,10 @@ export default function SuperAdminDashboard() {
             className="p-3 border border-rose-300 dark:border-rose-900/60 bg-rose-50 dark:bg-neutral-950 text-rose-800 dark:text-rose-300 font-mono text-xs flex items-center justify-between"
           >
             <span>[SYS_ERR]: {errorMsg}</span>
-            <button onClick={() => setErrorMsg(null)} className="text-rose-600 dark:text-rose-500 hover:opacity-75">
+            <button
+              onClick={() => setErrorMsg(null)}
+              className="text-rose-600 dark:text-rose-500 hover:opacity-75"
+            >
               [X]
             </button>
           </motion.div>
@@ -343,12 +387,18 @@ export default function SuperAdminDashboard() {
         {/* MAIN LAYOUT: LEFT MANAGEMENT & RIGHT AI TERMINAL PANE */}
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
           {/* MANAGEMENT ZONE (8 COLS) */}
-          <motion.div variants={itemVariants} className="lg:col-span-8 space-y-4">
+          <motion.div
+            variants={itemVariants}
+            className="lg:col-span-8 space-y-4"
+          >
             {/* NAVIGATION TABS WITH LAYOUT ID TRANSITION */}
             <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 border-b border-slate-200 dark:border-neutral-800 pb-3">
               <div className="flex items-center gap-1 font-mono text-xs">
                 {[
-                  { id: "orgs", label: `ORGANIZATIONS [${organizations.length}]` },
+                  {
+                    id: "orgs",
+                    label: `ORGANIZATIONS [${organizations.length}]`,
+                  },
                   { id: "users", label: `USERS [${users.length}]` },
                 ].map((tab) => (
                   <button
@@ -360,7 +410,11 @@ export default function SuperAdminDashboard() {
                       <motion.div
                         layoutId="activeTabIndicator"
                         className="absolute inset-0 border border-slate-300 dark:border-neutral-700 bg-white dark:bg-neutral-900 shadow-sm"
-                        transition={{ type: "spring", stiffness: 400, damping: 30 }}
+                        transition={{
+                          type: "spring",
+                          stiffness: 400,
+                          damping: 30,
+                        }}
                       />
                     )}
                     <span className="relative z-10">{tab.label}</span>
@@ -411,23 +465,39 @@ export default function SuperAdminDashboard() {
                     <tr>
                       <th className="py-3.5 px-4 font-normal">ORG_NAME</th>
                       <th className="py-3.5 px-4 font-normal">SLUG</th>
-                      <th className="py-3.5 px-4 font-normal text-center">PROJECTS</th>
-                      <th className="py-3.5 px-4 font-normal text-center">MEMBERS</th>
-                      <th className="py-3.5 px-4 font-normal text-right">ACTIONS</th>
+                      <th className="py-3.5 px-4 font-normal text-center">
+                        PROJECTS
+                      </th>
+                      <th className="py-3.5 px-4 font-normal text-center">
+                        MEMBERS
+                      </th>
+                      <th className="py-3.5 px-4 font-normal text-right">
+                        ACTIONS
+                      </th>
                     </tr>
                   </thead>
                   <tbody className="divide-y divide-slate-200/80 dark:divide-neutral-900 text-slate-800 dark:text-neutral-300">
                     {filteredOrgs.length === 0 ? (
                       <tr>
-                        <td colSpan={5} className="py-8 text-center text-slate-400 dark:text-neutral-600 italic">
+                        <td
+                          colSpan={5}
+                          className="py-8 text-center text-slate-400 dark:text-neutral-600 italic"
+                        >
                           [NO ORGANIZATIONS MATCHING CRITERIA]
                         </td>
                       </tr>
                     ) : (
                       filteredOrgs.map((org) => (
-                        <tr key={org.id} className="hover:bg-slate-50 dark:hover:bg-neutral-900/60 transition-colors">
-                          <td className="py-3.5 px-4 font-medium text-slate-900 dark:text-white">{org.name}</td>
-                          <td className="py-3.5 px-4 text-slate-500 dark:text-neutral-500">{org.slug}</td>
+                        <tr
+                          key={org.id}
+                          className="hover:bg-slate-50 dark:hover:bg-neutral-900/60 transition-colors"
+                        >
+                          <td className="py-3.5 px-4 font-medium text-slate-900 dark:text-white">
+                            {org.name}
+                          </td>
+                          <td className="py-3.5 px-4 text-slate-500 dark:text-neutral-500">
+                            {org.slug}
+                          </td>
                           <td className="py-3.5 px-4 text-center font-bold text-slate-900 dark:text-neutral-200">
                             {org._count?.projects || 0}
                           </td>
@@ -465,22 +535,34 @@ export default function SuperAdminDashboard() {
                       <th className="py-3.5 px-4 font-normal">USER_IDENTITY</th>
                       <th className="py-3.5 px-4 font-normal">ROLE</th>
                       <th className="py-3.5 px-4 font-normal">STATUS</th>
-                      <th className="py-3.5 px-4 font-normal text-right">ACTIONS</th>
+                      <th className="py-3.5 px-4 font-normal text-right">
+                        ACTIONS
+                      </th>
                     </tr>
                   </thead>
                   <tbody className="divide-y divide-slate-200/80 dark:divide-neutral-900 text-slate-800 dark:text-neutral-300">
                     {filteredUsers.length === 0 ? (
                       <tr>
-                        <td colSpan={4} className="py-8 text-center text-slate-400 dark:text-neutral-600 italic">
+                        <td
+                          colSpan={4}
+                          className="py-8 text-center text-slate-400 dark:text-neutral-600 italic"
+                        >
                           [NO USERS FOUND]
                         </td>
                       </tr>
                     ) : (
                       filteredUsers.map((u) => (
-                        <tr key={u.id} className="hover:bg-slate-50 dark:hover:bg-neutral-900/60 transition-colors">
+                        <tr
+                          key={u.id}
+                          className="hover:bg-slate-50 dark:hover:bg-neutral-900/60 transition-colors"
+                        >
                           <td className="py-3.5 px-4">
-                            <div className="text-slate-900 dark:text-white font-medium">{u.name || "UNNAMED"}</div>
-                            <div className="text-[11px] text-slate-500 dark:text-neutral-500">{u.email}</div>
+                            <div className="text-slate-900 dark:text-white font-medium">
+                              {u.name || "UNNAMED"}
+                            </div>
+                            <div className="text-[11px] text-slate-500 dark:text-neutral-500">
+                              {u.email}
+                            </div>
                           </td>
                           <td className="py-3.5 px-4">
                             <span
@@ -510,7 +592,9 @@ export default function SuperAdminDashboard() {
                                 <button
                                   onClick={() =>
                                     setModalAction({
-                                      type: u.isBlocked ? "unblock_user" : "block_user",
+                                      type: u.isBlocked
+                                        ? "unblock_user"
+                                        : "block_user",
                                       targetId: u.id,
                                       targetName: u.name || u.email,
                                     })
@@ -544,11 +628,14 @@ export default function SuperAdminDashboard() {
           </motion.div>
 
           {/* AI SRE TERMINAL PANE (4 COLS) */}
-          <motion.div variants={itemVariants} className="lg:col-span-4 space-y-4">
-            <div className="border border-slate-800 dark:border-neutral-800 bg-slate-950 dark:bg-black shadow-2xl overflow-hidden font-mono text-xs flex flex-col h-[520px]">
+          <motion.div
+            variants={itemVariants}
+            className="lg:col-span-4 space-y-4"
+          >
+            <div className="border border-slate-200 dark:border-neutral-800 bg-white dark:bg-black shadow-lg dark:shadow-2xl overflow-hidden font-mono text-xs flex flex-col h-[520px]">
               {/* Terminal Header */}
-              <div className="px-4 py-3 bg-slate-900 dark:bg-neutral-950 border-b border-slate-800 dark:border-neutral-800 flex items-center justify-between shrink-0">
-                <div className="flex items-center gap-2 text-emerald-400 text-[11px] font-semibold">
+              <div className="px-4 py-3 bg-slate-100 dark:bg-neutral-950 border-b border-slate-200 dark:border-neutral-800 flex items-center justify-between shrink-0">
+                <div className="flex items-center gap-2 text-emerald-700 dark:text-emerald-400 text-[11px] font-semibold">
                   <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
                   AI_SRE_TERMINAL_V1
                 </div>
@@ -556,13 +643,13 @@ export default function SuperAdminDashboard() {
                 <div className="flex items-center gap-2 text-[10px]">
                   <button
                     onClick={() => setIsPaused(!isPaused)}
-                    className="px-2 py-0.5 border border-slate-700 dark:border-neutral-800 bg-slate-800 dark:bg-neutral-900 text-slate-300 dark:text-neutral-400 hover:text-white uppercase cursor-pointer"
+                    className="px-2 py-0.5 border border-slate-300 dark:border-neutral-800 bg-white dark:bg-neutral-900 text-slate-700 dark:text-neutral-400 hover:text-slate-900 dark:hover:text-white uppercase cursor-pointer"
                   >
                     {isPaused ? "[PLAY]" : "[PAUSE]"}
                   </button>
                   <button
                     onClick={() => setLogs([])}
-                    className="px-2 py-0.5 border border-slate-700 dark:border-neutral-800 bg-slate-800 dark:bg-neutral-900 text-slate-300 dark:text-neutral-400 hover:text-white uppercase cursor-pointer"
+                    className="px-2 py-0.5 border border-slate-300 dark:border-neutral-800 bg-white dark:bg-neutral-900 text-slate-700 dark:text-neutral-400 hover:text-slate-900 dark:hover:text-white uppercase cursor-pointer"
                   >
                     [CLR]
                   </button>
@@ -572,17 +659,25 @@ export default function SuperAdminDashboard() {
               {/* Terminal Body */}
               <div className="p-4 flex-1 overflow-y-auto space-y-2 bg-slate-950 dark:bg-black text-emerald-400 font-mono text-[11px] leading-relaxed selection:bg-slate-800">
                 {filteredLogs.length === 0 ? (
-                  <div className="text-slate-600 dark:text-neutral-700 italic">
-                    Waiting for real-time Redis telemetry & AI SRE root-cause diagnostics...
+                  <div className="text-slate-500 dark:text-neutral-700 italic">
+                    Waiting for real-time Redis telemetry & AI SRE root-cause
+                    diagnostics...
                   </div>
                 ) : (
                   filteredLogs.map((log) => (
-                    <div key={log.id} className="flex items-start gap-2 border-b border-slate-900 dark:border-neutral-950 py-0.5">
-                      <span className="text-slate-600 dark:text-neutral-600 shrink-0 select-none">
+                    <div
+                      key={log.id}
+                      className="flex items-start gap-2 border-b border-slate-900 dark:border-neutral-950 py-0.5"
+                    >
+                      <span className="text-slate-500 dark:text-neutral-600 shrink-0 select-none">
                         {new Date(log.timestamp).toLocaleTimeString()}
                       </span>
-                      <span className="text-emerald-400 font-bold shrink-0">[{log.type}]</span>
-                      <span className="text-emerald-300/90 dark:text-emerald-500/80 break-all">{log.content}</span>
+                      <span className="text-emerald-400 font-bold shrink-0">
+                        [{log.type}]
+                      </span>
+                      <span className="text-emerald-300/90 dark:text-emerald-500/80 break-all">
+                        {log.content}
+                      </span>
                     </div>
                   ))
                 )}
@@ -590,9 +685,9 @@ export default function SuperAdminDashboard() {
               </div>
 
               {/* Terminal Command Prompt Footer */}
-              <div className="p-3 bg-slate-900 dark:bg-neutral-950 border-t border-slate-800 dark:border-neutral-800 text-[11px] text-slate-400 dark:text-neutral-500 shrink-0 font-mono flex items-center justify-between">
+              <div className="p-3 bg-slate-100 dark:bg-neutral-950 border-t border-slate-200 dark:border-neutral-800 text-[11px] text-slate-600 dark:text-neutral-500 shrink-0 font-mono flex items-center justify-between">
                 <span>sre@upnode-root:~$ telemetry_watch</span>
-                <span className="text-emerald-400 animate-pulse">█</span>
+                <span className="text-emerald-500 animate-pulse">█</span>
               </div>
             </div>
           </motion.div>
@@ -614,13 +709,18 @@ export default function SuperAdminDashboard() {
                   [DESTRUCTIVE_ACTION_CONFIRMATION]
                 </span>
                 <h3 className="text-lg font-light text-slate-900 dark:text-white uppercase tracking-wide">
-                  {modalAction.type === "block_user" && `BLOCK USER: ${modalAction.targetName}`}
-                  {modalAction.type === "unblock_user" && `UNBLOCK USER: ${modalAction.targetName}`}
-                  {modalAction.type === "delete_user" && `PURGE USER: ${modalAction.targetName}`}
-                  {modalAction.type === "delete_org" && `PURGE ORG: ${modalAction.targetName}`}
+                  {modalAction.type === "block_user" &&
+                    `BLOCK USER: ${modalAction.targetName}`}
+                  {modalAction.type === "unblock_user" &&
+                    `UNBLOCK USER: ${modalAction.targetName}`}
+                  {modalAction.type === "delete_user" &&
+                    `PURGE USER: ${modalAction.targetName}`}
+                  {modalAction.type === "delete_org" &&
+                    `PURGE ORG: ${modalAction.targetName}`}
                 </h3>
                 <p className="text-xs text-slate-600 dark:text-neutral-400 leading-relaxed">
-                  THIS ACTION WILL BE EXECUTED IMMEDIATELY ACROSS THE GLOBAL CLUSTER DATA STORE.
+                  THIS ACTION WILL BE EXECUTED IMMEDIATELY ACROSS THE GLOBAL
+                  CLUSTER DATA STORE.
                 </p>
               </div>
 
