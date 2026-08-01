@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useMemo } from "react";
+import React, { useState, useMemo, useEffect } from "react";
 import { useIncidentStream } from "@/hooks/useIncidentStream";
 import { useIncidents, useIncident } from "@/hooks/use-incidents";
 import { useAuth } from "@/hooks/use-auth";
@@ -14,6 +14,8 @@ import SuperAdminDashboard from "../admin/super-admin-dashboard";
 import CreateProjectModal from "../projects/create-project-modal";
 import ProjectSettingsModal from "../projects/project-settings-modal";
 import { Project } from "@/services/projects.service";
+import { OnboardingWizard, ONBOARDING_KEY } from "../onboarding/onboarding-wizard";
+import { organizationService } from "@/services/organization.service";
 
 export function DashboardView() {
   const { user } = useAuth();
@@ -21,6 +23,39 @@ export function DashboardView() {
   const [viewMode, setViewMode] = useState<"super_admin" | "org">(
     isSuperAdmin ? "super_admin" : "org",
   );
+
+  // Onboarding state — show wizard if user has no org and hasn't completed onboarding
+  const [showOnboarding, setShowOnboarding] = useState(false);
+  const [onboardingChecked, setOnboardingChecked] = useState(false);
+
+  useEffect(() => {
+    if (!user) return;
+    // Super admins skip onboarding
+    if (isSuperAdmin) {
+      setOnboardingChecked(true);
+      return;
+    }
+    const alreadyDone = typeof window !== "undefined" && localStorage.getItem(ONBOARDING_KEY) === "true";
+    if (alreadyDone) {
+      setOnboardingChecked(true);
+      return;
+    }
+    // Check if user is in any org
+    organizationService.getUserOrganizations().then((orgs) => {
+      if (orgs.length === 0) {
+        setShowOnboarding(true);
+      } else {
+        // User has an org — store it and skip onboarding
+        if (typeof window !== "undefined" && !localStorage.getItem("activeOrganizationId")) {
+          localStorage.setItem("activeOrganizationId", orgs[0].id);
+        }
+        localStorage.setItem(ONBOARDING_KEY, "true");
+      }
+      setOnboardingChecked(true);
+    }).catch(() => {
+      setOnboardingChecked(true);
+    });
+  }, [user, isSuperAdmin]);
 
   const streamStatus = useIncidentStream();
 
@@ -160,6 +195,17 @@ export function DashboardView() {
           }
         }}
       />
+
+      {/* Onboarding Wizard — shown once for first-time users with no org */}
+      {showOnboarding && user && (
+        <OnboardingWizard
+          userName={user.name || user.email || ""}
+          onComplete={(_orgId, _orgName) => {
+            setShowOnboarding(false);
+            window.location.reload();
+          }}
+        />
+      )}
     </div>
   );
 }
