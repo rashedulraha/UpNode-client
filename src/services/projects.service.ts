@@ -76,5 +76,14 @@ export const projectsService = {
     const response = await api.patch(`/projects/${projectId}/maintenance`, payload);
     return response.data;
   },
+
+  async deleteProject(id: string): Promise<void> {
+    await api.delete(`/projects/${id}`);
+  },
+
+  async updateProject(id: string, data: Partial<CreateProjectInput>): Promise<Project> {
+    const response = await api.patch<Project>(`/projects/${id}`, data);
+    return response.data;
+  },
 };
 

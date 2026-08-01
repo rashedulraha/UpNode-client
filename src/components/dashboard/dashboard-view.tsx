@@ -11,31 +11,37 @@ import IncidentList from "../incidents/incident-list";
 import IncidentDetails from "../incidents/incident-details";
 import CreateIncidentModal from "../incidents/create-incident-modal";
 import SuperAdminDashboard from "../admin/super-admin-dashboard";
+import CreateProjectModal from "../projects/create-project-modal";
+import ProjectSettingsModal from "../projects/project-settings-modal";
+import { Project } from "@/services/projects.service";
 
 export function DashboardView() {
   const { user } = useAuth();
   const isSuperAdmin = user?.role === "SUPER_ADMIN";
   const [viewMode, setViewMode] = useState<"super_admin" | "org">(
-    isSuperAdmin ? "super_admin" : "org"
+    isSuperAdmin ? "super_admin" : "org",
   );
 
   const streamStatus = useIncidentStream();
 
   // Selected filters state
   const [selectedProjectId, setSelectedProjectId] = useState<string | null>(
-    null
+    null,
   );
   const [selectedIncidentId, setSelectedIncidentId] = useState<string | null>(
-    null
+    null,
   );
   const [searchQuery, setSearchQuery] = useState<string>("");
   const [statusFilter, setStatusFilter] = useState<IncidentStatus | "ALL">(
-    "ALL"
+    "ALL",
   );
   const [severityFilter, setSeverityFilter] = useState<
     IncidentSeverity | "ALL"
   >("ALL");
   const [isCreateModalOpen, setIsCreateModalOpen] = useState<boolean>(false);
+  const [isCreateProjectOpen, setIsCreateProjectOpen] =
+    useState<boolean>(false);
+  const [settingsProject, setSettingsProject] = useState<Project | null>(null);
 
   // Fetch incidents list from backend via TanStack Query
   const {
@@ -58,7 +64,7 @@ export function DashboardView() {
     const items = paginatedIncidents?.items || [];
     if (!searchQuery.trim()) return items;
     return items.filter((item) =>
-      item.title.toLowerCase().includes(searchQuery.toLowerCase().trim())
+      item.title.toLowerCase().includes(searchQuery.toLowerCase().trim()),
     );
   }, [paginatedIncidents?.items, searchQuery]);
 
@@ -93,6 +99,8 @@ export function DashboardView() {
               setSelectedProjectId(id);
               setSelectedIncidentId(null);
             }}
+            onOpenCreateProject={() => setIsCreateProjectOpen(true)}
+            onOpenProjectSettings={(project) => setSettingsProject(project)}
           />
 
           {/* Main Content Area */}
@@ -132,6 +140,25 @@ export function DashboardView() {
       <CreateIncidentModal
         isOpen={isCreateModalOpen}
         onClose={() => setIsCreateModalOpen(false)}
+      />
+
+      {/* Modal for creating a new project */}
+      <CreateProjectModal
+        isOpen={isCreateProjectOpen}
+        onClose={() => setIsCreateProjectOpen(false)}
+      />
+
+      {/* Modal for project settings */}
+      <ProjectSettingsModal
+        isOpen={settingsProject !== null}
+        onClose={() => setSettingsProject(null)}
+        project={settingsProject}
+        onProjectDeleted={() => {
+          if (selectedProjectId === settingsProject?.id) {
+            setSelectedProjectId(null);
+            setSelectedIncidentId(null);
+          }
+        }}
       />
     </div>
   );
