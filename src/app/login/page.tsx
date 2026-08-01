@@ -87,8 +87,7 @@ function LoginFormContent() {
         setSuccessMessage("Sign in successful! Redirecting...");
         await refetchSession();
         setTimeout(() => {
-          router.push(redirectTo);
-          router.refresh();
+          window.location.href = redirectTo;
         }, 500);
       }
     } catch (err: any) {
@@ -200,9 +199,17 @@ function LoginFormContent() {
 
             {/* Password Field */}
             <div className="space-y-1.5">
-              <label className="block text-[11px] font-bold tracking-wider uppercase text-slate-700 dark:text-neutral-300">
-                [PASSWORD]
-              </label>
+              <div className="flex items-center justify-between">
+                <label className="block text-[11px] font-bold tracking-wider uppercase text-slate-700 dark:text-neutral-300">
+                  [PASSWORD]
+                </label>
+                <Link
+                  href="/forgot-password"
+                  className="text-[10px] text-slate-500 hover:text-slate-900 dark:text-neutral-400 dark:hover:text-white transition-colors hover:underline"
+                >
+                  [FORGOT_PASSWORD?]
+                </Link>
+              </div>
               <div className="relative">
                 <Lock className="absolute left-3 top-2.5 h-4 w-4 text-slate-400 dark:text-neutral-500" />
                 <input
