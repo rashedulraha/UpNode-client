@@ -3,9 +3,17 @@ import api from "@/lib/api";
 export interface Project {
   id: string;
   name: string;
+  slug?: string;
   description?: string;
   url?: string;
   createdAt: string;
+}
+
+export interface CreateProjectInput {
+  name: string;
+  slug?: string;
+  description?: string;
+  url?: string;
 }
 
 export const projectsService = {
@@ -22,7 +30,7 @@ export const projectsService = {
     return response.data;
   },
 
-  async createProject(data: { name: string; description?: string; url?: string }): Promise<Project> {
+  async createProject(data: CreateProjectInput): Promise<Project> {
     const response = await api.post<Project>("/projects", data);
     return response.data;
   },
