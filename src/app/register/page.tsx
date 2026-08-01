@@ -98,8 +98,7 @@ function RegisterFormContent() {
         setSuccessMessage("Account created successfully! Redirecting...");
         await refetchSession();
         setTimeout(() => {
-          router.push(redirectTo);
-          router.refresh();
+          window.location.href = redirectTo;
         }, 500);
       }
     } catch (err: any) {
