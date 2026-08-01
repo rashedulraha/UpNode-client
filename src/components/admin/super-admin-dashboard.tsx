@@ -35,7 +35,6 @@ export default function SuperAdminDashboard() {
   const [logFilter, setLogFilter] = useState<"all" | "info" | "warn" | "error">(
     "all",
   );
-  const terminalEndRef = useRef<HTMLDivElement | null>(null);
 
   // Confirmation Modal
   const [modalAction, setModalAction] = useState<{
@@ -165,9 +164,11 @@ export default function SuperAdminDashboard() {
     };
   }, [isPaused]);
 
+  const terminalBodyRef = useRef<HTMLDivElement | null>(null);
+
   useEffect(() => {
-    if (!isPaused && terminalEndRef.current) {
-      terminalEndRef.current.scrollIntoView({ behavior: "smooth" });
+    if (!isPaused && terminalBodyRef.current) {
+      terminalBodyRef.current.scrollTop = terminalBodyRef.current.scrollHeight;
     }
   }, [logs, isPaused]);
 
@@ -657,7 +658,10 @@ export default function SuperAdminDashboard() {
               </div>
 
               {/* Terminal Body */}
-              <div className="p-4 flex-1 overflow-y-auto space-y-2 bg-slate-950 dark:bg-black text-emerald-400 font-mono text-[11px] leading-relaxed selection:bg-slate-800">
+              <div
+                ref={terminalBodyRef}
+                className="p-4 flex-1 overflow-y-auto space-y-2 bg-slate-950 dark:bg-black text-emerald-400 font-mono text-[11px] leading-relaxed selection:bg-slate-800"
+              >
                 {filteredLogs.length === 0 ? (
                   <div className="text-slate-500 dark:text-neutral-700 italic">
                     Waiting for real-time Redis telemetry & AI SRE root-cause
@@ -681,7 +685,6 @@ export default function SuperAdminDashboard() {
                     </div>
                   ))
                 )}
-                <div ref={terminalEndRef} />
               </div>
 
               {/* Terminal Command Prompt Footer */}
