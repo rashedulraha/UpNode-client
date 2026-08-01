@@ -1,21 +1,159 @@
 "use client";
 
 import React, { useState } from "react";
-import { motion } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
 import { Incident, IncidentSeverity, IncidentStatus } from "@/types";
 import { useUpdateIncidentStatus } from "@/hooks/use-incidents";
 import { AiSreInsights } from "./ai-sre-insights";
 import { StatusDot } from "@/components/ui/status-dot";
-import { Loader2, X } from "lucide-react";
+import { Loader2, X, UploadCloud, Activity, FileText } from "lucide-react";
 import { format } from "date-fns";
 
 interface IncidentDetailsProps {
   incident: Incident | null;
   isLoading: boolean;
   onClose?: () => void;
+  onSelectIncident?: (id: string) => void;
 }
 
-export function IncidentDetails({ incident, isLoading, onClose }: IncidentDetailsProps) {
+function EmptyWorkspaceDropzone({
+  onSelectIncident,
+}: {
+  onSelectIncident?: (id: string) => void;
+}) {
+  const [isDragOver, setIsDragOver] = useState(false);
+  const [droppedFile, setDroppedFile] = useState<{
+    name: string;
+    content: string;
+  } | null>(null);
+
+  const handleDragOver = (e: React.DragEvent) => {
+    e.preventDefault();
+    setIsDragOver(true);
+  };
+
+  const handleDragLeave = () => {
+    setIsDragOver(false);
+  };
+
+  const handleDrop = (e: React.DragEvent) => {
+    e.preventDefault();
+    setIsDragOver(false);
+
+    // 1. Check if an incident ID was dragged & dropped from Telemetry Stream
+    const incidentId = e.dataTransfer.getData("text/plain");
+    if (incidentId && onSelectIncident) {
+      onSelectIncident(incidentId);
+      return;
+    }
+
+    // 2. Check if a local log file was dropped
+    if (e.dataTransfer.files && e.dataTransfer.files.length > 0) {
+      const file = e.dataTransfer.files[0];
+      const reader = new FileReader();
+      reader.onload = (event) => {
+        const text = event.target?.result as string;
+        setDroppedFile({ name: file.name, content: text.slice(0, 600) });
+      };
+      reader.readAsText(file);
+    }
+  };
+
+  return (
+    <div className="flex flex-col h-full space-y-5 font-sans">
+      {/* Interactive Drag & Drop Workspace Box */}
+      <div
+        onDragOver={handleDragOver}
+        onDragLeave={handleDragLeave}
+        onDrop={handleDrop}
+        className={`flex-1 flex flex-col items-center justify-center p-8 text-center rounded-3xl border-2 border-dashed transition-all glass-card-floating relative overflow-hidden ${
+          isDragOver
+            ? "border-primary bg-primary/10 scale-[1.01] shadow-xl shadow-primary/10"
+            : "border-border/40 bg-card/30 hover:border-primary/40 hover:bg-card/40"
+        }`}
+      >
+        <AnimatePresence>
+          {isDragOver && (
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              className="absolute inset-0 bg-primary/5 pointer-events-none"
+            />
+          )}
+        </AnimatePresence>
+
+        <div className="p-4 rounded-2xl bg-primary/10 text-primary border border-primary/20 mb-4 shrink-0">
+          <UploadCloud className="w-8 h-8 animate-bounce" />
+        </div>
+
+        <div className="space-y-1.5 max-w-sm">
+          <h3 className="text-base font-bold text-foreground tracking-tight">
+            Telemetry Diagnostic Workspace
+          </h3>
+          <p className="text-xs text-muted-foreground leading-relaxed font-mono">
+            Drag &amp; drop any incident card from the stream or drop log files (.log, .json) here to inspect.
+          </p>
+        </div>
+
+        {/* Quick Drop Target Badge */}
+        <div className="mt-5 flex items-center gap-2 px-3 py-1.5 rounded-full bg-muted/40 border border-border/40 text-[11px] font-mono text-muted-foreground">
+          <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
+          <span>DRAG &amp; DROP ZONE ACTIVE</span>
+        </div>
+
+        {droppedFile && (
+          <div className="mt-6 p-4 rounded-2xl bg-card border border-border text-left w-full max-w-md font-mono text-xs space-y-2">
+            <div className="flex items-center justify-between text-primary font-semibold">
+              <span className="truncate">{droppedFile.name}</span>
+              <span className="text-[10px] bg-primary/20 px-2 py-0.5 rounded">PARSED</span>
+            </div>
+            <pre className="p-2.5 rounded-xl bg-muted/50 text-[10px] overflow-x-auto text-muted-foreground max-h-32">
+              {droppedFile.content}
+            </pre>
+          </div>
+        )}
+      </div>
+
+      {/* Telemetry Stream Metrics Card */}
+      <div className="p-5 rounded-3xl bg-card/30 border border-border/30 glass-card-floating space-y-4 font-mono shrink-0">
+        <div className="flex items-center justify-between border-b border-border/30 pb-3">
+          <div className="flex items-center gap-2">
+            <Activity className="w-4 h-4 text-primary" />
+            <span className="text-xs font-bold text-foreground tracking-wide uppercase">
+              Telemetry Stream Metrics
+            </span>
+          </div>
+          <span className="text-[10px] px-2 py-0.5 rounded bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">
+            SYSTEM NORMAL
+          </span>
+        </div>
+
+        <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 text-xs">
+          <div className="p-3 rounded-2xl bg-muted/20 border border-border/30 space-y-1">
+            <span className="text-[9px] text-muted-foreground uppercase">SSE STREAM</span>
+            <p className="font-bold text-foreground">Active (100ms)</p>
+          </div>
+          <div className="p-3 rounded-2xl bg-muted/20 border border-border/30 space-y-1">
+            <span className="text-[9px] text-muted-foreground uppercase">AVG MTTD</span>
+            <p className="font-bold text-foreground">&lt; 4.2s</p>
+          </div>
+          <div className="p-3 rounded-2xl bg-muted/20 border border-border/30 space-y-1">
+            <span className="text-[9px] text-muted-foreground uppercase">EDGE NODES</span>
+            <p className="font-bold text-foreground">48 Online</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+export function IncidentDetails({
+  incident,
+  isLoading,
+  onClose,
+  onSelectIncident,
+}: IncidentDetailsProps) {
   const updateStatusMutation = useUpdateIncidentStatus();
   const [mutationError, setMutationError] = useState<string | null>(null);
 
@@ -29,17 +167,7 @@ export function IncidentDetails({ incident, isLoading, onClose }: IncidentDetail
   }
 
   if (!incident) {
-    return (
-      <div className="flex flex-col items-center justify-center h-full p-8 text-center text-muted-foreground gap-3 bg-card/30 rounded-3xl border-[0.5px] border-border/30 glass-card-floating">
-        <StatusDot variant="OFFLINE" size="lg" pulse={false} />
-        <div>
-          <p className="text-foreground font-semibold text-sm font-sans">No Incident Selected</p>
-          <p className="text-xs text-muted-foreground/80 mt-1 max-w-xs font-mono">
-            Select an incident from the telemetry stream to view diagnostics.
-          </p>
-        </div>
-      </div>
-    );
+    return <EmptyWorkspaceDropzone onSelectIncident={onSelectIncident} />;
   }
 
   const statusList: { status: IncidentStatus; label: string; desc: string }[] = [
