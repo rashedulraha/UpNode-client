@@ -63,7 +63,7 @@ export function IncidentList({
   ];
 
   return (
-    <div className="flex flex-col h-full space-y-4 font-sans">
+    <div className="flex flex-col h-full space-y-4 font-sans min-w-0 overflow-hidden">
       {/* Filters Bar with 0.5px dividers */}
       <div className="p-4 sm:p-5 rounded-2xl bg-card/30 space-y-3 glass-card-floating border-[0.5px] border-border/30">
         <div className="flex items-center justify-between border-b-[0.5px] border-border/30 pb-2.5">
