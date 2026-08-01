@@ -6,7 +6,7 @@ import { useAuth } from "@/hooks/use-auth";
 import { IncidentStreamStatus } from "@/hooks/useIncidentStream";
 import { StatusDot } from "@/components/ui/status-dot";
 import { ThemeToggle } from "@/components/ui/theme-toggle";
-import { Plus, Search, Home } from "lucide-react";
+import { Plus, Search, Home, Users } from "lucide-react";
 
 interface DashboardHeaderProps {
   streamStatus: IncidentStreamStatus;
@@ -24,43 +24,37 @@ export function DashboardHeader({
   const { user } = useAuth();
 
   return (
-    <header className="sticky top-0 z-40 w-full bg-card/40 backdrop-blur-2xl px-6 h-16 flex items-center justify-between gap-6 transition-all glass-card-floating border-b border-border/30 shrink-0">
-      {/* Left: Brand Badge & Pulsating Live Status */}
-      <div className="flex items-center gap-4">
-        {/* Home Icon Link */}
+    <header className="h-16 px-4 sm:px-6 bg-card/40 backdrop-blur-2xl border-b border-border/40 flex items-center justify-between gap-4 shrink-0 font-sans glass-card-floating">
+      {/* Left: Brand logo & Stream indicator */}
+      <div className="flex items-center gap-3">
         <Link
           href="/"
-          className="p-2 rounded-full bg-muted/40 hover:bg-muted text-muted-foreground hover:text-foreground border border-border/40 transition-all cursor-pointer flex items-center justify-center active:scale-95"
+          className="p-1.5 rounded-xl text-muted-foreground hover:text-foreground hover:bg-muted/40 transition-colors cursor-pointer border border-border/30 shrink-0"
           title="Go to Home"
         >
-          <Home className="w-4 h-4" />
+          <Home className="w-4 h-4 text-primary" />
         </Link>
-
-        <Link
-          href="/"
-          className="flex items-center gap-2.5 hover:opacity-85 transition-opacity"
-        >
-          <span className="font-semibold text-sm tracking-tight text-foreground font-sans">
+        <div className="flex items-center gap-2">
+          <span className="font-bold text-base tracking-tight text-foreground">
             UpNode
           </span>
-          <span className="text-[10px] font-mono font-medium px-2 py-0.5 rounded-md bg-muted/60 text-muted-foreground border border-border/40">
+          <span className="text-[10px] font-mono font-medium px-1.5 py-0.5 rounded bg-muted/60 text-muted-foreground border border-border/30">
             v2.6
           </span>
-        </Link>
+        </div>
 
-        {/* Minimal SSE Status Dot Indicator */}
-        <div className="hidden sm:flex items-center gap-2 px-3 py-1 rounded-full bg-muted/40 border border-border/40 text-[11px] font-mono text-muted-foreground">
+        <div className="hidden sm:flex items-center gap-1.5 pl-3 border-l border-border/40">
           <StatusDot
             variant={
               streamStatus.isConnected
-                ? "LIVE"
+                ? "OPERATIONAL"
                 : streamStatus.isReconnecting
-                  ? "HIGH"
+                  ? "DEGRADED"
                   : "OFFLINE"
             }
             size="sm"
           />
-          <span className="uppercase tracking-wider text-[10px] font-medium">
+          <span className="text-[10px] font-mono font-semibold tracking-wider text-muted-foreground uppercase">
             {streamStatus.isConnected
               ? "STREAM ACTIVE"
               : streamStatus.isReconnecting
@@ -85,7 +79,16 @@ export function DashboardHeader({
       </div>
 
       {/* Right: Actions & User Profile */}
-      <div className="flex items-center gap-3">
+      <div className="flex items-center gap-2 sm:gap-3">
+        <Link
+          href="/dashboard/settings/team"
+          className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-muted/40 hover:bg-muted text-muted-foreground hover:text-foreground border border-border/40 text-xs font-mono transition-all cursor-pointer"
+          title="Team & Role Management"
+        >
+          <Users className="w-3.5 h-3.5 text-primary" />
+          <span className="hidden sm:inline text-[11px] font-medium">Team</span>
+        </Link>
+
         <ThemeToggle />
 
         <button
@@ -96,7 +99,7 @@ export function DashboardHeader({
           <span className="hidden sm:inline">New Incident</span>
         </button>
 
-        <div className="flex items-center gap-2 pl-3 border-l border-border/40">
+        <div className="flex items-center gap-2 pl-2 sm:pl-3 border-l border-border/40">
           <div className="flex items-center gap-2 px-2.5 py-1 rounded-xl bg-muted/40 border border-border/40 text-xs font-medium text-foreground">
             <span className="w-2 h-2 rounded-full bg-primary/60" />
             <span className="hidden lg:inline max-w-[120px] truncate text-[11px]">
