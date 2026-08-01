@@ -51,26 +51,26 @@ export function DashboardHeader({
 
         {/* Super Admin Mode Switcher */}
         {isSuperAdmin && onViewModeChange && (
-          <div className="flex items-center gap-1 p-1 bg-muted/60 rounded-xl border border-border/40 font-mono text-[11px] ml-2">
+          <div className="flex items-center gap-1 p-1 bg-slate-100 dark:bg-neutral-900 rounded-xl border border-slate-200 dark:border-neutral-800 font-mono text-[11px] ml-2">
             <button
               onClick={() => onViewModeChange("super_admin")}
-              className={`px-2.5 py-1 rounded-lg transition-all cursor-pointer font-semibold ${
+              className={`px-3 py-1 rounded-lg transition-all cursor-pointer font-bold uppercase tracking-wider ${
                 viewMode === "super_admin"
-                  ? "bg-rose-500 text-white shadow-sm"
-                  : "text-muted-foreground hover:text-foreground"
+                  ? "bg-rose-600 text-white shadow-sm"
+                  : "text-slate-500 dark:text-neutral-400 hover:text-slate-900 dark:hover:text-white"
               }`}
             >
-              GLOBAL CONTROL
+              [ROOT_CONTROL]
             </button>
             <button
               onClick={() => onViewModeChange("org")}
-              className={`px-2.5 py-1 rounded-lg transition-all cursor-pointer font-semibold ${
+              className={`px-3 py-1 rounded-lg transition-all cursor-pointer font-bold uppercase tracking-wider ${
                 viewMode === "org"
-                  ? "bg-primary text-primary-foreground shadow-sm"
-                  : "text-muted-foreground hover:text-foreground"
+                  ? "bg-slate-900 dark:bg-white text-white dark:text-slate-900 shadow-sm"
+                  : "text-slate-500 dark:text-neutral-400 hover:text-slate-900 dark:hover:text-white"
               }`}
             >
-              ORG DASHBOARD
+              [ORG_DASHBOARD]
             </button>
           </div>
         )}

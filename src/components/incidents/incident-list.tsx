@@ -64,17 +64,17 @@ export function IncidentList({
 
   return (
     <div className="flex flex-col h-full space-y-4 font-sans min-w-0 overflow-hidden">
-      {/* Filters Bar with 0.5px dividers */}
-      <div className="p-4 sm:p-5 rounded-2xl bg-card/30 space-y-3 glass-card-floating border-[0.5px] border-border/30">
-        <div className="flex items-center justify-between border-b-[0.5px] border-border/30 pb-2.5">
-          <span className="text-[10px] font-mono font-semibold text-muted-foreground uppercase tracking-widest">
-            Telemetry Stream
+      {/* Filters Bar with 1px dividers */}
+      <div className="p-4 sm:p-5 rounded-2xl bg-white/70 dark:bg-black/80 space-y-3 backdrop-blur-3xl border border-slate-200 dark:border-neutral-800 shadow-sm">
+        <div className="flex items-center justify-between border-b border-slate-200 dark:border-neutral-800 pb-2.5">
+          <span className="text-[10px] font-mono font-semibold text-slate-400 dark:text-neutral-500 uppercase tracking-widest">
+            [TELEMETRY_STREAM]
           </span>
           <motion.button
             whileTap={{ scale: 0.9 }}
             whileHover={{ scale: 1.05 }}
             onClick={onRefresh}
-            className="p-1.5 rounded-xl bg-muted/40 hover:bg-muted text-muted-foreground hover:text-foreground transition-colors cursor-pointer border-[0.5px] border-border/30"
+            className="p-1.5 rounded-xl bg-slate-100 dark:bg-neutral-900 hover:bg-slate-200 dark:hover:bg-neutral-800 text-slate-600 dark:text-neutral-400 hover:text-slate-900 dark:hover:text-white transition-colors cursor-pointer border border-slate-200 dark:border-neutral-800"
             title="Refresh stream"
           >
             <RefreshCw className={`w-3.5 h-3.5 ${isLoading ? "animate-spin" : ""}`} />
@@ -82,18 +82,18 @@ export function IncidentList({
         </div>
 
         {/* Status Filter Chips */}
-        <div className="flex items-center gap-1.5 overflow-x-auto pb-1 scrollbar-none">
-          <span className="text-[10px] font-mono text-muted-foreground/60 pr-1 shrink-0 uppercase">Status:</span>
+        <div className="flex items-center gap-1.5 overflow-x-auto pb-1 scrollbar-none font-mono">
+          <span className="text-[10px] text-slate-400 dark:text-neutral-500 pr-1 shrink-0 uppercase">STATUS:</span>
           {statusOptions.map((st) => (
             <motion.button
               key={st}
               whileTap={{ scale: 0.94 }}
               whileHover={{ scale: 1.04 }}
               onClick={() => onStatusFilterChange(st)}
-              className={`px-2.5 py-1 rounded-xl text-[11px] font-mono transition-colors shrink-0 cursor-pointer border-[0.5px] ${
+              className={`px-2.5 py-1 rounded-xl text-[11px] transition-colors shrink-0 cursor-pointer border ${
                 statusFilter === st
-                  ? "bg-primary text-primary-foreground font-semibold shadow-sm border-primary/40"
-                  : "bg-muted/30 text-muted-foreground hover:bg-muted hover:text-foreground border-border/30"
+                  ? "bg-slate-900 dark:bg-white text-white dark:text-slate-900 border-slate-900 dark:border-white font-bold shadow-sm"
+                  : "bg-slate-100 dark:bg-neutral-900 text-slate-600 dark:text-neutral-400 hover:bg-slate-200 dark:hover:bg-neutral-800 hover:text-slate-900 dark:hover:text-white border-slate-200 dark:border-neutral-800"
               }`}
             >
               {st}
@@ -102,18 +102,18 @@ export function IncidentList({
         </div>
 
         {/* Severity Filter Chips */}
-        <div className="flex items-center gap-1.5 overflow-x-auto pb-1 scrollbar-none">
-          <span className="text-[10px] font-mono text-muted-foreground/60 pr-1 shrink-0 uppercase">Severity:</span>
+        <div className="flex items-center gap-1.5 overflow-x-auto pb-1 scrollbar-none font-mono">
+          <span className="text-[10px] text-slate-400 dark:text-neutral-500 pr-1 shrink-0 uppercase">SEVERITY:</span>
           {severityOptions.map((sev) => (
             <motion.button
               key={sev}
               whileTap={{ scale: 0.94 }}
               whileHover={{ scale: 1.04 }}
               onClick={() => onSeverityFilterChange(sev)}
-              className={`px-2.5 py-1 rounded-xl text-[11px] font-mono transition-colors shrink-0 cursor-pointer border-[0.5px] ${
+              className={`px-2.5 py-1 rounded-xl text-[11px] transition-colors shrink-0 cursor-pointer border ${
                 severityFilter === sev
-                  ? "bg-muted text-foreground border-border/60 font-semibold shadow-sm"
-                  : "bg-muted/30 text-muted-foreground hover:bg-muted hover:text-foreground border-border/30"
+                  ? "bg-slate-900 dark:bg-white text-white dark:text-slate-900 border-slate-900 dark:border-white font-bold shadow-sm"
+                  : "bg-slate-100 dark:bg-neutral-900 text-slate-600 dark:text-neutral-400 hover:bg-slate-200 dark:hover:bg-neutral-800 hover:text-slate-900 dark:hover:text-white border-slate-200 dark:border-neutral-800"
               }`}
             >
               {sev}
