@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState, useEffect, useRef } from "react";
-import { motion, useMotionValue, useTransform, useSpring, type Variants } from "framer-motion";
+import { motion, type Variants } from "framer-motion";
 import { ArrowRight, Check, Copy, LayoutDashboard } from "lucide-react";
 import { useAuth } from "@/hooks/use-auth";
 import { useRouter } from "next/navigation";
@@ -43,30 +43,6 @@ function MonitoringCard() {
   const poolIdxRef = useRef(9);
   const [cursor, setCursor] = useState(true);
 
-  // 3D Motion Perspective Tilt Controls
-  const x = useMotionValue(0);
-  const y = useMotionValue(0);
-
-  // Default tilt: left side closer (-7deg), slight top tilt (3deg)
-  const rotateXRaw = useTransform(y, [-150, 150], [9, -3]);
-  const rotateYRaw = useTransform(x, [-150, 150], [-15, 1]);
-
-  const rotateX = useSpring(rotateXRaw, { damping: 22, stiffness: 140 });
-  const rotateY = useSpring(rotateYRaw, { damping: 22, stiffness: 140 });
-
-  const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
-    const rect = e.currentTarget.getBoundingClientRect();
-    const centerX = rect.left + rect.width / 2;
-    const centerY = rect.top + rect.height / 2;
-    x.set(e.clientX - centerX);
-    y.set(e.clientY - centerY);
-  };
-
-  const handleMouseLeave = () => {
-    x.set(0);
-    y.set(0);
-  };
-
   useEffect(() => {
     const t = setInterval(() => setCursor((c) => !c), 520);
     return () => clearInterval(t);
@@ -102,40 +78,28 @@ function MonitoringCard() {
 
   return (
     <div
-      className="relative w-full py-4"
+      className="relative w-full py-2"
       style={{ perspective: "1200px" }}
-      onMouseMove={handleMouseMove}
-      onMouseLeave={handleMouseLeave}
     >
-      {/* Ambient Gradient Glow Aura */}
-      <div
-        className="absolute -inset-3 rounded-3xl opacity-50 blur-3xl pointer-events-none transition-all duration-700"
-        style={{
-          background:
-            "radial-gradient(ellipse at 40% 40%, rgba(99, 102, 241, 0.22), rgba(168, 85, 247, 0.15), transparent 70%)",
-        }}
-      />
-
       <motion.div
         initial={{ opacity: 0, x: 24, scale: 0.96 }}
         animate={{ opacity: 1, x: 0, scale: 1 }}
         style={{
-          rotateX,
-          rotateY,
+          transform: "rotateY(-7deg) rotateX(3deg)",
           transformStyle: "preserve-3d",
         }}
         transition={{ duration: 0.85, ease: [0.16, 1, 0.3, 1] }}
         className="relative w-full"
       >
-        {/* Next-Gen Card Container - Borderless Glassmorphism with Floating Edge Glow */}
+        {/* Terminal Card Container - Static Clean Theme Frame */}
         <div
-          className="relative rounded-3xl overflow-hidden backdrop-blur-3xl"
+          className="relative rounded-2xl overflow-hidden"
           style={{
             background: "var(--lp-surface)",
-            backdropFilter: "blur(32px) saturate(1.3)",
-            WebkitBackdropFilter: "blur(32px) saturate(1.3)",
-            boxShadow:
-              "0 25px 55px -12px rgba(0, 0, 0, 0.45), inset 0 1px 0 0 rgba(255, 255, 255, 0.08)",
+            backdropFilter: "blur(28px) saturate(1.2)",
+            WebkitBackdropFilter: "blur(28px) saturate(1.2)",
+            border: "0.5px solid var(--lp-border)",
+            borderTop: "0.5px solid var(--lp-border-top)",
           }}
         >
           {/* Terminal Header */}
