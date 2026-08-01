@@ -2,6 +2,7 @@
 
 import React, { useState } from "react";
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
 import { ArrowRight, LayoutDashboard, LogOut, Menu, User, X } from "lucide-react";
 import { useAuth } from "@/hooks/use-auth";
@@ -10,6 +11,7 @@ import { ThemeToggle } from "@/components/ui/theme-toggle";
 
 export function LandingNavbar() {
   const { isAuthenticated, user, signOut } = useAuth();
+  const pathname = usePathname();
   const [isLogoutModalOpen, setIsLogoutModalOpen] = useState(false);
   const [isSigningOut, setIsSigningOut] = useState(false);
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
@@ -22,11 +24,14 @@ export function LandingNavbar() {
     setIsDrawerOpen(false);
   };
 
+  const isLandingPage = pathname === "/";
+
   const navLinks = [
-    { label: "Platform", href: "#platform" },
-    { label: "Features", href: "#features" },
-    { label: "Architecture", href: "#architecture" },
-    { label: "Pricing", href: "#pricing" },
+    { label: "Platform", href: isLandingPage ? "#platform" : "/#platform" },
+    { label: "Features", href: isLandingPage ? "#features" : "/#features" },
+    { label: "Architecture", href: isLandingPage ? "#architecture" : "/#architecture" },
+    { label: "Pricing", href: isLandingPage ? "#pricing" : "/#pricing" },
+    { label: "Docs", href: "/docs" },
   ];
 
   return (
@@ -41,24 +46,24 @@ export function LandingNavbar() {
         }}
       >
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-14 flex items-center justify-between relative">
-          {/* Logo */}
-          <Link href="/" className="flex items-center gap-2.5 group">
-            <span
-              className="font-bold text-sm tracking-tight flex items-center gap-2"
-              style={{ color: "var(--lp-text-primary)" }}
-            >
-              UpNode
-              <span
-                className="text-[9px] font-mono px-1.5 py-0.5 rounded"
-                style={{
-                  color: "var(--lp-text-dim)",
-                  border: "0.5px solid var(--lp-border)",
-                }}
-              >
+          {/* Logo & Stream Status */}
+          <div className="flex items-center gap-3">
+            <Link href="/" className="flex items-center gap-2 group">
+              <span className="font-bold text-sm tracking-widest uppercase font-mono text-slate-900 dark:text-white">
+                UPNODE
+              </span>
+              <span className="text-[9px] font-mono px-1.5 py-0.5 bg-slate-100 dark:bg-black text-slate-500 dark:text-neutral-400 border border-slate-200 dark:border-neutral-800">
                 v2.6
               </span>
-            </span>
-          </Link>
+            </Link>
+
+            <div className="hidden sm:flex items-center gap-1.5 pl-3 border-l border-slate-200 dark:border-neutral-800 font-mono text-[10px]">
+              <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 dark:bg-emerald-400 animate-pulse shadow-[0_0_6px_rgba(52,211,153,0.8)]" />
+              <span className="font-semibold tracking-wider text-slate-500 dark:text-neutral-400 uppercase text-[9px]">
+                STREAM ACTIVE
+              </span>
+            </div>
+          </div>
 
           {/* Desktop Center Nav - Absolutely Centered */}
           <nav
@@ -66,13 +71,13 @@ export function LandingNavbar() {
             style={{ color: "var(--lp-text-mid)" }}
           >
             {navLinks.map((l) => (
-              <a
+              <Link
                 key={l.label}
                 href={l.href}
                 className="hover:opacity-100 transition-opacity py-1 opacity-75"
               >
                 {l.label}
-              </a>
+              </Link>
             ))}
           </nav>
 
@@ -231,7 +236,7 @@ export function LandingNavbar() {
                 </p>
                 <nav className="flex flex-col space-y-3 font-mono text-xs tracking-wider uppercase">
                   {navLinks.map((l) => (
-                    <a
+                    <Link
                       key={l.label}
                       href={l.href}
                       onClick={() => setIsDrawerOpen(false)}
@@ -239,7 +244,7 @@ export function LandingNavbar() {
                       style={{ color: "var(--lp-text-primary)" }}
                     >
                       {l.label}
-                    </a>
+                    </Link>
                   ))}
                 </nav>
               </div>
