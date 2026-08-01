@@ -210,11 +210,10 @@ export function IncidentDetails({
 
   return (
     <motion.div
-      layoutId={`card-container-${incident.id}`}
-      initial={{ opacity: 0, scale: 0.98 }}
-      animate={{ opacity: 1, scale: 1 }}
-      transition={{ duration: 0.25, ease: "easeOut" }}
-      className="flex flex-col h-full bg-card/30 rounded-3xl p-6 sm:p-8 overflow-y-auto space-y-7 font-sans glass-card-floating border-[0.5px] border-border/30"
+      initial={{ opacity: 0, y: 8 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.2, ease: "easeOut" }}
+      className="flex flex-col h-full bg-card/30 rounded-3xl p-6 sm:p-8 overflow-y-auto space-y-7 font-sans glass-card-floating border-[0.5px] border-border/30 min-w-0"
     >
       {/* Header with Organic Pulsating Status Dot & Monospaced Severity */}
       <div className="flex items-start justify-between gap-4 border-b-[0.5px] border-border/30 pb-6">
