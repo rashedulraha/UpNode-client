@@ -19,6 +19,19 @@ export function ProjectsSidebar({
   onOpenProjectSettings,
 }: ProjectsSidebarProps) {
   const { data: projects = [], isLoading } = useProjects();
+  const [showPromo, setShowPromo] = React.useState<boolean>(true);
+
+  React.useEffect(() => {
+    const isDismissed = localStorage.getItem("upnode_promo_dismissed");
+    if (isDismissed === "true") {
+      setShowPromo(false);
+    }
+  }, []);
+
+  const handleDismissPromo = () => {
+    localStorage.setItem("upnode_promo_dismissed", "true");
+    setShowPromo(false);
+  };
 
   return (
     <aside className="w-full lg:w-72 xl:w-80 bg-white dark:bg-black backdrop-blur-3xl flex flex-col justify-between h-auto lg:h-full shrink-0 font-mono border-b lg:border-b-0 lg:border-r border-slate-200 dark:border-neutral-800 overflow-hidden select-none transition-colors">
@@ -110,6 +123,41 @@ export function ProjectsSidebar({
           </div>
         </div>
       </div>
+
+      {/* Promotion / Plan Info Banner */}
+      {showPromo && (
+        <div className="mx-4 mb-4 p-4 border border-amber-500/30 dark:border-amber-500/20 bg-amber-500/[0.03] dark:bg-amber-500/[0.01] relative font-mono text-[11px] space-y-3">
+          <div className="flex items-center justify-between">
+            <span className="text-amber-600 dark:text-amber-500 font-bold uppercase tracking-wider">
+              [BETA_v2.6 // FREE_PLAN]
+            </span>
+            <button
+              onClick={() => handleDismissPromo()}
+              className="text-slate-400 hover:text-slate-900 dark:hover:text-white transition-colors cursor-pointer text-[10px]"
+              title="Dismiss promotion"
+            >
+              [X]
+            </button>
+          </div>
+          <p className="text-slate-500 dark:text-neutral-400 leading-relaxed text-[10px]">
+            LIMIT_REACHED: SSL monitoring & Slack alert notifications are locked. Upgrade to premium for unlimited alerts and sub-second pings.
+          </p>
+          <div className="flex items-center gap-2 pt-1">
+            <a
+              href="/docs"
+              className="flex-1 py-1 px-2 text-center border border-slate-300 dark:border-neutral-700 bg-slate-100 dark:bg-neutral-900 text-slate-800 dark:text-neutral-300 hover:bg-slate-200 dark:hover:bg-neutral-800 transition-colors uppercase text-[9px] font-bold"
+            >
+              [READ_DOCS]
+            </a>
+            <a
+              href="/dashboard/settings/profile#pricing"
+              className="flex-1 py-1 px-2 text-center border border-amber-500/40 bg-amber-500/10 text-amber-700 dark:text-amber-400 hover:bg-amber-500/20 transition-all uppercase text-[9px] font-bold"
+            >
+              [UPGRADE]
+            </a>
+          </div>
+        </div>
+      )}
 
       {/* Footer Info */}
       <div className="p-3 border-t border-slate-200 dark:border-neutral-900 font-mono text-[10px] text-slate-500 dark:text-neutral-500 flex items-center justify-between bg-slate-50 dark:bg-black">
