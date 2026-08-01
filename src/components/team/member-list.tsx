@@ -2,10 +2,8 @@
 
 import React, { useState } from "react";
 import { Member, MemberRole } from "@/types";
-import { Loader2 } from "lucide-react";
 import { useRemoveMember, useUpdateMemberRole } from "@/hooks/use-team";
 import { formatDistanceToNow } from "date-fns";
-import RemoveMemberModal from "./remove-member-modal";
 
 interface MemberListProps {
   members: Member[];
@@ -30,25 +28,25 @@ export function MemberList({ members, isLoading, error }: MemberListProps) {
 
   if (isLoading) {
     return (
-      <div className="space-y-2 p-6 rounded-2xl bg-card/30 border border-border/30 text-center font-mono text-xs text-muted-foreground animate-pulse">
-        Loading organization members...
+      <div className="p-6 rounded-2xl bg-white/70 dark:bg-black/60 border border-slate-200 dark:border-neutral-800 text-center font-mono text-xs text-slate-500 dark:text-neutral-500 animate-pulse">
+        [LOADING_ORGANIZATION_MEMBERS...]
       </div>
     );
   }
 
   if (error) {
     return (
-      <div className="p-4 rounded-2xl bg-destructive/10 border border-destructive/20 text-destructive text-xs font-mono">
-        <p className="font-semibold">Failed to load organization members.</p>
-        <p className="opacity-80">{error.message || "Please check your network connection."}</p>
+      <div className="p-4 rounded-2xl bg-rose-50 dark:bg-rose-950/40 border border-rose-200 dark:border-rose-900/60 text-rose-800 dark:text-rose-300 text-xs font-mono">
+        <p className="font-bold">[FAILED TO LOAD MEMBERS]</p>
+        <p className="opacity-80">{error.message || "Please check network connection."}</p>
       </div>
     );
   }
 
   if (!members || members.length === 0) {
     return (
-      <div className="p-8 text-center rounded-2xl bg-card/30 border border-border/30 font-mono text-xs text-muted-foreground">
-        No team members found matching your search.
+      <div className="p-8 text-center rounded-2xl bg-white/70 dark:bg-black/60 border border-slate-200 dark:border-neutral-800 font-mono text-xs text-slate-500 dark:text-neutral-500 italic">
+        [NO MEMBERS FOUND MATCHING SEARCH CRITERIA]
       </div>
     );
   }
@@ -56,12 +54,12 @@ export function MemberList({ members, isLoading, error }: MemberListProps) {
   const getRoleBadgeStyle = (role: MemberRole) => {
     switch (role) {
       case "ADMIN":
-        return "bg-purple-500/10 text-purple-400 border-purple-500/30";
+        return "bg-slate-900 dark:bg-white text-white dark:text-slate-900 border-slate-900 dark:border-white font-bold";
       case "ENGINEER":
-        return "bg-primary/10 text-primary border-primary/30";
+        return "bg-slate-100 dark:bg-neutral-900 text-slate-800 dark:text-neutral-200 border-slate-300 dark:border-neutral-700 font-semibold";
       case "VIEWER":
       default:
-        return "bg-muted/40 text-muted-foreground border-border/40";
+        return "bg-slate-100/50 dark:bg-neutral-950 text-slate-500 dark:text-neutral-500 border-slate-200 dark:border-neutral-800";
     }
   };
 
@@ -76,40 +74,40 @@ export function MemberList({ members, isLoading, error }: MemberListProps) {
   };
 
   return (
-    <div className="rounded-2xl bg-card/30 border border-border/30 overflow-hidden glass-card-floating divide-y divide-border/30 font-sans">
+    <div className="rounded-2xl bg-white/80 dark:bg-black/60 border border-slate-200 dark:border-neutral-800 overflow-hidden divide-y divide-slate-200/80 dark:divide-neutral-900 font-mono">
       {members.map((member) => (
         <div
           key={member.id}
-          className="p-4 sm:p-5 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 hover:bg-muted/20 transition-colors"
+          className="p-4 sm:p-5 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 hover:bg-slate-50 dark:hover:bg-neutral-900/60 transition-colors"
         >
           {/* Left: User Avatar & Basic Info */}
           <div className="flex items-center gap-3.5 min-w-0">
-            <div className="w-9 h-9 rounded-full bg-primary/10 border border-primary/20 text-primary font-mono font-bold text-xs flex items-center justify-center shrink-0 uppercase">
+            <div className="w-9 h-9 rounded-xl bg-slate-100 dark:bg-neutral-900 border border-slate-300 dark:border-neutral-700 text-slate-900 dark:text-white font-mono font-bold text-xs flex items-center justify-center shrink-0 uppercase">
               {getInitials(member.user?.name, member.user?.email)}
             </div>
 
-            <div className="min-w-0 space-y-0.5">
-              <div className="flex items-center gap-2">
-                <h4 className="text-xs font-bold text-foreground truncate">
-                  {member.user?.name || "Team Member"}
+            <div className="min-w-0 space-y-0.5 font-sans">
+              <div className="flex items-center gap-2 font-mono">
+                <h4 className="text-xs font-bold text-slate-900 dark:text-white truncate font-sans">
+                  {member.user?.name || "UNNAMED"}
                 </h4>
                 <span
-                  className={`px-2 py-0.5 rounded-md text-[9px] font-mono font-bold uppercase tracking-wider border ${getRoleBadgeStyle(
+                  className={`px-2 py-0.5 rounded text-[10px] uppercase tracking-wider border ${getRoleBadgeStyle(
                     member.role
                   )}`}
                 >
-                  {member.role}
+                  [{member.role}]
                 </span>
               </div>
-              <p className="text-[11px] font-mono text-muted-foreground/80 truncate">
+              <p className="text-[11px] font-mono text-slate-500 dark:text-neutral-500 truncate">
                 {member.user?.email}
               </p>
             </div>
           </div>
 
           {/* Right: Joined Timestamp, Role Selector, Remove Action */}
-          <div className="flex items-center gap-3.5 w-full sm:w-auto justify-between sm:justify-end shrink-0">
-            <span className="text-[10px] font-mono text-muted-foreground/60">
+          <div className="flex items-center gap-3.5 w-full sm:w-auto justify-between sm:justify-end shrink-0 font-mono">
+            <span className="text-[10px] text-slate-400 dark:text-neutral-500">
               {member.user?.createdAt
                 ? formatDistanceToNow(new Date(member.user.createdAt), { addSuffix: true })
                 : "Joined recently"}
@@ -125,7 +123,7 @@ export function MemberList({ members, isLoading, error }: MemberListProps) {
                     role: e.target.value as MemberRole,
                   })
                 }
-                className="bg-muted/30 hover:bg-muted/60 border border-border/40 rounded-xl px-2.5 py-1 text-[11px] font-mono text-foreground focus:outline-none focus:ring-1 focus:ring-primary transition-all cursor-pointer"
+                className="bg-white dark:bg-black border border-slate-300 dark:border-neutral-800 rounded-lg px-2.5 py-1 text-[11px] font-mono text-slate-900 dark:text-white focus:outline-none transition-all cursor-pointer uppercase"
               >
                 <option value="ADMIN">ADMIN</option>
                 <option value="ENGINEER">ENGINEER</option>
@@ -140,23 +138,14 @@ export function MemberList({ members, isLoading, error }: MemberListProps) {
                   });
                 }}
                 disabled={removeMutation.isPending}
-                className="px-2.5 py-1 text-[11px] font-mono text-muted-foreground/70 hover:text-destructive hover:bg-destructive/10 border border-transparent hover:border-destructive/20 rounded-xl transition-all cursor-pointer disabled:opacity-50"
+                className="px-2.5 py-1 border border-slate-300 dark:border-neutral-700 bg-white dark:bg-black text-slate-600 dark:text-neutral-400 text-[11px] hover:text-rose-600 dark:hover:text-rose-400 hover:border-rose-500/50 hover:shadow-[0_0_12px_rgba(244,63,94,0.25)] transition-all cursor-pointer uppercase disabled:opacity-50"
               >
-                {removeMutation.isPending ? "..." : "Remove"}
+                {removeMutation.isPending ? "[...]" : "[REMOVE]"}
               </button>
             </div>
           </div>
         </div>
       ))}
-
-      {/* Remove Member Confirmation Modal */}
-      <RemoveMemberModal
-        isOpen={Boolean(memberToRemove)}
-        memberEmail={memberToRemove?.email || null}
-        onClose={() => setMemberToRemove(null)}
-        onConfirm={handleConfirmRemove}
-        isLoading={removeMutation.isPending}
-      />
     </div>
   );
 }

@@ -123,7 +123,7 @@ export function IncidentList({
       </div>
 
       {/* Incidents Stream List with Staggered Framer Motion Animation */}
-      <div className="flex-1 overflow-y-auto space-y-3.5 pr-1">
+      <div className="flex-1 overflow-y-auto space-y-3.5 px-2 py-1">
         {isLoading ? (
           <div className="space-y-3.5">
             {[1, 2, 3, 4].map((i) => (

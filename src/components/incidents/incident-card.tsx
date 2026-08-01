@@ -39,13 +39,12 @@ export function IncidentCard({ incident, isSelected, onClick }: IncidentCardProp
         e.dataTransfer.setData("text/plain", incident.id);
         e.dataTransfer.setData("application/json", JSON.stringify(incident));
       }}
-      whileHover={{ scale: 1.005 }}
       whileTap={{ scale: 0.98 }}
       transition={{ duration: 0.15 }}
       className={`p-4 sm:p-5 rounded-2xl border cursor-pointer space-y-3 backdrop-blur-3xl transition-all min-w-0 ${
         isSelected
           ? "bg-slate-100 dark:bg-neutral-900 border-slate-900 dark:border-white shadow-md ring-1 ring-slate-900/10 dark:ring-white/20"
-          : "bg-white/80 dark:bg-black/60 border-slate-200 dark:border-neutral-800 hover:border-slate-400 dark:hover:border-neutral-700 hover:bg-slate-50 dark:hover:bg-neutral-900/60"
+          : "bg-white/80 dark:bg-black/60 border-slate-200 dark:border-neutral-800 hover:border-slate-400 dark:hover:border-neutral-600 hover:bg-slate-50 dark:hover:bg-neutral-900/80"
       }`}
     >
       {/* Top Header Row: Pulsating Status Dot & Monospaced Severity */}
