@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState, useEffect, useRef } from "react";
-import { motion, type Variants } from "framer-motion";
+import { motion, useMotionValue, useTransform, useSpring, type Variants } from "framer-motion";
 import { ArrowRight, Check, Copy, LayoutDashboard } from "lucide-react";
 import { useAuth } from "@/hooks/use-auth";
 import { useRouter } from "next/navigation";
@@ -43,6 +43,30 @@ function MonitoringCard() {
   const poolIdxRef = useRef(9);
   const [cursor, setCursor] = useState(true);
 
+  // 3D Motion Perspective Tilt Controls
+  const x = useMotionValue(0);
+  const y = useMotionValue(0);
+
+  // Default tilt: left side closer (-7deg), slight top tilt (3deg)
+  const rotateXRaw = useTransform(y, [-150, 150], [9, -3]);
+  const rotateYRaw = useTransform(x, [-150, 150], [-15, 1]);
+
+  const rotateX = useSpring(rotateXRaw, { damping: 22, stiffness: 140 });
+  const rotateY = useSpring(rotateYRaw, { damping: 22, stiffness: 140 });
+
+  const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
+    const rect = e.currentTarget.getBoundingClientRect();
+    const centerX = rect.left + rect.width / 2;
+    const centerY = rect.top + rect.height / 2;
+    x.set(e.clientX - centerX);
+    y.set(e.clientY - centerY);
+  };
+
+  const handleMouseLeave = () => {
+    x.set(0);
+    y.set(0);
+  };
+
   useEffect(() => {
     const t = setInterval(() => setCursor((c) => !c), 520);
     return () => clearInterval(t);
@@ -77,131 +101,153 @@ function MonitoringCard() {
   };
 
   return (
-    <motion.div
-      initial={{ opacity: 0, x: 24, scale: 0.97 }}
-      animate={{ opacity: 1, x: 0, scale: 1 }}
-      transition={{ duration: 0.85, ease: [0.16, 1, 0.3, 1] as [number,number,number,number], delay: 0.3 }}
-      className="relative w-full"
+    <div
+      className="relative w-full py-4"
+      style={{ perspective: "1200px" }}
+      onMouseMove={handleMouseMove}
+      onMouseLeave={handleMouseLeave}
     >
+      {/* Ambient Gradient Glow Aura */}
       <div
-        className="relative rounded-2xl overflow-hidden shadow-2xl"
+        className="absolute -inset-3 rounded-3xl opacity-50 blur-3xl pointer-events-none transition-all duration-700"
         style={{
-          background: "var(--lp-surface)",
-          backdropFilter: "blur(28px) saturate(1.2)",
-          WebkitBackdropFilter: "blur(28px) saturate(1.2)",
-          border: "0.5px solid var(--lp-border)",
-          borderTop: "0.5px solid var(--lp-border-top)",
+          background:
+            "radial-gradient(ellipse at 40% 40%, rgba(99, 102, 241, 0.22), rgba(168, 85, 247, 0.15), transparent 70%)",
         }}
+      />
+
+      <motion.div
+        initial={{ opacity: 0, x: 24, scale: 0.96 }}
+        animate={{ opacity: 1, x: 0, scale: 1 }}
+        style={{
+          rotateX,
+          rotateY,
+          transformStyle: "preserve-3d",
+        }}
+        transition={{ duration: 0.85, ease: [0.16, 1, 0.3, 1] }}
+        className="relative w-full"
       >
-        {/* Terminal Header */}
+        {/* Next-Gen Card Container - Borderless Glassmorphism with Floating Edge Glow */}
         <div
-          className="relative z-10 flex items-center justify-between px-4 py-2.5"
-          style={{ borderBottom: "0.5px solid var(--lp-border)" }}
+          className="relative rounded-3xl overflow-hidden backdrop-blur-3xl"
+          style={{
+            background: "var(--lp-surface)",
+            backdropFilter: "blur(32px) saturate(1.3)",
+            WebkitBackdropFilter: "blur(32px) saturate(1.3)",
+            boxShadow:
+              "0 25px 55px -12px rgba(0, 0, 0, 0.45), inset 0 1px 0 0 rgba(255, 255, 255, 0.08)",
+          }}
         >
-          <div className="flex items-center gap-3">
+          {/* Terminal Header */}
+          <div
+            className="relative z-10 flex items-center justify-between px-4 py-2.5"
+            style={{ borderBottom: "0.5px solid var(--lp-border)" }}
+          >
+            <div className="flex items-center gap-3">
+              <div className="flex items-center gap-1.5">
+                {[1,2,3].map(i => (
+                  <div key={i} className="w-2 h-2 rounded-full" style={{ background: "var(--lp-border-top)" }} />
+                ))}
+              </div>
+              <span className="font-mono text-[10px] tracking-widest uppercase" style={{ color: "var(--lp-text-faint)" }}>
+                upnode — system_health.log
+              </span>
+            </div>
             <div className="flex items-center gap-1.5">
-              {[1,2,3].map(i => (
-                <div key={i} className="w-2 h-2 rounded-full" style={{ background: "var(--lp-border-top)" }} />
+              <span className="relative flex h-1.5 w-1.5">
+                <span className="animate-ping absolute inline-flex h-full w-full rounded-full opacity-75"
+                  style={{ background: "var(--lp-text-mid)" }} />
+                <span className="relative inline-flex rounded-full h-1.5 w-1.5"
+                  style={{ background: "var(--lp-text-primary)" }} />
+              </span>
+              <span className="font-mono text-[9px] tracking-widest uppercase" style={{ color: "var(--lp-text-dim)" }}>LIVE</span>
+            </div>
+          </div>
+
+          {/* Metrics strip */}
+          <div className="relative z-10 flex items-center gap-4 px-4 py-2.5 overflow-x-auto"
+            style={{ borderBottom: "0.5px solid var(--lp-border)" }}>
+            {[
+              { label: "UPTIME", value: "99.98%" },
+              { label: "NODES",  value: "48" },
+              { label: "P99",    value: "14ms" },
+              { label: "OPEN",   value: "0 INC" },
+            ].map((m) => (
+              <div key={m.label} className="flex items-center gap-1.5 shrink-0">
+                <span className="font-mono text-[9px] tracking-widest" style={{ color: "var(--lp-text-faint)" }}>{m.label}</span>
+                <span className="font-mono text-[10px] font-semibold" style={{ color: "var(--lp-text-mid)" }}>{m.value}</span>
+              </div>
+            ))}
+          </div>
+
+          {/* Log body - Increased height to match left column */}
+          <div className="relative z-10 h-[340px] sm:h-[350px] overflow-hidden py-3">
+            <div className="px-4 space-y-1">
+              {logs.map((log) => (
+                <div
+                  key={log.id}
+                  className="flex items-baseline gap-2.5 py-0.5 border-l pl-2.5 font-mono text-[10px]"
+                  style={{
+                    borderLeftColor: "var(--lp-border)",
+                  }}
+                >
+                  <span className="shrink-0" style={{ color: "var(--lp-text-faint)" }}>{log.ts}</span>
+                  <span
+                    className="shrink-0 px-1 rounded text-[8px] tracking-widest uppercase font-bold"
+                    style={{
+                      color: levelBadgeStyle[log.level].color,
+                      border: `0.5px solid ${levelBadgeStyle[log.level].borderColor}`,
+                    }}
+                  >
+                    {levelLabel[log.level]}
+                  </span>
+                  <span
+                    className="truncate"
+                    style={{
+                      color: levelMsgStyle[log.level].color || "var(--lp-text-primary)",
+                      fontStyle: levelMsgStyle[log.level].fontStyle || "normal",
+                      fontWeight: levelMsgStyle[log.level].fontWeight || "normal",
+                    }}
+                  >
+                    {log.msg}
+                  </span>
+                </div>
+              ))}
+
+              {/* Blinking cursor */}
+              <div className="flex items-center gap-2 pl-2.5 font-mono text-[10px]" style={{ color: "var(--lp-text-dim)" }}>
+                <span style={{ color: "var(--lp-text-faint)" }}>{nowTS()}</span>
+                <span
+                  className="inline-block w-[6px] h-[12px] align-middle"
+                  style={{ background: "var(--lp-text-mid)", opacity: cursor ? 1 : 0, transition: "opacity 0.1s" }}
+                />
+              </div>
+            </div>
+            {/* Fade bottom */}
+            <div className="absolute bottom-0 left-0 right-0 h-10 pointer-events-none"
+              style={{ background: `linear-gradient(to bottom, transparent, var(--lp-bg))` }} />
+          </div>
+
+          {/* Footer */}
+          <div className="relative z-10 flex items-center justify-between px-4 py-2.5"
+            style={{ borderTop: "0.5px solid var(--lp-border)" }}>
+            <div className="flex items-center gap-3">
+              {["edge","db","ai_sre","queue"].map((svc, i) => (
+                <div key={svc} className="flex items-center gap-1">
+                  <span className="relative flex h-1 w-1">
+                    <span className="animate-ping absolute inline-flex h-full w-full rounded-full opacity-55"
+                      style={{ background: "var(--lp-text-mid)", animationDuration: `${1.6 + i * 0.35}s` }} />
+                    <span className="relative inline-flex rounded-full h-1 w-1" style={{ background: "var(--lp-text-mid)" }} />
+                  </span>
+                  <span className="font-mono text-[8px] tracking-widest uppercase ml-1" style={{ color: "var(--lp-text-faint)" }}>{svc}</span>
+                </div>
               ))}
             </div>
-            <span className="font-mono text-[10px] tracking-widest uppercase" style={{ color: "var(--lp-text-faint)" }}>
-              upnode — system_health.log
-            </span>
-          </div>
-          <div className="flex items-center gap-1.5">
-            <span className="relative flex h-1.5 w-1.5">
-              <span className="animate-ping absolute inline-flex h-full w-full rounded-full opacity-75"
-                style={{ background: "var(--lp-text-mid)" }} />
-              <span className="relative inline-flex rounded-full h-1.5 w-1.5"
-                style={{ background: "var(--lp-text-primary)" }} />
-            </span>
-            <span className="font-mono text-[9px] tracking-widest uppercase" style={{ color: "var(--lp-text-dim)" }}>LIVE</span>
+            <span className="font-mono text-[8px] tracking-widest" style={{ color: "var(--lp-text-faint)" }}>sse://upnode.io:443</span>
           </div>
         </div>
-
-        {/* Metrics strip */}
-        <div className="relative z-10 flex items-center gap-4 px-4 py-2.5 overflow-x-auto"
-          style={{ borderBottom: "0.5px solid var(--lp-border)" }}>
-          {[
-            { label: "UPTIME", value: "99.98%" },
-            { label: "NODES",  value: "48" },
-            { label: "P99",    value: "14ms" },
-            { label: "OPEN",   value: "0 INC" },
-          ].map((m) => (
-            <div key={m.label} className="flex items-center gap-1.5 shrink-0">
-              <span className="font-mono text-[9px] tracking-widest" style={{ color: "var(--lp-text-faint)" }}>{m.label}</span>
-              <span className="font-mono text-[10px] font-semibold" style={{ color: "var(--lp-text-mid)" }}>{m.value}</span>
-            </div>
-          ))}
-        </div>
-
-        {/* Log body - Increased height to match left column */}
-        <div className="relative z-10 h-[340px] sm:h-[350px] overflow-hidden py-3">
-          <div className="px-4 space-y-1">
-            {logs.map((log) => (
-              <div
-                key={log.id}
-                className="flex items-baseline gap-2.5 py-0.5 border-l pl-2.5 font-mono text-[10px]"
-                style={{
-                  borderLeftColor: "var(--lp-border)",
-                }}
-              >
-                <span className="shrink-0" style={{ color: "var(--lp-text-faint)" }}>{log.ts}</span>
-                <span
-                  className="shrink-0 px-1 rounded text-[8px] tracking-widest uppercase font-bold"
-                  style={{
-                    color: levelBadgeStyle[log.level].color,
-                    border: `0.5px solid ${levelBadgeStyle[log.level].borderColor}`,
-                  }}
-                >
-                  {levelLabel[log.level]}
-                </span>
-                <span
-                  className="truncate"
-                  style={{
-                    color: levelMsgStyle[log.level].color || "var(--lp-text-primary)",
-                    fontStyle: levelMsgStyle[log.level].fontStyle || "normal",
-                    fontWeight: levelMsgStyle[log.level].fontWeight || "normal",
-                  }}
-                >
-                  {log.msg}
-                </span>
-              </div>
-            ))}
-
-            {/* Blinking cursor */}
-            <div className="flex items-center gap-2 pl-2.5 font-mono text-[10px]" style={{ color: "var(--lp-text-dim)" }}>
-              <span style={{ color: "var(--lp-text-faint)" }}>{nowTS()}</span>
-              <span
-                className="inline-block w-[6px] h-[12px] align-middle"
-                style={{ background: "var(--lp-text-mid)", opacity: cursor ? 1 : 0, transition: "opacity 0.1s" }}
-              />
-            </div>
-          </div>
-          {/* Fade bottom */}
-          <div className="absolute bottom-0 left-0 right-0 h-10 pointer-events-none"
-            style={{ background: `linear-gradient(to bottom, transparent, var(--lp-bg))` }} />
-        </div>
-
-        {/* Footer */}
-        <div className="relative z-10 flex items-center justify-between px-4 py-2.5"
-          style={{ borderTop: "0.5px solid var(--lp-border)" }}>
-          <div className="flex items-center gap-3">
-            {["edge","db","ai_sre","queue"].map((svc, i) => (
-              <div key={svc} className="flex items-center gap-1">
-                <span className="relative flex h-1 w-1">
-                  <span className="animate-ping absolute inline-flex h-full w-full rounded-full opacity-55"
-                    style={{ background: "var(--lp-text-mid)", animationDuration: `${1.6 + i * 0.35}s` }} />
-                  <span className="relative inline-flex rounded-full h-1 w-1" style={{ background: "var(--lp-text-mid)" }} />
-                </span>
-                <span className="font-mono text-[8px] tracking-widest uppercase ml-1" style={{ color: "var(--lp-text-faint)" }}>{svc}</span>
-              </div>
-            ))}
-          </div>
-          <span className="font-mono text-[8px] tracking-widest" style={{ color: "var(--lp-text-faint)" }}>sse://upnode.io:443</span>
-        </div>
-      </div>
-    </motion.div>
+      </motion.div>
+    </div>
   );
 }
 
