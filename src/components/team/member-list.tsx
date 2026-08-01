@@ -1,10 +1,11 @@
 "use client";
 
-import React from "react";
+import React, { useState } from "react";
 import { Member, MemberRole } from "@/types";
 import { Loader2 } from "lucide-react";
 import { useRemoveMember, useUpdateMemberRole } from "@/hooks/use-team";
 import { formatDistanceToNow } from "date-fns";
+import RemoveMemberModal from "./remove-member-modal";
 
 interface MemberListProps {
   members: Member[];
@@ -15,6 +16,17 @@ interface MemberListProps {
 export function MemberList({ members, isLoading, error }: MemberListProps) {
   const removeMutation = useRemoveMember();
   const updateRoleMutation = useUpdateMemberRole();
+  const [memberToRemove, setMemberToRemove] = useState<{ id: string; email: string } | null>(null);
+
+  const handleConfirmRemove = async () => {
+    if (!memberToRemove) return;
+    try {
+      await removeMutation.mutateAsync(memberToRemove.id);
+      setMemberToRemove(null);
+    } catch {
+      // Error handled by mutation
+    }
+  };
 
   if (isLoading) {
     return (
@@ -122,9 +134,10 @@ export function MemberList({ members, isLoading, error }: MemberListProps) {
 
               <button
                 onClick={() => {
-                  if (confirm(`Are you sure you want to remove ${member.user?.email}?`)) {
-                    removeMutation.mutate(member.id);
-                  }
+                  setMemberToRemove({
+                    id: member.id,
+                    email: member.user?.email || "Team Member",
+                  });
                 }}
                 disabled={removeMutation.isPending}
                 className="px-2.5 py-1 text-[11px] font-mono text-muted-foreground/70 hover:text-destructive hover:bg-destructive/10 border border-transparent hover:border-destructive/20 rounded-xl transition-all cursor-pointer disabled:opacity-50"
@@ -135,6 +148,15 @@ export function MemberList({ members, isLoading, error }: MemberListProps) {
           </div>
         </div>
       ))}
+
+      {/* Remove Member Confirmation Modal */}
+      <RemoveMemberModal
+        isOpen={Boolean(memberToRemove)}
+        memberEmail={memberToRemove?.email || null}
+        onClose={() => setMemberToRemove(null)}
+        onConfirm={handleConfirmRemove}
+        isLoading={removeMutation.isPending}
+      />
     </div>
   );
 }
