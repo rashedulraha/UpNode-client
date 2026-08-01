@@ -5,11 +5,11 @@ import { motion } from "framer-motion";
 import { Cpu, Database, Globe, Layers, Server } from "lucide-react";
 
 const GLASS: React.CSSProperties = {
-  background: "rgba(255,255,255,0.025)",
+  background: "var(--lp-surface)",
   backdropFilter: "blur(16px)",
   WebkitBackdropFilter: "blur(16px)",
-  border: "0.5px solid rgba(255,255,255,0.08)",
-  borderTop: "0.5px solid rgba(255,255,255,0.14)",
+  border: "0.5px solid var(--lp-border)",
+  borderTop: "0.5px solid var(--lp-border-top)",
 };
 
 const techStack = [
@@ -25,10 +25,10 @@ export function IntegrationsSection() {
   return (
     <section
       className="py-12"
-      style={{ background: "#000", borderBottom: "0.5px solid rgba(255,255,255,0.06)" }}
+      style={{ background: "var(--lp-bg)", borderBottom: "0.5px solid var(--lp-border)" }}
     >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-8">
-        <p className="text-center font-mono text-[10px] uppercase tracking-widest text-white/20">
+        <p className="text-center font-mono text-[10px] uppercase tracking-widest" style={{ color: "var(--lp-text-dim)" }}>
           Relied on by top-tier engineering teams worldwide
         </p>
 
@@ -50,11 +50,11 @@ export function IntegrationsSection() {
               className="p-4 rounded-xl flex flex-col items-center justify-center gap-2 group cursor-pointer transition-all"
               style={GLASS}
             >
-              <tech.icon className="w-4 h-4 text-white/20 group-hover:text-white/55 transition-colors" />
-              <span className="font-mono text-[11px] text-white/45 group-hover:text-white/75 transition-colors">
+              <tech.icon className="w-4 h-4 transition-colors" style={{ color: "var(--lp-text-mid)" }} />
+              <span className="font-mono text-[11px] transition-colors" style={{ color: "var(--lp-text-primary)" }}>
                 {tech.name}
               </span>
-              <span className="font-mono text-[9px] text-white/20 tracking-widest uppercase">
+              <span className="font-mono text-[9px] tracking-widest uppercase" style={{ color: "var(--lp-text-dim)" }}>
                 {tech.tag}
               </span>
             </motion.div>
