@@ -1,7 +1,7 @@
 "use client";
 
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { projectsService, Project } from "@/services/projects.service";
+import { projectsService, Project, CreateProjectInput } from "@/services/projects.service";
 
 export function useProjects() {
   return useQuery({
@@ -14,7 +14,7 @@ export function useCreateProject() {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: (data: { name: string; description?: string; url?: string }) =>
+    mutationFn: (data: CreateProjectInput) =>
       projectsService.createProject(data),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["projects"] });
