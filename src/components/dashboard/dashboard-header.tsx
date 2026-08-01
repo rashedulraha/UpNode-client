@@ -80,15 +80,6 @@ export function DashboardHeader({
 
       {/* Right: Actions & User Profile */}
       <div className="flex items-center gap-2 sm:gap-3">
-        <Link
-          href="/dashboard/settings/team"
-          className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-muted/40 hover:bg-muted text-muted-foreground hover:text-foreground border border-border/40 text-xs font-mono transition-all cursor-pointer"
-          title="Team & Role Management"
-        >
-          <Users className="w-3.5 h-3.5 text-primary" />
-          <span className="hidden sm:inline text-[11px] font-medium">Team</span>
-        </Link>
-
         <ThemeToggle />
 
         <button
