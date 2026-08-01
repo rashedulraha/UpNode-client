@@ -3,14 +3,22 @@
 import React, { useState, useMemo } from "react";
 import { useIncidentStream } from "@/hooks/useIncidentStream";
 import { useIncidents, useIncident } from "@/hooks/use-incidents";
+import { useAuth } from "@/hooks/use-auth";
 import { IncidentStatus, IncidentSeverity } from "@/types";
 import DashboardHeader from "./dashboard-header";
 import ProjectsSidebar from "../projects/projects-sidebar";
 import IncidentList from "../incidents/incident-list";
 import IncidentDetails from "../incidents/incident-details";
 import CreateIncidentModal from "../incidents/create-incident-modal";
+import SuperAdminDashboard from "../admin/super-admin-dashboard";
 
 export function DashboardView() {
+  const { user } = useAuth();
+  const isSuperAdmin = user?.role === "SUPER_ADMIN";
+  const [viewMode, setViewMode] = useState<"super_admin" | "org">(
+    isSuperAdmin ? "super_admin" : "org"
+  );
+
   const streamStatus = useIncidentStream();
 
   // Selected filters state
@@ -62,50 +70,60 @@ export function DashboardView() {
         searchQuery={searchQuery}
         onSearchChange={setSearchQuery}
         onOpenCreateModal={() => setIsCreateModalOpen(true)}
+        isSuperAdmin={isSuperAdmin}
+        viewMode={viewMode}
+        onViewModeChange={setViewMode}
       />
 
-      {/* Body: Sidebar + Main Content Split */}
-      <div className="flex flex-1 h-[calc(100vh-4rem)] overflow-hidden w-full max-w-full">
-        {/* Projects Sidebar */}
-        <ProjectsSidebar
-          selectedProjectId={selectedProjectId}
-          onSelectProject={(id) => {
-            setSelectedProjectId(id);
-            setSelectedIncidentId(null);
-          }}
-        />
+      {/* Body Content */}
+      {isSuperAdmin && viewMode === "super_admin" ? (
+        <div className="flex-1 overflow-hidden w-full h-[calc(100vh-4rem)]">
+          <SuperAdminDashboard />
+        </div>
+      ) : (
+        /* Standard Organization View: Sidebar + Main Content Split */
+        <div className="flex flex-1 h-[calc(100vh-4rem)] overflow-hidden w-full max-w-full">
+          {/* Projects Sidebar */}
+          <ProjectsSidebar
+            selectedProjectId={selectedProjectId}
+            onSelectProject={(id) => {
+              setSelectedProjectId(id);
+              setSelectedIncidentId(null);
+            }}
+          />
 
-        {/* Main Content Area */}
-        <main className="flex-1 p-4 sm:p-6 lg:p-8 overflow-hidden h-full flex flex-col min-w-0">
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 h-full overflow-hidden min-w-0">
-            {/* Left Column: Incidents List */}
-            <div className="lg:col-span-5 h-full overflow-hidden min-w-0">
-              <IncidentList
-                incidents={filteredIncidents}
-                selectedIncidentId={selectedIncidentId}
-                onSelectIncident={setSelectedIncidentId}
-                isLoading={isListLoading}
-                error={listError as Error}
-                onRefresh={refetchIncidents}
-                statusFilter={statusFilter}
-                onStatusFilterChange={setStatusFilter}
-                severityFilter={severityFilter}
-                onSeverityFilterChange={setSeverityFilter}
-              />
-            </div>
+          {/* Main Content Area */}
+          <main className="flex-1 p-4 sm:p-6 lg:p-8 overflow-hidden h-full flex flex-col min-w-0">
+            <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 h-full overflow-hidden min-w-0">
+              {/* Left Column: Incidents List */}
+              <div className="lg:col-span-5 h-full overflow-hidden min-w-0">
+                <IncidentList
+                  incidents={filteredIncidents}
+                  selectedIncidentId={selectedIncidentId}
+                  onSelectIncident={setSelectedIncidentId}
+                  isLoading={isListLoading}
+                  error={listError as Error}
+                  onRefresh={refetchIncidents}
+                  statusFilter={statusFilter}
+                  onStatusFilterChange={setStatusFilter}
+                  severityFilter={severityFilter}
+                  onSeverityFilterChange={setSeverityFilter}
+                />
+              </div>
 
-            {/* Right Column: Incident Details */}
-            <div className="lg:col-span-7 h-full overflow-hidden min-w-0">
-              <IncidentDetails
-                incident={selectedIncident || null}
-                isLoading={isDetailLoading}
-                onClose={() => setSelectedIncidentId(null)}
-                onSelectIncident={setSelectedIncidentId}
-              />
+              {/* Right Column: Incident Details */}
+              <div className="lg:col-span-7 h-full overflow-hidden min-w-0">
+                <IncidentDetails
+                  incident={selectedIncident || null}
+                  isLoading={isDetailLoading}
+                  onClose={() => setSelectedIncidentId(null)}
+                  onSelectIncident={setSelectedIncidentId}
+                />
+              </div>
             </div>
-          </div>
-        </main>
-      </div>
+          </main>
+        </div>
+      )}
 
       {/* Modal for reporting a new incident */}
       <CreateIncidentModal

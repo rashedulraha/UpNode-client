@@ -13,6 +13,9 @@ interface DashboardHeaderProps {
   searchQuery: string;
   onSearchChange: (q: string) => void;
   onOpenCreateModal: () => void;
+  isSuperAdmin?: boolean;
+  viewMode?: "super_admin" | "org";
+  onViewModeChange?: (mode: "super_admin" | "org") => void;
 }
 
 export function DashboardHeader({
@@ -20,6 +23,9 @@ export function DashboardHeader({
   searchQuery,
   onSearchChange,
   onOpenCreateModal,
+  isSuperAdmin,
+  viewMode,
+  onViewModeChange,
 }: DashboardHeaderProps) {
   const { user } = useAuth();
 
@@ -42,6 +48,32 @@ export function DashboardHeader({
             v2.6
           </span>
         </div>
+
+        {/* Super Admin Mode Switcher */}
+        {isSuperAdmin && onViewModeChange && (
+          <div className="flex items-center gap-1 p-1 bg-muted/60 rounded-xl border border-border/40 font-mono text-[11px] ml-2">
+            <button
+              onClick={() => onViewModeChange("super_admin")}
+              className={`px-2.5 py-1 rounded-lg transition-all cursor-pointer font-semibold ${
+                viewMode === "super_admin"
+                  ? "bg-rose-500 text-white shadow-sm"
+                  : "text-muted-foreground hover:text-foreground"
+              }`}
+            >
+              GLOBAL CONTROL
+            </button>
+            <button
+              onClick={() => onViewModeChange("org")}
+              className={`px-2.5 py-1 rounded-lg transition-all cursor-pointer font-semibold ${
+                viewMode === "org"
+                  ? "bg-primary text-primary-foreground shadow-sm"
+                  : "text-muted-foreground hover:text-foreground"
+              }`}
+            >
+              ORG DASHBOARD
+            </button>
+          </div>
+        )}
 
         <div className="hidden sm:flex items-center gap-1.5 pl-3 border-l border-border/40">
           <StatusDot
