@@ -4,6 +4,7 @@ import React, { useState } from "react";
 import { Member, MemberRole } from "@/types";
 import { useRemoveMember, useUpdateMemberRole } from "@/hooks/use-team";
 import { formatDistanceToNow } from "date-fns";
+import { motion, AnimatePresence } from "framer-motion";
 
 interface MemberListProps {
   members: Member[];
@@ -14,15 +15,48 @@ interface MemberListProps {
 export function MemberList({ members, isLoading, error }: MemberListProps) {
   const removeMutation = useRemoveMember();
   const updateRoleMutation = useUpdateMemberRole();
-  const [memberToRemove, setMemberToRemove] = useState<{ id: string; email: string } | null>(null);
 
-  const handleConfirmRemove = async () => {
-    if (!memberToRemove) return;
+  // Confirmation Modal State
+  const [modalAction, setModalAction] = useState<
+    | {
+        type: "remove_member";
+        memberId: string;
+        email: string;
+      }
+    | {
+        type: "change_role";
+        memberId: string;
+        email: string;
+        currentRole: MemberRole;
+        newRole: MemberRole;
+      }
+    | null
+  >(null);
+
+  const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
+  const [actionError, setActionError] = useState<string | null>(null);
+
+  const handleConfirmAction = async () => {
+    if (!modalAction) return;
+
     try {
-      await removeMutation.mutateAsync(memberToRemove.id);
-      setMemberToRemove(null);
-    } catch {
-      // Error handled by mutation
+      setIsSubmitting(true);
+      setActionError(null);
+
+      if (modalAction.type === "remove_member") {
+        await removeMutation.mutateAsync(modalAction.memberId);
+      } else if (modalAction.type === "change_role") {
+        await updateRoleMutation.mutateAsync({
+          memberId: modalAction.memberId,
+          role: modalAction.newRole,
+        });
+      }
+
+      setModalAction(null);
+    } catch (err: any) {
+      setActionError(err.message || "Operation failed. Please try again.");
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
@@ -74,79 +108,148 @@ export function MemberList({ members, isLoading, error }: MemberListProps) {
   };
 
   return (
-    <div className="rounded-2xl bg-white/80 dark:bg-black/60 border border-slate-200 dark:border-neutral-800 overflow-hidden divide-y divide-slate-200/80 dark:divide-neutral-900 font-mono">
-      {members.map((member) => (
-        <div
-          key={member.id}
-          className="p-4 sm:p-5 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 hover:bg-slate-50 dark:hover:bg-neutral-900/60 transition-colors"
-        >
-          {/* Left: User Avatar & Basic Info */}
-          <div className="flex items-center gap-3.5 min-w-0">
-            <div className="w-9 h-9 rounded-xl bg-slate-100 dark:bg-neutral-900 border border-slate-300 dark:border-neutral-700 text-slate-900 dark:text-white font-mono font-bold text-xs flex items-center justify-center shrink-0 uppercase">
-              {getInitials(member.user?.name, member.user?.email)}
-            </div>
-
-            <div className="min-w-0 space-y-0.5 font-sans">
-              <div className="flex items-center gap-2 font-mono">
-                <h4 className="text-xs font-bold text-slate-900 dark:text-white truncate font-sans">
-                  {member.user?.name || "UNNAMED"}
-                </h4>
-                <span
-                  className={`px-2 py-0.5 rounded text-[10px] uppercase tracking-wider border ${getRoleBadgeStyle(
-                    member.role
-                  )}`}
-                >
-                  [{member.role}]
-                </span>
+    <>
+      <div className="rounded-2xl bg-white/80 dark:bg-black/60 border border-slate-200 dark:border-neutral-800 overflow-hidden divide-y divide-slate-200/80 dark:divide-neutral-900 font-mono shadow-sm">
+        {members.map((member) => (
+          <div
+            key={member.id}
+            className="p-4 sm:p-5 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 hover:bg-slate-50 dark:hover:bg-neutral-900/60 transition-colors"
+          >
+            {/* Left: User Avatar & Basic Info */}
+            <div className="flex items-center gap-3.5 min-w-0">
+              <div className="w-9 h-9 rounded-xl bg-slate-100 dark:bg-neutral-900 border border-slate-300 dark:border-neutral-700 text-slate-900 dark:text-white font-mono font-bold text-xs flex items-center justify-center shrink-0 uppercase">
+                {getInitials(member.user?.name, member.user?.email)}
               </div>
-              <p className="text-[11px] font-mono text-slate-500 dark:text-neutral-500 truncate">
-                {member.user?.email}
-              </p>
+
+              <div className="min-w-0 space-y-0.5 font-sans">
+                <div className="flex items-center gap-2 font-mono">
+                  <h4 className="text-xs font-bold text-slate-900 dark:text-white truncate font-sans">
+                    {member.user?.name || "UNNAMED"}
+                  </h4>
+                  <span
+                    className={`px-2 py-0.5 rounded text-[10px] uppercase tracking-wider border ${getRoleBadgeStyle(
+                      member.role
+                    )}`}
+                  >
+                    [{member.role}]
+                  </span>
+                </div>
+                <p className="text-[11px] font-mono text-slate-500 dark:text-neutral-500 truncate">
+                  {member.user?.email}
+                </p>
+              </div>
+            </div>
+
+            {/* Right: Joined Timestamp, Role Selector, Remove Action */}
+            <div className="flex items-center gap-3.5 w-full sm:w-auto justify-between sm:justify-end shrink-0 font-mono">
+              <span className="text-[10px] text-slate-400 dark:text-neutral-500">
+                {member.user?.createdAt
+                  ? formatDistanceToNow(new Date(member.user.createdAt), { addSuffix: true })
+                  : "Joined recently"}
+              </span>
+
+              <div className="flex items-center gap-2">
+                <select
+                  value={member.role}
+                  disabled={updateRoleMutation.isPending}
+                  onChange={(e) => {
+                    const newRole = e.target.value as MemberRole;
+                    if (newRole !== member.role) {
+                      setModalAction({
+                        type: "change_role",
+                        memberId: member.id,
+                        email: member.user?.email || "Team Member",
+                        currentRole: member.role,
+                        newRole,
+                      });
+                    }
+                  }}
+                  className="bg-white dark:bg-black border border-slate-300 dark:border-neutral-800 rounded-lg px-2.5 py-1 text-[11px] font-mono text-slate-900 dark:text-white focus:outline-none transition-all cursor-pointer uppercase"
+                >
+                  <option value="ADMIN">ADMIN</option>
+                  <option value="ENGINEER">ENGINEER</option>
+                  <option value="VIEWER">VIEWER</option>
+                </select>
+
+                <button
+                  onClick={() => {
+                    setModalAction({
+                      type: "remove_member",
+                      memberId: member.id,
+                      email: member.user?.email || "Team Member",
+                    });
+                  }}
+                  disabled={removeMutation.isPending}
+                  className="px-2.5 py-1 border border-slate-300 dark:border-neutral-700 bg-white dark:bg-black text-slate-600 dark:text-neutral-400 text-[11px] hover:text-rose-600 dark:hover:text-rose-400 hover:border-rose-500/50 hover:shadow-[0_0_12px_rgba(244,63,94,0.25)] transition-all cursor-pointer uppercase disabled:opacity-50"
+                >
+                  [REMOVE]
+                </button>
+              </div>
             </div>
           </div>
+        ))}
+      </div>
 
-          {/* Right: Joined Timestamp, Role Selector, Remove Action */}
-          <div className="flex items-center gap-3.5 w-full sm:w-auto justify-between sm:justify-end shrink-0 font-mono">
-            <span className="text-[10px] text-slate-400 dark:text-neutral-500">
-              {member.user?.createdAt
-                ? formatDistanceToNow(new Date(member.user.createdAt), { addSuffix: true })
-                : "Joined recently"}
-            </span>
+      {/* CONFIRMATION ACTION MODAL */}
+      <AnimatePresence>
+        {modalAction && (
+          <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/60 dark:bg-black/80 backdrop-blur-md font-mono">
+            <motion.div
+              initial={{ opacity: 0, scale: 0.96 }}
+              animate={{ opacity: 1, scale: 1 }}
+              exit={{ opacity: 0, scale: 0.96 }}
+              className="w-full max-w-md p-6 border border-slate-300 dark:border-neutral-700 bg-white dark:bg-neutral-950 shadow-2xl space-y-6 relative rounded-2xl"
+            >
+              <div className="space-y-2">
+                <span className="text-[10px] text-rose-600 dark:text-rose-400 border border-rose-300 dark:border-rose-900/60 bg-rose-50 dark:bg-rose-950/40 px-2.5 py-0.5 font-bold uppercase tracking-wider rounded">
+                  [CONFIRMATION_REQUIRED]
+                </span>
 
-            <div className="flex items-center gap-2">
-              <select
-                value={member.role}
-                disabled={updateRoleMutation.isPending}
-                onChange={(e) =>
-                  updateRoleMutation.mutate({
-                    memberId: member.id,
-                    role: e.target.value as MemberRole,
-                  })
-                }
-                className="bg-white dark:bg-black border border-slate-300 dark:border-neutral-800 rounded-lg px-2.5 py-1 text-[11px] font-mono text-slate-900 dark:text-white focus:outline-none transition-all cursor-pointer uppercase"
-              >
-                <option value="ADMIN">ADMIN</option>
-                <option value="ENGINEER">ENGINEER</option>
-                <option value="VIEWER">VIEWER</option>
-              </select>
+                <h3 className="text-lg font-bold text-slate-900 dark:text-white uppercase tracking-wide font-sans">
+                  {modalAction.type === "remove_member" && `Remove "${modalAction.email}"?`}
+                  {modalAction.type === "change_role" && `Update Role for "${modalAction.email}"?`}
+                </h3>
 
-              <button
-                onClick={() => {
-                  setMemberToRemove({
-                    id: member.id,
-                    email: member.user?.email || "Team Member",
-                  });
-                }}
-                disabled={removeMutation.isPending}
-                className="px-2.5 py-1 border border-slate-300 dark:border-neutral-700 bg-white dark:bg-black text-slate-600 dark:text-neutral-400 text-[11px] hover:text-rose-600 dark:hover:text-rose-400 hover:border-rose-500/50 hover:shadow-[0_0_12px_rgba(244,63,94,0.25)] transition-all cursor-pointer uppercase disabled:opacity-50"
-              >
-                {removeMutation.isPending ? "[...]" : "[REMOVE]"}
-              </button>
-            </div>
+                <p className="text-xs text-slate-600 dark:text-neutral-400 leading-relaxed font-mono">
+                  {modalAction.type === "remove_member" &&
+                    "Removing this member will immediately revoke their access to organization projects, telemetry streams, and alert integrations."}
+                  {modalAction.type === "change_role" &&
+                    `Reassigning role from [${modalAction.currentRole}] to [${modalAction.newRole}]. Access privileges and IAM permissions will be updated instantly.`}
+                </p>
+
+                {actionError && (
+                  <p className="text-xs text-rose-600 dark:text-rose-400 pt-1">[ERR]: {actionError}</p>
+                )}
+              </div>
+
+              <div className="flex items-center justify-end gap-3 pt-2 text-xs font-mono">
+                <button
+                  onClick={() => {
+                    setModalAction(null);
+                    setActionError(null);
+                  }}
+                  disabled={isSubmitting}
+                  className="px-4 py-2 border border-slate-300 dark:border-neutral-700 bg-slate-100 dark:bg-black text-slate-700 dark:text-neutral-300 hover:text-slate-900 dark:hover:text-white uppercase cursor-pointer rounded-lg disabled:opacity-50"
+                >
+                  [CANCEL]
+                </button>
+                <button
+                  onClick={handleConfirmAction}
+                  disabled={isSubmitting}
+                  className={`px-4 py-2 border uppercase cursor-pointer disabled:opacity-50 font-bold rounded-lg ${
+                    modalAction.type === "remove_member"
+                      ? "border-rose-600 bg-rose-600 dark:bg-rose-950/60 text-white dark:text-rose-200 hover:bg-rose-700 dark:hover:bg-rose-900 hover:shadow-[0_0_15px_rgba(244,63,94,0.4)]"
+                      : "border-slate-900 dark:border-white bg-slate-900 dark:bg-white text-white dark:text-slate-900 hover:opacity-90"
+                  }`}
+                >
+                  {isSubmitting ? "[PROCESSING...]" : "[CONFIRM]"}
+                </button>
+              </div>
+            </motion.div>
           </div>
-        </div>
-      ))}
-    </div>
+        )}
+      </AnimatePresence>
+    </>
   );
 }
 
