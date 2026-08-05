@@ -102,15 +102,22 @@ function LoginFormContent() {
     setErrorMessage(null);
     setSuccessMessage(null);
     try {
+      const origin = typeof window !== "undefined" ? window.location.origin : "http://localhost:3000";
+      const targetPath = redirectTo || "/dashboard";
+      const fullCallbackURL = targetPath.startsWith("http")
+        ? targetPath
+        : `${origin}${targetPath.startsWith("/") ? targetPath : `/${targetPath}`}`;
+
       await authClient.signIn.social({
         provider,
-        callbackURL: redirectTo || "/dashboard",
+        callbackURL: fullCallbackURL,
       });
     } catch (err: any) {
       setErrorMessage(err?.message || `Failed to sign in with ${provider}.`);
       setIsSubmitting(false);
     }
   };
+
 
   return (
     <div className="min-h-screen bg-slate-50 dark:bg-black text-slate-900 dark:text-neutral-100 font-sans grid grid-cols-1 lg:grid-cols-12 overflow-x-hidden relative selection:bg-slate-800">
