@@ -77,4 +77,18 @@ describe("AuthForm Component", () => {
     expect(screen.getByRole("heading", { name: /\[CREATE_ACCOUNT\]/i })).toBeDefined();
     expect(screen.getByLabelText(/Full Name/i)).toBeDefined();
   });
+
+  it("calls onSocialSubmit when Google or GitHub button is clicked", () => {
+    const handleSocialSubmit = vi.fn();
+    render(<AuthForm onSocialSubmit={handleSocialSubmit} />);
+
+    const googleBtn = screen.getByRole("button", { name: /Sign in with Google/i });
+    const githubBtn = screen.getByRole("button", { name: /Sign in with GitHub/i });
+
+    fireEvent.click(googleBtn);
+    expect(handleSocialSubmit).toHaveBeenCalledWith("google");
+
+    fireEvent.click(githubBtn);
+    expect(handleSocialSubmit).toHaveBeenCalledWith("github");
+  });
 });
