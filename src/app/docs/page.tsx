@@ -918,18 +918,26 @@ export default function DocsPage() {
   const [activeSection, setActiveSection] = useState("getting-started");
   const [mobileNavOpen, setMobileNavOpen] = useState(false);
   const [searchModalOpen, setSearchModalOpen] = useState(false);
-  const [collapsedSections, setCollapsedSections] = useState<Record<string, boolean>>({
-    "getting-started": false,
-    "api-integration": false,
-    "configuring-alerts": false,
-    "sdks-integrations": false,
+  const [collapsedSections, setCollapsedSections] = useState<
+    Record<string, boolean>
+  >({
+    "getting-started": true,
+    "api-integration": true,
+    "configuring-alerts": true,
+    "sdks-integrations": true,
   });
 
   const toggleSection = (id: string) => {
-    setCollapsedSections((prev) => ({
-      ...prev,
-      [id]: !prev[id],
-    }));
+    setCollapsedSections((prev) => {
+      const isCurrentlyCollapsed = prev[id];
+      return {
+        "getting-started": true,
+        "api-integration": true,
+        "configuring-alerts": true,
+        "sdks-integrations": true,
+        [id]: !isCurrentlyCollapsed,
+      };
+    });
   };
 
   // Flatten items for search palette
@@ -968,6 +976,20 @@ export default function DocsPage() {
       el.scrollIntoView({ behavior: "smooth", block: "start" });
       setActiveSection(id);
       setMobileNavOpen(false);
+
+      // Expand only the parent of the active link, collapse others
+      const parentSection = SECTIONS.find(
+        (s) => s.id === id || s.subsections.some((sub) => sub.id === id)
+      );
+      if (parentSection) {
+        setCollapsedSections(() => ({
+          "getting-started": true,
+          "api-integration": true,
+          "configuring-alerts": true,
+          "sdks-integrations": true,
+          [parentSection.id]: false, // Expand this one
+        }));
+      }
     }
   };
 
@@ -1079,7 +1101,9 @@ export default function DocsPage() {
                       style={{
                         color:
                           activeSection === section.id ||
-                          section.subsections.some((s) => s.id === activeSection)
+                          section.subsections.some(
+                            (s) => s.id === activeSection,
+                          )
                             ? "#10b981"
                             : "#525252",
                       }}
@@ -1090,9 +1114,13 @@ export default function DocsPage() {
                         </span>
                         {section.label}
                       </div>
-                      <ChevronRight 
-                        className="w-3.5 h-3.5 opacity-65 group-hover:opacity-100 transition-transform duration-200" 
-                        style={{ transform: isCollapsed ? "rotate(0deg)" : "rotate(90deg)" }}
+                      <ChevronRight
+                        className="w-3.5 h-3.5 opacity-65 group-hover:opacity-100 transition-transform duration-200"
+                        style={{
+                          transform: isCollapsed
+                            ? "rotate(0deg)"
+                            : "rotate(90deg)",
+                        }}
                       />
                     </button>
 
