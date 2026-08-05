@@ -80,15 +80,25 @@ export function LandingNavbar() {
             className="hidden md:flex items-center gap-7 font-mono text-[11px] tracking-widest uppercase absolute left-1/2 -translate-x-1/2"
             style={{ color: "var(--lp-text-mid)" }}
           >
-            {navLinks.map((l) => (
-              <Link
-                key={l.label}
-                href={l.href}
-                className="hover:opacity-100 transition-opacity py-1 opacity-75"
-              >
-                {l.label}
-              </Link>
-            ))}
+            {navLinks.map((l) => {
+              const isActive = 
+                (l.href === "/docs" && pathname.startsWith("/docs")) ||
+                (l.href === "/" && pathname === "/") ||
+                (pathname === l.href);
+              return (
+                <Link
+                  key={l.label}
+                  href={l.href}
+                  className={`hover:opacity-100 transition-opacity py-1 ${
+                    isActive
+                      ? "text-emerald-500 dark:text-emerald-450 font-bold opacity-100 border-b border-emerald-500 dark:border-emerald-400"
+                      : "opacity-75"
+                  }`}
+                >
+                  {l.label}
+                </Link>
+              );
+            })}
           </nav>
 
           {/* Desktop Right Controls */}
@@ -237,17 +247,26 @@ export function LandingNavbar() {
                   Navigation
                 </p>
                 <nav className="flex flex-col space-y-3 font-mono text-xs tracking-wider uppercase">
-                  {navLinks.map((l) => (
-                    <Link
-                      key={l.label}
-                      href={l.href}
-                      onClick={() => setIsDrawerOpen(false)}
-                      className="py-1.5 px-2 rounded-lg transition-all hover:bg-[var(--lp-surface-hover)]"
-                      style={{ color: "var(--lp-text-primary)" }}
-                    >
-                      {l.label}
-                    </Link>
-                  ))}
+                  {navLinks.map((l) => {
+                    const isActive = 
+                      (l.href === "/docs" && pathname.startsWith("/docs")) ||
+                      (l.href === "/" && pathname === "/") ||
+                      (pathname === l.href);
+                    return (
+                      <Link
+                        key={l.label}
+                        href={l.href}
+                        onClick={() => setIsDrawerOpen(false)}
+                        className={`py-1.5 px-2 rounded-none transition-all ${
+                          isActive
+                            ? "bg-neutral-900 border border-neutral-800 text-emerald-400 font-bold"
+                            : "text-[var(--lp-text-primary)] hover:bg-[var(--lp-surface-hover)]"
+                        }`}
+                      >
+                        {l.label}
+                      </Link>
+                    );
+                  })}
                 </nav>
               </div>
 

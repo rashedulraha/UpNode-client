@@ -918,6 +918,19 @@ export default function DocsPage() {
   const [activeSection, setActiveSection] = useState("getting-started");
   const [mobileNavOpen, setMobileNavOpen] = useState(false);
   const [searchModalOpen, setSearchModalOpen] = useState(false);
+  const [collapsedSections, setCollapsedSections] = useState<Record<string, boolean>>({
+    "getting-started": false,
+    "api-integration": false,
+    "configuring-alerts": false,
+    "sdks-integrations": false,
+  });
+
+  const toggleSection = (id: string) => {
+    setCollapsedSections((prev) => ({
+      ...prev,
+      [id]: !prev[id],
+    }));
+  };
 
   // Flatten items for search palette
   const searchItems: DocSearchItem[] = SECTIONS.flatMap((s) =>
@@ -1053,45 +1066,59 @@ export default function DocsPage() {
           {/* Desktop Left Navigation Sidebar */}
           <aside className="hidden lg:block w-60 flex-shrink-0">
             <div className="sticky top-24 space-y-6">
-              {SECTIONS.map((section) => (
-                <div key={section.id} className="space-y-1.5">
-                  <button
-                    onClick={() => scrollTo(section.id)}
-                    className="w-full flex items-center gap-2 font-mono text-[11px] tracking-wider uppercase font-bold text-left transition-colors py-1 cursor-pointer"
-                    style={{
-                      color:
-                        activeSection === section.id ||
-                        section.subsections.some((s) => s.id === activeSection)
-                          ? "#10b981"
-                          : "#525252",
-                    }}
-                  >
-                    <span className="p-1 rounded-none bg-neutral-950 border border-neutral-850 text-emerald-400">
-                      {section.icon}
-                    </span>
-                    {section.label}
-                  </button>
+              {SECTIONS.map((section) => {
+                const isCollapsed = collapsedSections[section.id];
+                return (
+                  <div key={section.id} className="space-y-1.5">
+                    <button
+                      onClick={() => {
+                        toggleSection(section.id);
+                        scrollTo(section.id);
+                      }}
+                      className="w-full flex items-center justify-between font-mono text-[11px] tracking-wider uppercase font-bold text-left transition-colors py-1 cursor-pointer group"
+                      style={{
+                        color:
+                          activeSection === section.id ||
+                          section.subsections.some((s) => s.id === activeSection)
+                            ? "#10b981"
+                            : "#525252",
+                      }}
+                    >
+                      <div className="flex items-center gap-2">
+                        <span className="p-1 rounded-none bg-neutral-950 border border-neutral-850 text-emerald-400">
+                          {section.icon}
+                        </span>
+                        {section.label}
+                      </div>
+                      <ChevronRight 
+                        className="w-3.5 h-3.5 opacity-65 group-hover:opacity-100 transition-transform duration-200" 
+                        style={{ transform: isCollapsed ? "rotate(0deg)" : "rotate(90deg)" }}
+                      />
+                    </button>
 
-                  <div className="space-y-0.5 pl-3 border-l border-dashed border-neutral-850">
-                    {section.subsections.map((sub) => {
-                      const isActive = activeSection === sub.id;
-                      return (
-                        <button
-                          key={sub.id}
-                          onClick={() => scrollTo(sub.id)}
-                          className={`w-full text-left px-3 py-1.5 font-mono text-[11px] transition-all cursor-pointer block rounded-none ${
-                            isActive
-                              ? "bg-neutral-950 text-emerald-400 font-bold border-l-2 border-emerald-400 -ml-[13px] pl-3"
-                              : "text-neutral-500 hover:text-neutral-300 hover:bg-neutral-950/30"
-                          }`}
-                        >
-                          {isActive ? `▶ ${sub.label}` : `  ${sub.label}`}
-                        </button>
-                      );
-                    })}
+                    {!isCollapsed && (
+                      <div className="space-y-0.5 pl-3 border-l border-dashed border-neutral-850">
+                        {section.subsections.map((sub) => {
+                          const isActive = activeSection === sub.id;
+                          return (
+                            <button
+                              key={sub.id}
+                              onClick={() => scrollTo(sub.id)}
+                              className={`w-full text-left px-3 py-1.5 font-mono text-[11px] transition-all cursor-pointer block rounded-none ${
+                                isActive
+                                  ? "bg-neutral-950 text-emerald-400 font-bold border-l-2 border-emerald-400 -ml-[13px] pl-3"
+                                  : "text-neutral-500 hover:text-neutral-300 hover:bg-neutral-950/30"
+                              }`}
+                            >
+                              {isActive ? `▶ ${sub.label}` : `  ${sub.label}`}
+                            </button>
+                          );
+                        })}
+                      </div>
+                    )}
                   </div>
-                </div>
-              ))}
+                );
+              })}
 
               {/* Support Card */}
               <div className="mt-8 p-4 rounded-none border border-neutral-800 bg-neutral-950/50">
