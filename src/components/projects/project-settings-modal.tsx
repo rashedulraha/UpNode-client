@@ -2,9 +2,9 @@
 
 import React, { useState, useEffect } from "react";
 import { useUpdateProject, useDeleteProject } from "@/hooks/use-projects";
-import { useAuth } from "@/hooks/use-auth";
 import { Project } from "@/services/projects.service";
-import { Settings, X, Loader2, Save, Trash2, AlertCircle } from "lucide-react";
+import { Settings, Loader2, Save, Trash2, AlertCircle } from "lucide-react";
+import { useOrgRole } from "@/hooks/use-org-role";
 
 interface ProjectSettingsModalProps {
   isOpen: boolean;
@@ -19,11 +19,11 @@ export function ProjectSettingsModal({
   project,
   onProjectDeleted,
 }: ProjectSettingsModalProps) {
-  const { user } = useAuth();
-  const isAdmin = user?.role === "ADMIN" || user?.role === "SUPER_ADMIN";
+  const { isAdmin } = useOrgRole();
 
   const updateMutation = useUpdateProject();
   const deleteMutation = useDeleteProject();
+
 
   const [projectName, setProjectName] = useState("");
   const [projectSlug, setProjectSlug] = useState("");

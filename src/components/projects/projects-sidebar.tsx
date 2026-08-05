@@ -2,8 +2,10 @@
 
 import React from "react";
 import { useProjects } from "@/hooks/use-projects";
-import { Plus, Folder, Settings } from "lucide-react";
+import { Plus, Folder, Settings, Building2 } from "lucide-react";
 import { Project } from "@/services/projects.service";
+import { organizationService, UserOrganization } from "@/services/organization.service";
+import { useAuth } from "@/hooks/use-auth";
 
 interface ProjectsSidebarProps {
   selectedProjectId: string | null;
@@ -18,14 +20,26 @@ export function ProjectsSidebar({
   onOpenCreateProject,
   onOpenProjectSettings,
 }: ProjectsSidebarProps) {
+  const { user } = useAuth();
   const { data: projects = [], isLoading } = useProjects();
   const [showPromo, setShowPromo] = React.useState<boolean>(true);
+  const [activeOrg, setActiveOrg] = React.useState<UserOrganization | null>(null);
 
   React.useEffect(() => {
     const isDismissed = localStorage.getItem("upnode_promo_dismissed");
     if (isDismissed === "true") {
     }
-  }, []);
+    // Fetch active org name
+    if (user?.role !== "SUPER_ADMIN") {
+      organizationService.getUserOrganizations().then((orgs) => {
+        if (orgs.length > 0) {
+          const activeOrgId = localStorage.getItem("activeOrganizationId");
+          const found = activeOrgId ? orgs.find((o) => o.id === activeOrgId) || orgs[0] : orgs[0];
+          setActiveOrg(found);
+        }
+      }).catch(() => {});
+    }
+  }, [user]);
 
   const handleDismissPromo = () => {
     setShowPromo(false);
@@ -35,6 +49,24 @@ export function ProjectsSidebar({
     <aside className="w-full lg:w-72 xl:w-80 bg-white dark:bg-black backdrop-blur-3xl flex flex-col justify-between h-auto lg:h-full shrink-0 font-mono border-b lg:border-b-0 lg:border-r border-slate-200 dark:border-neutral-800 overflow-hidden select-none transition-colors">
       {/* Top Section: Projects navigation */}
       <div className="p-4 space-y-5 overflow-y-auto">
+        {/* Active Organization Badge */}
+        {activeOrg && (
+          <div className="flex items-center gap-2 px-3 py-2 border border-slate-200 dark:border-neutral-800 bg-slate-50 dark:bg-neutral-950">
+            <Building2 className="w-3 h-3 shrink-0 text-slate-400 dark:text-neutral-500" />
+            <div className="flex-1 min-w-0">
+              <p className="text-[9px] text-slate-400 dark:text-neutral-600 uppercase tracking-widest">ACTIVE_ORG</p>
+              <p className="text-xs font-bold text-slate-900 dark:text-white uppercase truncate">{activeOrg.name}</p>
+            </div>
+            <span className={`text-[9px] px-1.5 py-0.5 border font-bold uppercase ${
+              activeOrg.memberRole === "ADMIN" 
+                ? "border-emerald-500/30 bg-emerald-500/10 text-emerald-700 dark:text-emerald-400" 
+                : activeOrg.memberRole === "ENGINEER" 
+                ? "border-blue-500/30 bg-blue-500/10 text-blue-700 dark:text-blue-400"
+                : "border-slate-300 dark:border-neutral-700 bg-slate-100 dark:bg-neutral-900 text-slate-500 dark:text-neutral-400"
+            }`}>{activeOrg.memberRole}</span>
+          </div>
+        )}
+
         <div>
           <h2 className="text-[10px] font-mono font-bold text-slate-400 dark:text-neutral-500 uppercase tracking-widest px-1 mb-2.5">
             [NAVIGATION]
