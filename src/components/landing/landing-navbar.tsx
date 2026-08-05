@@ -4,7 +4,14 @@ import React, { useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
-import { ArrowRight, LayoutDashboard, LogOut, Menu, User, X } from "lucide-react";
+import {
+  ArrowRight,
+  LayoutDashboard,
+  LogOut,
+  Menu,
+  User,
+  X,
+} from "lucide-react";
 import { useAuth } from "@/hooks/use-auth";
 import { LogoutConfirmModal } from "@/components/auth/logout-confirm-modal";
 import { ThemeToggle } from "@/components/ui/theme-toggle";
@@ -29,7 +36,10 @@ export function LandingNavbar() {
   const navLinks = [
     { label: "Platform", href: isLandingPage ? "#platform" : "/#platform" },
     { label: "Features", href: isLandingPage ? "#features" : "/#features" },
-    { label: "Architecture", href: isLandingPage ? "#architecture" : "/#architecture" },
+    {
+      label: "Architecture",
+      href: isLandingPage ? "#architecture" : "/#architecture",
+    },
     { label: "Pricing", href: isLandingPage ? "#pricing" : "/#pricing" },
     { label: "Docs", href: "/docs" },
   ];
@@ -113,14 +123,6 @@ export function LandingNavbar() {
                   <LayoutDashboard className="w-3 h-3" />
                   Dashboard
                 </Link>
-                <button
-                  onClick={() => setIsLogoutModalOpen(true)}
-                  className="p-1.5 transition-colors cursor-pointer"
-                  style={{ color: "var(--lp-text-dim)" }}
-                  title="Sign out"
-                >
-                  <LogOut className="w-3.5 h-3.5" />
-                </button>
               </>
             ) : (
               <>
