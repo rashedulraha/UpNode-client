@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect } from "react";
 import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
 import {
@@ -8,8 +8,8 @@ import {
   BookOpen,
   ChevronRight,
   Code2,
-  Copy,
   Check,
+  Copy,
   Key,
   Search,
   Zap,
@@ -22,11 +22,25 @@ import {
   CheckCircle2,
   X,
   Menu,
+  ShieldCheck,
+  Layers,
+  Cpu,
+  Workflow,
+  Sparkles,
 } from "lucide-react";
 import { LandingNavbar } from "@/components/landing/landing-navbar";
 import { LandingFooter } from "@/components/landing/landing-footer";
 
-// ─── Design Tokens ──────────────────────────────────────────────────────────────
+import { DocsReadingProgress } from "@/components/docs/docs-reading-progress";
+import { DocsCodeBlock, CodeSnippet } from "@/components/docs/docs-code-block";
+import { DocsPlayground } from "@/components/docs/docs-playground";
+import {
+  DocsSearchModal,
+  DocSearchItem,
+} from "@/components/docs/docs-search-modal";
+import { DocsFeedback } from "@/components/docs/docs-feedback";
+
+// ─── Glass Container Style ───────────────────────────────────────────────────
 const GLASS: React.CSSProperties = {
   background: "var(--lp-surface)",
   backdropFilter: "blur(20px)",
@@ -35,7 +49,7 @@ const GLASS: React.CSSProperties = {
   borderTop: "0.5px solid var(--lp-border-top)",
 };
 
-// ─── Types ───────────────────────────────────────────────────────────────────────
+// ─── Types ───────────────────────────────────────────────────────────────────
 interface DocSection {
   id: string;
   label: string;
@@ -43,7 +57,7 @@ interface DocSection {
   subsections: { id: string; label: string }[];
 }
 
-// ─── Sections Config ─────────────────────────────────────────────────────────────
+// ─── Sections Config ─────────────────────────────────────────────────────────
 const SECTIONS: DocSection[] = [
   {
     id: "getting-started",
@@ -53,177 +67,48 @@ const SECTIONS: DocSection[] = [
       { id: "what-is-upnode", label: "What is UpNode?" },
       { id: "create-account", label: "Create an Account" },
       { id: "create-project", label: "Create Your First Project" },
-      { id: "generate-api-key", label: "Generate an API Key" },
+      { id: "generate-api-key", label: "Generate API Keys" },
+      { id: "rbac-permissions", label: "RBAC & Team Permissions" },
     ],
   },
   {
     id: "api-integration",
-    label: "API Integration",
+    label: "API Reference",
     icon: <Code2 className="w-3.5 h-3.5" />,
     subsections: [
-      { id: "authentication", label: "Authentication" },
+      { id: "authentication", label: "Authentication & Base URL" },
       { id: "heartbeat-ping", label: "Heartbeat / Ping Endpoint" },
       { id: "status-report", label: "Status Report Endpoint" },
       { id: "incident-create", label: "Create an Incident" },
-      { id: "sdk-usage", label: "SDK Usage" },
+      { id: "api-playground", label: "Interactive API Playground" },
+      { id: "webhooks-security", label: "Webhooks & HMAC Verification" },
     ],
   },
   {
     id: "configuring-alerts",
-    label: "Configuring Alerts",
+    label: "Alerting & Notifications",
     icon: <Bell className="w-3.5 h-3.5" />,
     subsections: [
       { id: "alert-channels", label: "Alert Channels" },
       { id: "alert-rules", label: "Alert Rules & Thresholds" },
       { id: "escalation-policy", label: "Escalation Policies" },
-      { id: "silence-windows", label: "Silence Windows" },
+      { id: "silence-windows", label: "Silence & Maintenance Windows" },
+    ],
+  },
+  {
+    id: "sdks-integrations",
+    label: "SDKs & Integrations",
+    icon: <Cpu className="w-3.5 h-3.5" />,
+    subsections: [
+      { id: "typescript-sdk", label: "TypeScript / Node.js SDK" },
+      { id: "python-sdk", label: "Python SDK" },
+      { id: "cicd-github-actions", label: "GitHub Actions CI/CD" },
+      { id: "docker-k8s-probes", label: "Docker & Kubernetes Probes" },
     ],
   },
 ];
 
-// ─── CopyButton ───────────────────────────────────────────────────────────────────
-function CopyButton({ text }: { text: string }) {
-  const [copied, setCopied] = useState(false);
-  const handleCopy = () => {
-    navigator.clipboard.writeText(text).then(() => {
-      setCopied(true);
-      setTimeout(() => setCopied(false), 2000);
-    });
-  };
-  return (
-    <button
-      onClick={handleCopy}
-      className="p-1.5 rounded transition-all cursor-pointer hover:opacity-80"
-      style={{
-        background: "rgba(255,255,255,0.06)",
-        border: "0.5px solid rgba(255,255,255,0.1)",
-        color: copied ? "#22c55e" : "rgba(255,255,255,0.5)",
-      }}
-      title="Copy to clipboard"
-    >
-      {copied ? <Check className="w-3 h-3" /> : <Copy className="w-3 h-3" />}
-    </button>
-  );
-}
-
-// ─── Basic Syntax Highlighter ─────────────────────────────────────────────────────
-function highlightCode(code: string, lang: string): string {
-  let escaped = code
-    .replace(/&/g, "&amp;")
-    .replace(/</g, "&lt;")
-    .replace(/>/g, "&gt;");
-
-  if (lang === "bash" || lang === "shell") {
-    escaped = escaped.replace(
-      /(#.*)$/gm,
-      '<span style="color:#6b7280">$1</span>',
-    );
-    escaped = escaped.replace(
-      /"([^"]*)"/g,
-      '<span style="color:#86efac">"$1"</span>',
-    );
-    escaped = escaped.replace(
-      /(\$[A-Z_]+)/g,
-      '<span style="color:#f9a8d4">$1</span>',
-    );
-    escaped = escaped.replace(
-      /\b(curl|wget|npm|npx|node|python|pip|export|echo|cat)\b/g,
-      '<span style="color:#93c5fd">$1</span>',
-    );
-    escaped = escaped.replace(
-      /(\s-{1,2}[\w-]+)/g,
-      '<span style="color:#fcd34d">$1</span>',
-    );
-  } else if (lang === "json") {
-    escaped = escaped.replace(
-      /"([^"]+)":/g,
-      '<span style="color:#93c5fd">"$1"</span>:',
-    );
-    escaped = escaped.replace(
-      /: "([^"]*)"/g,
-      ': <span style="color:#86efac">"$1"</span>',
-    );
-    escaped = escaped.replace(
-      /: (true|false|null|\d+)/g,
-      ': <span style="color:#fcd34d">$1</span>',
-    );
-  } else if (lang === "typescript" || lang === "javascript") {
-    escaped = escaped.replace(
-      /\b(const|let|var|async|await|function|return|import|from|export|default|if|else|new|class|extends|this|typeof|interface|type)\b/g,
-      '<span style="color:#93c5fd">$1</span>',
-    );
-    escaped = escaped.replace(
-      /`([^`]*)`/g,
-      '<span style="color:#86efac">`$1`</span>',
-    );
-    escaped = escaped.replace(
-      /"([^"]*)"/g,
-      '<span style="color:#86efac">"$1"</span>',
-    );
-    escaped = escaped.replace(
-      /'([^']*)'/g,
-      "<span style=\"color:#86efac\">'$1'</span>",
-    );
-    escaped = escaped.replace(
-      /(\/\/.*)$/gm,
-      '<span style="color:#6b7280">$1</span>',
-    );
-  }
-  return escaped;
-}
-
-// ─── Terminal Code Block ──────────────────────────────────────────────────────────
-function TerminalBlock({
-  title,
-  lang = "bash",
-  code,
-}: {
-  title?: string;
-  lang?: string;
-  code: string;
-}) {
-  return (
-    <div
-      className="rounded-xl overflow-hidden my-5"
-      style={{
-        background: "rgba(0,0,0,0.75)",
-        border: "0.5px solid rgba(255,255,255,0.1)",
-        boxShadow: "0 8px 32px rgba(0,0,0,0.3)",
-      }}
-    >
-      <div
-        className="flex items-center justify-between px-4 py-2.5"
-        style={{
-          background: "rgba(255,255,255,0.04)",
-          borderBottom: "0.5px solid rgba(255,255,255,0.07)",
-        }}
-      >
-        <div className="flex items-center gap-2.5">
-          <div className="flex items-center gap-1.5">
-            <span className="w-2.5 h-2.5 rounded-full bg-[#ff5f57]" />
-            <span className="w-2.5 h-2.5 rounded-full bg-[#febc2e]" />
-            <span className="w-2.5 h-2.5 rounded-full bg-[#28c840]" />
-          </div>
-          <span
-            className="font-mono text-[10px] tracking-widest uppercase"
-            style={{ color: "rgba(255,255,255,0.3)" }}
-          >
-            {title || lang}
-          </span>
-        </div>
-        <CopyButton text={code} />
-      </div>
-      <pre
-        className="overflow-x-auto px-5 py-4 font-mono text-[12px] leading-relaxed"
-        style={{ color: "rgba(255,255,255,0.85)" }}
-      >
-        <code dangerouslySetInnerHTML={{ __html: highlightCode(code, lang) }} />
-      </pre>
-    </div>
-  );
-}
-
-// ─── Info Box ────────────────────────────────────────────────────────────────────
+// ─── Theme-Aware Info Box ────────────────────────────────────────────────────
 function InfoBox({
   type = "info",
   children,
@@ -231,42 +116,45 @@ function InfoBox({
   type?: "info" | "warning" | "success";
   children: React.ReactNode;
 }) {
-  const config = {
+  const styles = {
     info: {
-      icon: <Info className="w-3.5 h-3.5 flex-shrink-0 mt-0.5" />,
-      color: "#60a5fa",
-      bg: "rgba(96,165,250,0.08)",
-      border: "rgba(96,165,250,0.2)",
+      label: "DIAGNOSTIC // INFO",
+      icon: <Info className="w-3.5 h-3.5 flex-shrink-0 text-blue-400" />,
+      container:
+        "bg-black dark:bg-black border-blue-900/60 text-slate-300 dark:text-slate-300",
     },
     warning: {
-      icon: <AlertTriangle className="w-3.5 h-3.5 flex-shrink-0 mt-0.5" />,
-      color: "#fbbf24",
-      bg: "rgba(251,191,36,0.08)",
-      border: "rgba(251,191,36,0.2)",
+      label: "DIAGNOSTIC // WARNING",
+      icon: (
+        <AlertTriangle className="w-3.5 h-3.5 flex-shrink-0 text-amber-400" />
+      ),
+      container:
+        "bg-black dark:bg-black border-amber-900/60 text-slate-300 dark:text-slate-300",
     },
     success: {
-      icon: <CheckCircle2 className="w-3.5 h-3.5 flex-shrink-0 mt-0.5" />,
-      color: "#34d399",
-      bg: "rgba(52,211,153,0.08)",
-      border: "rgba(52,211,153,0.2)",
+      label: "DIAGNOSTIC // SUCCESS",
+      icon: (
+        <CheckCircle2 className="w-3.5 h-3.5 flex-shrink-0 text-emerald-400" />
+      ),
+      container:
+        "bg-black dark:bg-black border-emerald-900/60 text-slate-300 dark:text-slate-300",
     },
   }[type];
+
   return (
     <div
-      className="flex items-start gap-2.5 px-4 py-3 rounded-xl my-4 font-mono text-[12px] leading-relaxed"
-      style={{
-        background: config.bg,
-        border: `0.5px solid ${config.border}`,
-        color: config.color,
-      }}
+      className={`my-5 font-mono text-[11px] leading-relaxed border border-dashed p-4 rounded-none bg-black ${styles.container}`}
     >
-      {config.icon}
-      <span>{children}</span>
+      <div className="flex items-center gap-2 mb-2 font-bold tracking-wider text-[10px] opacity-80">
+        {styles.icon}
+        <span>{styles.label}</span>
+      </div>
+      <div>{children}</div>
     </div>
   );
 }
 
-// ─── Section Heading ──────────────────────────────────────────────────────────────
+// ─── Section Heading with Copy Anchor ────────────────────────────────────────
 function SectionHeading({
   id,
   level,
@@ -276,33 +164,47 @@ function SectionHeading({
   level: 1 | 2 | 3;
   children: React.ReactNode;
 }) {
+  const [copied, setCopied] = useState(false);
+
+  const handleCopyLink = () => {
+    const url = `${window.location.origin}${window.location.pathname}#${id}`;
+    navigator.clipboard.writeText(url).then(() => {
+      setCopied(true);
+      setTimeout(() => setCopied(false), 1800);
+    });
+  };
+
   const Tag = `h${level}` as "h1" | "h2" | "h3";
   const sizeMap = {
-    1: "text-2xl font-bold tracking-tight mb-4 mt-10",
-    2: "text-base font-semibold tracking-tight mb-3 mt-8 flex items-center gap-2",
-    3: "text-sm font-semibold tracking-tight mb-2 mt-6",
+    1: "text-xl font-bold font-mono tracking-widest mb-5 mt-14 text-slate-900 dark:text-white pb-2 border-b border-dashed border-neutral-800 flex items-center gap-2 uppercase",
+    2: "text-sm font-bold font-mono tracking-wider mb-4 mt-10 text-slate-800 dark:text-slate-100 flex items-center gap-2.5 uppercase",
+    3: "text-xs font-bold font-mono tracking-wide mb-3 mt-8 text-slate-700 dark:text-slate-200 flex items-center gap-2 uppercase",
   };
+
   return (
-    <Tag
-      id={id}
-      className={`group scroll-mt-20 ${sizeMap[level]}`}
-      style={{ color: "var(--lp-text-primary)" }}
-    >
+    <Tag id={id} className={`group scroll-mt-24 relative ${sizeMap[level]}`}>
+      {level === 1 && (
+        <span className="text-emerald-400 font-bold">&gt;&gt;</span>
+      )}
       {children}
       {level !== 1 && (
-        <a
-          href={`#${id}`}
-          className="opacity-0 group-hover:opacity-40 transition-opacity"
-          style={{ color: "var(--lp-text-mid)" }}
+        <button
+          onClick={handleCopyLink}
+          className="ml-2 inline-flex items-center text-slate-500 hover:text-emerald-400 opacity-0 group-hover:opacity-100 transition-opacity cursor-pointer"
+          title="Copy direct link to section"
         >
-          <Hash className="w-3.5 h-3.5" />
-        </a>
+          {copied ? (
+            <Check className="w-3.5 h-3.5 text-emerald-400" />
+          ) : (
+            <Hash className="w-3.5 h-3.5" />
+          )}
+        </button>
       )}
     </Tag>
   );
 }
 
-// ─── Badge ───────────────────────────────────────────────────────────────────────
+// ─── Theme-Aware Badge ───────────────────────────────────────────────────────
 function Badge({
   children,
   color = "blue",
@@ -310,253 +212,248 @@ function Badge({
   children: React.ReactNode;
   color?: "blue" | "green" | "yellow" | "red" | "purple";
 }) {
-  const colors = {
-    blue: {
-      bg: "rgba(96,165,250,0.15)",
-      text: "#93c5fd",
-      border: "rgba(96,165,250,0.3)",
-    },
-    green: {
-      bg: "rgba(52,211,153,0.15)",
-      text: "#6ee7b7",
-      border: "rgba(52,211,153,0.3)",
-    },
-    yellow: {
-      bg: "rgba(251,191,36,0.15)",
-      text: "#fcd34d",
-      border: "rgba(251,191,36,0.3)",
-    },
-    red: {
-      bg: "rgba(248,113,113,0.15)",
-      text: "#fca5a5",
-      border: "rgba(248,113,113,0.3)",
-    },
-    purple: {
-      bg: "rgba(167,139,250,0.15)",
-      text: "#c4b5fd",
-      border: "rgba(167,139,250,0.3)",
-    },
+  const badgeStyles = {
+    blue: "border-blue-900/80 text-blue-400 bg-blue-950/20",
+    green: "border-emerald-900/80 text-emerald-400 bg-emerald-950/20",
+    yellow: "border-amber-900/80 text-amber-400 bg-amber-950/20",
+    red: "border-rose-900/80 text-rose-400 bg-rose-950/20",
+    purple: "border-purple-900/80 text-purple-400 bg-purple-950/20",
   }[color];
+
   return (
     <span
-      className="inline-flex items-center px-2 py-0.5 rounded font-mono text-[10px] tracking-wider uppercase font-semibold"
-      style={{
-        background: colors.bg,
-        color: colors.text,
-        border: `0.5px solid ${colors.border}`,
-      }}
+      className={`inline-flex items-center px-2 py-0.5 rounded-none font-mono text-[9px] tracking-widest uppercase font-bold border ${badgeStyles}`}
     >
-      {children}
+      [{children}]
     </span>
   );
 }
 
-// ─── Getting Started Section ──────────────────────────────────────────────────────
+// ─── Inline Code Tag ─────────────────────────────────────────────────────────
+function InlineCode({ children }: { children: React.ReactNode }) {
+  return (
+    <code className="font-mono text-[11px] px-1.5 py-0.5 rounded-none bg-neutral-900 dark:bg-black text-emerald-400 border border-neutral-800 font-bold">
+      {children}
+    </code>
+  );
+}
+
+// ─── Getting Started Section Content ──────────────────────────────────────────
 function GettingStartedSection() {
   return (
-    <div>
+    <div className="font-mono">
       <SectionHeading id="getting-started" level={1}>
         Getting Started
       </SectionHeading>
-      <p
-        className="text-sm leading-relaxed mb-6"
-        style={{ color: "var(--lp-text-mid)" }}
-      >
+      <p className="text-xs leading-relaxed mb-6 text-slate-400">
         Welcome to UpNode — the modern infrastructure monitoring and incident
         management platform. This guide walks you through setting up your
-        account, creating your first project, and generating the API key you
-        need to start monitoring.
+        account, creating your first project, managing API keys, and assigning
+        role-based permissions.
       </p>
 
       <SectionHeading id="what-is-upnode" level={2}>
-        <BookOpen className="w-4 h-4 opacity-60" />
+        <BookOpen className="w-3.5 h-3.5 text-emerald-400 opacity-80" />
         What is UpNode?
       </SectionHeading>
-      <p
-        className="text-sm leading-relaxed mb-3"
-        style={{ color: "var(--lp-text-mid)" }}
-      >
-        UpNode is a production-grade uptime monitoring platform that lets you:
+      <p className="text-xs leading-relaxed mb-3 text-slate-400">
+        UpNode is a high-availability infrastructure uptime monitoring platform
+        that allows engineering teams to:
       </p>
-      <ul
-        className="space-y-2 text-sm mb-6 font-mono pl-4"
-        style={{ color: "var(--lp-text-mid)" }}
-      >
+      <ul className="space-y-2 text-xs mb-6 pl-2 text-slate-400">
         {[
-          "Monitor HTTP, TCP, and gRPC endpoints with second-level granularity",
-          "Receive real-time incident alerts via Slack, PagerDuty, email, or webhooks",
-          "Publish a branded public status page for your users",
-          "Integrate CI/CD pipelines using the REST API and API Keys",
-          "Collaborate with team members using RBAC (Admin, Engineer, Auditor)",
+          "Monitor HTTP, TCP, WebSocket, and gRPC endpoints with second-level accuracy",
+          "Receive real-time multi-channel incident pages via Slack, PagerDuty, SMS, or webhooks",
+          "Publish customizable, branded public status pages for your users",
+          "Integrate CI/CD pipelines and microservices using REST APIs and SDKs",
+          "Collaborate across teams with granular RBAC permissions (Admin, Engineer, Auditor)",
         ].map((item, i) => (
           <li key={i} className="flex items-start gap-2">
-            <span style={{ color: "#22d3ee" }}>→</span>
-            <span>{item}</span>
+            <span className="text-emerald-400 font-bold font-mono">[+]</span>
+            <span className="text-[11px]">{item}</span>
           </li>
         ))}
       </ul>
 
       <SectionHeading id="create-account" level={2}>
-        <Key className="w-4 h-4 opacity-60" />
+        <Key className="w-3.5 h-3.5 text-amber-400 opacity-80" />
         Create an Account
       </SectionHeading>
-      <p
-        className="text-sm leading-relaxed mb-3"
-        style={{ color: "var(--lp-text-mid)" }}
-      >
+      <p className="text-xs leading-relaxed mb-3 text-slate-400">
         Navigate to{" "}
         <Link
           href="/register"
-          className="font-mono underline underline-offset-2"
-          style={{ color: "#60a5fa" }}
+          className="font-mono text-emerald-400 underline underline-offset-2 font-medium"
         >
           /register
         </Link>{" "}
-        and complete the sign-up form. You'll receive a verification email —
-        click the link to activate your workspace.
+        and complete the sign-up form. You will receive a confirmation link to
+        activate your workspace.
       </p>
       <InfoBox type="info">
-        UpNode supports OAuth 2.0 (Google, GitHub). You can also register with
-        any email and a password of at least 8 characters.
+        UpNode supports OAuth 2.0 (Google, GitHub) for single sign-on. You can
+        also register with standard email credentials with optional 2FA
+        verification.
       </InfoBox>
 
       <SectionHeading id="create-project" level={2}>
-        <Zap className="w-4 h-4 opacity-60" />
+        <Zap className="w-3.5 h-3.5 text-emerald-400 opacity-80" />
         Create Your First Project
       </SectionHeading>
-      <p
-        className="text-sm leading-relaxed mb-3"
-        style={{ color: "var(--lp-text-mid)" }}
-      >
-        A <strong style={{ color: "var(--lp-text-primary)" }}>Project</strong>{" "}
-        is the top-level grouping for all monitors, alerts, and status pages.
+      <p className="text-xs leading-relaxed mb-3 text-slate-400">
+        A <strong className="text-white">Project</strong> is the top-level
+        boundary for grouping monitors, alert channels, team members, and status
+        pages.
       </p>
-      <ol
-        className="space-y-2 text-sm font-mono pl-4 mb-4"
-        style={{ color: "var(--lp-text-mid)" }}
-      >
+      <ol className="space-y-2.5 text-xs pl-2 mb-4 text-slate-400">
         {[
-          'Go to Dashboard → click "New Project"',
-          "Enter a project name and optional description",
-          "Select the default check interval (30s, 60s, 5m, 15m)",
-          'Click "Create Project" — your project is live',
+          'Go to Dashboard → Click "New Project"',
+          "Enter your project name (e.g., prod-api-cluster) and optional environment tag",
+          "Select the default heartbeat interval (10s, 30s, 60s, 5m)",
+          'Click "Create Project" — your project workspace is immediately live',
         ].map((step, i) => (
-          <li key={i} className="flex items-start gap-2">
-            <span style={{ color: "#a78bfa" }}>0{i + 1}.</span>
-            <span>{step}</span>
+          <li key={i} className="flex items-start gap-2.5">
+            <span className="px-1.5 py-0.5 border border-emerald-900/60 bg-emerald-950/20 text-emerald-400 text-[10px] font-bold">
+              [0{i + 1}]
+            </span>
+            <span className="text-[11px] pt-0.5">{step}</span>
           </li>
         ))}
       </ol>
 
       <SectionHeading id="generate-api-key" level={2}>
-        <Terminal className="w-4 h-4 opacity-60" />
-        Generate an API Key
+        <Terminal className="w-3.5 h-3.5 text-blue-400 opacity-80" />
+        Generate API Keys & Scopes
       </SectionHeading>
-      <p
-        className="text-sm leading-relaxed mb-3"
-        style={{ color: "var(--lp-text-mid)" }}
-      >
-        API Keys authenticate your monitors, CI pipelines, and third-party
-        integrations with the UpNode REST API. Each key is scoped to a single
-        project.
+      <p className="text-xs leading-relaxed mb-3 text-slate-400">
+        API Keys authenticate your microservices, heartbeats, and CI pipelines
+        with the REST API. Each key is scoped to a specific project.
       </p>
-      <ol
-        className="space-y-2 text-sm font-mono pl-4 mb-4"
-        style={{ color: "var(--lp-text-mid)" }}
-      >
-        {[
-          "Open your project → Settings → API Keys",
-          'Click "Generate New Key"',
-          'Give the key a descriptive name (e.g. "ci-pipeline-prod")',
-          "Copy and securely store your key — it will only be shown once",
-        ].map((step, i) => (
-          <li key={i} className="flex items-start gap-2">
-            <span style={{ color: "#a78bfa" }}>0{i + 1}.</span>
-            <span>{step}</span>
-          </li>
-        ))}
-      </ol>
-      <InfoBox type="warning">
-        Your API key grants write access to your project. Never commit it to
-        source control. Use environment variables or a secret manager.
-      </InfoBox>
-      <TerminalBlock
-        title="shell — storing your key"
-        lang="bash"
-        code={`# Set as environment variable (do NOT hardcode)
-export UPNODE_API_KEY="upn_live_xxxxxxxxxxxxxxxxxxxx"
 
-# Verify it's available
-echo $UPNODE_API_KEY`}
+      <DocsCodeBlock
+        title="bash — export environment variable"
+        snippets={[
+          {
+            lang: "bash",
+            label: "Shell / Bash",
+            code: `# Set project API key in environment
+export UPNODE_API_KEY="upn_live_9f823a0b12c4d5e6f7"
+export UPNODE_PROJECT_ID="proj_prod_01"
+
+# Test authentication status
+curl -s -H "Authorization: Bearer $UPNODE_API_KEY" \\
+  https://api.upnode.io/v1/projects/$UPNODE_PROJECT_ID`,
+          },
+        ]}
       />
+
+      <InfoBox type="warning">
+        Your API key grants write access to your project monitors. Never commit
+        keys to public git repositories. Always use environment variables or
+        secret vaults.
+      </InfoBox>
+
+      <SectionHeading id="rbac-permissions" level={2}>
+        <ShieldCheck className="w-3.5 h-3.5 text-emerald-400 opacity-80" />
+        RBAC & Team Permissions
+      </SectionHeading>
+      <p className="text-xs leading-relaxed mb-4 text-slate-400">
+        UpNode enforces strict Role-Based Access Control across team workspace
+        members:
+      </p>
+
+      <div className="overflow-x-auto my-5 rounded-none border border-neutral-850 bg-black">
+        <table className="w-full text-left font-mono text-[10px]">
+          <thead className="bg-neutral-900 border-b border-neutral-850">
+            <tr>
+              <th className="py-2.5 px-4 text-neutral-400">Role</th>
+              <th className="py-2.5 px-4 text-neutral-400">Monitor Config</th>
+              <th className="py-2.5 px-4 text-neutral-400">API Key Gen</th>
+              <th className="py-2.5 px-4 text-neutral-400">
+                Billing / Members
+              </th>
+            </tr>
+          </thead>
+          <tbody className="divide-y divide-neutral-900 text-slate-300">
+            <tr>
+              <td className="py-2.5 px-4 font-bold text-white">
+                Owner / Admin
+              </td>
+              <td className="py-2.5 px-4 text-emerald-400 font-semibold">
+                [Full Access]
+              </td>
+              <td className="py-2.5 px-4 text-emerald-400 font-semibold">
+                [Full Access]
+              </td>
+              <td className="py-2.5 px-4 text-emerald-400 font-semibold">
+                [Full Access]
+              </td>
+            </tr>
+            <tr>
+              <td className="py-2.5 px-4 font-bold text-white">Engineer</td>
+              <td className="py-2.5 px-4 text-emerald-400 font-semibold">
+                [Create & Edit]
+              </td>
+              <td className="py-2.5 px-4 text-emerald-400 font-semibold">
+                [Create Only]
+              </td>
+              <td className="py-2.5 px-4 text-rose-500 font-semibold">
+                [Read Only]
+              </td>
+            </tr>
+            <tr>
+              <td className="py-2.5 px-4 font-bold text-white">
+                Auditor / Viewer
+              </td>
+              <td className="py-2.5 px-4 text-slate-500">[Read Only]</td>
+              <td className="py-2.5 px-4 text-rose-500">[Denied]</td>
+              <td className="py-2.5 px-4 text-rose-500">[Denied]</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <DocsFeedback sectionTitle="Getting Started" />
     </div>
   );
 }
 
-// ─── API Integration Section ──────────────────────────────────────────────────────
+// ─── API Integration Section Content ──────────────────────────────────────────
 function ApiIntegrationSection() {
   return (
-    <div>
+    <div className="font-mono">
       <SectionHeading id="api-integration" level={1}>
-        API Integration
+        API Reference
       </SectionHeading>
-      <p
-        className="text-sm leading-relaxed mb-6"
-        style={{ color: "var(--lp-text-mid)" }}
-      >
-        The UpNode REST API lets you programmatically send heartbeats, report
-        status, create incidents, and manage monitors. All endpoints use JSON
-        and require your project-scoped API Key.
+      <p className="text-xs leading-relaxed mb-6 text-slate-400">
+        The UpNode REST API enables programmatically reporting service metrics,
+        ping heartbeats, creating incidents, and fetching monitor states. All
+        requests expect JSON and HTTPS.
       </p>
 
       <SectionHeading id="authentication" level={2}>
-        <Key className="w-4 h-4 opacity-60" />
-        Authentication
+        <Key className="w-3.5 h-3.5 text-blue-400 opacity-80" />
+        Authentication & Base URL
       </SectionHeading>
-      <p
-        className="text-sm leading-relaxed mb-3"
-        style={{ color: "var(--lp-text-mid)" }}
-      >
-        Pass your API key in the{" "}
-        <code
-          className="font-mono text-[12px] px-1.5 py-0.5 rounded"
-          style={{ background: "rgba(255,255,255,0.08)", color: "#86efac" }}
-        >
-          Authorization
-        </code>{" "}
-        header as a Bearer token:
+      <p className="text-xs leading-relaxed mb-3 text-slate-400">
+        All requests require your Bearer token provided via the{" "}
+        <InlineCode>Authorization</InlineCode> HTTP header:
       </p>
-      <TerminalBlock
-        title="shell — authenticated request"
-        lang="bash"
-        code={`curl -X GET https://api.upnode.io/v1/projects \\
-  --header "Authorization: Bearer $UPNODE_API_KEY" \\
-  --header "Content-Type: application/json"`}
-      />
-      <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 my-5">
+
+      <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 my-4">
         {[
           { label: "Base URL", value: "https://api.upnode.io/v1" },
-          { label: "Protocol", value: "HTTPS only" },
-          { label: "Format", value: "application/json" },
+          { label: "Protocol", value: "HTTPS / TLS 1.3" },
+          { label: "Content-Type", value: "application/json" },
         ].map((item) => (
           <div
             key={item.label}
-            className="p-3 rounded-xl"
-            style={{
-              background: "rgba(255,255,255,0.03)",
-              border: "0.5px solid var(--lp-border)",
-            }}
+            className="p-3 rounded-none bg-black border border-neutral-800 hover:border-neutral-700 transition-colors"
           >
-            <p
-              className="font-mono text-[9px] tracking-widest uppercase mb-1.5"
-              style={{ color: "var(--lp-text-faint)" }}
-            >
+            <p className="font-mono text-[9px] uppercase tracking-widest text-neutral-500 mb-1">
               {item.label}
             </p>
-            <p
-              className="font-mono text-[11px]"
-              style={{ color: "var(--lp-text-primary)" }}
-            >
+            <p className="font-mono text-xs font-semibold text-white">
               {item.value}
             </p>
           </div>
@@ -564,353 +461,286 @@ function ApiIntegrationSection() {
       </div>
 
       <SectionHeading id="heartbeat-ping" level={2}>
-        <Zap className="w-4 h-4 opacity-60" />
+        <Zap className="w-3.5 h-3.5 text-emerald-400 opacity-80" />
         Heartbeat / Ping Endpoint
       </SectionHeading>
-      <p
-        className="text-sm leading-relaxed mb-3"
-        style={{ color: "var(--lp-text-mid)" }}
-      >
-        A heartbeat tells UpNode your service is alive. If UpNode stops
-        receiving pings within the configured interval, an incident is
-        automatically opened.
+      <p className="text-xs leading-relaxed mb-3 text-slate-400">
+        Heartbeats inform UpNode that your background worker, cron job, or
+        microservice is alive. If pings stop, an incident automatically
+        triggers.
       </p>
-      <div className="flex items-center gap-2 mb-3">
+
+      <div className="flex items-center gap-2.5 mb-3">
         <Badge color="green">POST</Badge>
-        <code
-          className="font-mono text-[11px]"
-          style={{ color: "var(--lp-text-primary)" }}
-        >
-          /v1/monitors/{"{monitorId}"}/ping
-        </code>
+        <InlineCode>/v1/monitors/&#123;monitorId&#125;/ping</InlineCode>
       </div>
-      <TerminalBlock
-        title="shell — send heartbeat"
-        lang="bash"
-        code={`curl -X POST https://api.upnode.io/v1/monitors/mon_abc123/ping \\
-  --header "Authorization: Bearer $UPNODE_API_KEY" \\
-  --header "Content-Type: application/json" \\
-  --data '{
+
+      <DocsCodeBlock
+        title="heartbeat ping snippets"
+        snippets={[
+          {
+            lang: "bash",
+            label: "cURL",
+            code: `curl -X POST https://api.upnode.io/v1/monitors/mon_prod_db/ping \\
+  -H "Authorization: Bearer $UPNODE_API_KEY" \\
+  -H "Content-Type: application/json" \\
+  -d '{
     "status": "ok",
     "latency_ms": 42,
-    "message": "All systems operational"
-  }'`}
-      />
-      <TerminalBlock
-        title="json — response 200 OK"
-        lang="json"
-        code={`{
-  "success": true,
-  "monitor_id": "mon_abc123",
-  "received_at": "2026-08-01T11:14:02.891Z",
-  "next_expected": "2026-08-01T11:15:02.891Z",
-  "status": "ok"
-}`}
+    "message": "Database replica sync complete"
+  }'`,
+          },
+          {
+            lang: "typescript",
+            label: "TypeScript",
+            code: `import { UpNodeClient } from "@upnode/sdk";
+
+const upnode = new UpNodeClient({ apiKey: process.env.UPNODE_API_KEY! });
+
+await upnode.monitors.ping("mon_prod_db", {
+  status: "ok",
+  latency_ms: 42,
+  message: "Database replica sync complete",
+});`,
+          },
+          {
+            lang: "python",
+            label: "Python",
+            code: `import requests, os
+
+response = requests.post(
+    "https://api.upnode.io/v1/monitors/mon_prod_db/ping",
+    headers={"Authorization": f"Bearer {os.getenv('UPNODE_API_KEY')}"},
+    json={"status": "ok", "latency_ms": 42, "message": "Sync complete"}
+)
+print(response.json())`,
+          },
+          {
+            lang: "go",
+            label: "Go",
+            code: `req, _ := http.NewRequest("POST", "https://api.upnode.io/v1/monitors/mon_prod_db/ping", body)
+req.Header.Set("Authorization", "Bearer " + os.Getenv("UPNODE_API_KEY"))
+resp, _ := http.DefaultClient.Do(req)`,
+          },
+        ]}
       />
 
       <SectionHeading id="status-report" level={2}>
-        <CheckCircle2 className="w-4 h-4 opacity-60" />
+        <CheckCircle2 className="w-3.5 h-3.5 text-amber-400 opacity-80" />
         Status Report Endpoint
       </SectionHeading>
-      <p
-        className="text-sm leading-relaxed mb-3"
-        style={{ color: "var(--lp-text-mid)" }}
-      >
-        Report the current status of a monitored component — useful for pushing
-        status from health check endpoints.
+      <p className="text-xs leading-relaxed mb-3 text-slate-400">
+        Update component status states programmatically (valid states:{" "}
+        <InlineCode>ok</InlineCode>, <InlineCode>degraded</InlineCode>,{" "}
+        <InlineCode>down</InlineCode>, <InlineCode>maintenance</InlineCode>).
       </p>
-      <div className="flex items-center gap-2 mb-3">
+
+      <div className="flex items-center gap-2.5 mb-3">
         <Badge color="yellow">PATCH</Badge>
-        <code
-          className="font-mono text-[11px]"
-          style={{ color: "var(--lp-text-primary)" }}
-        >
-          /v1/monitors/{"{monitorId}"}/status
-        </code>
+        <InlineCode>/v1/monitors/&#123;monitorId&#125;/status</InlineCode>
       </div>
-      <TerminalBlock
-        title="shell — update status"
-        lang="bash"
-        code={`curl -X PATCH https://api.upnode.io/v1/monitors/mon_abc123/status \\
-  --header "Authorization: Bearer $UPNODE_API_KEY" \\
-  --header "Content-Type: application/json" \\
-  --data '{
+
+      <DocsCodeBlock
+        title="patch status state"
+        snippets={[
+          {
+            lang: "bash",
+            label: "cURL",
+            code: `curl -X PATCH https://api.upnode.io/v1/monitors/mon_api_gateway/status \\
+  -H "Authorization: Bearer $UPNODE_API_KEY" \\
+  -H "Content-Type: application/json" \\
+  -d '{
     "status": "degraded",
-    "message": "Database response time > 800ms. Investigating.",
-    "affected_regions": ["us-east-1", "eu-west-1"]
-  }'`}
+    "message": "Elevated DB latency in us-east-1 region"
+  }'`,
+          },
+          {
+            lang: "json",
+            label: "JSON Response",
+            code: `{
+  "success": true,
+  "monitor_id": "mon_api_gateway",
+  "previous_status": "ok",
+  "current_status": "degraded",
+  "updated_at": "2026-08-05T13:30:00.000Z"
+}`,
+          },
+        ]}
       />
-      <InfoBox type="info">
-        Valid status values: <code style={{ color: "#86efac" }}>ok</code>,{" "}
-        <code style={{ color: "#86efac" }}>degraded</code>,{" "}
-        <code style={{ color: "#86efac" }}>down</code>, and{" "}
-        <code style={{ color: "#86efac" }}>maintenance</code>.
-      </InfoBox>
 
       <SectionHeading id="incident-create" level={2}>
-        <AlertTriangle className="w-4 h-4 opacity-60" />
+        <AlertTriangle className="w-3.5 h-3.5 text-rose-400 opacity-80" />
         Create an Incident
       </SectionHeading>
-      <div className="flex items-center gap-2 mb-3">
-        <Badge color="green">POST</Badge>
-        <code
-          className="font-mono text-[11px]"
-          style={{ color: "var(--lp-text-primary)" }}
-        >
-          /v1/projects/{"{projectId}"}/incidents
-        </code>
+      <div className="flex items-center gap-2.5 mb-3">
+        <Badge color="red">POST</Badge>
+        <InlineCode>/v1/projects/&#123;projectId&#125;/incidents</InlineCode>
       </div>
-      <TerminalBlock
-        title="shell — create incident"
-        lang="bash"
-        code={`curl -X POST https://api.upnode.io/v1/projects/proj_xyz/incidents \\
-  --header "Authorization: Bearer $UPNODE_API_KEY" \\
-  --header "Content-Type: application/json" \\
-  --data '{
+
+      <DocsCodeBlock
+        title="create incident request"
+        snippets={[
+          {
+            lang: "bash",
+            label: "cURL",
+            code: `curl -X POST https://api.upnode.io/v1/projects/proj_live/incidents \\
+  -H "Authorization: Bearer $UPNODE_API_KEY" \\
+  -H "Content-Type: application/json" \\
+  -d '{
     "title": "Payment API Latency Spike",
-    "severity": "high",
-    "description": "P99 latency exceeded 2000ms on payment-gateway.",
-    "monitor_ids": ["mon_abc123"],
+    "severity": "critical",
+    "description": "P99 latency > 2500ms on payment gateway",
     "notify": true
-  }'`}
-      />
-      <TerminalBlock
-        title="json — response 201 Created"
-        lang="json"
-        code={`{
-  "id": "inc_8402",
-  "title": "Payment API Latency Spike",
-  "severity": "high",
-  "status": "investigating",
-  "created_at": "2026-08-01T11:14:05.220Z",
-  "alert_sent": true,
-  "channels_notified": ["slack", "pagerduty", "email"]
-}`}
+  }'`,
+          },
+        ]}
       />
 
-      <SectionHeading id="sdk-usage" level={2}>
-        <Code2 className="w-4 h-4 opacity-60" />
-        SDK Usage (TypeScript/Node.js)
+      <SectionHeading id="api-playground" level={2}>
+        <Sparkles className="w-3.5 h-3.5 text-blue-400 opacity-80" />
+        Interactive API Playground
       </SectionHeading>
-      <p
-        className="text-sm leading-relaxed mb-3"
-        style={{ color: "var(--lp-text-mid)" }}
-      >
-        Install the official UpNode SDK from npm for a type-safe experience:
+      <p className="text-xs leading-relaxed mb-2 text-slate-400">
+        Test requests live against our simulated sandbox API right inside the
+        documentation:
       </p>
-      <TerminalBlock
-        title="shell — install sdk"
-        lang="bash"
-        code={`npm install @upnode/sdk`}
+
+      <DocsPlayground />
+
+      <SectionHeading id="webhooks-security" level={2}>
+        <ShieldCheck className="w-3.5 h-3.5 text-emerald-400 opacity-80" />
+        Webhooks & HMAC Verification
+      </SectionHeading>
+      <p className="text-xs leading-relaxed mb-3 text-slate-400">
+        UpNode sends HTTP POST payloads when incidents change status. Verify
+        incoming payloads using the <InlineCode>X-UpNode-Signature</InlineCode>{" "}
+        HMAC header.
+      </p>
+
+      <DocsCodeBlock
+        title="typescript — verify webhook signature"
+        snippets={[
+          {
+            lang: "typescript",
+            label: "Node.js crypto",
+            code: `import crypto from "crypto";
+
+export function verifyUpNodeWebhook(payload: string, signature: string, secret: string): boolean {
+  const hmac = crypto.createHmac("sha256", secret);
+  const digest = "sha256=" + hmac.update(payload).digest("hex");
+  return crypto.timingSafeEqual(Buffer.from(signature), Buffer.from(digest));
+}`,
+          },
+        ]}
       />
-      <TerminalBlock
-        title="typescript — monitor a project"
-        lang="typescript"
-        code={`import { UpNodeClient } from "@upnode/sdk";
 
-const upnode = new UpNodeClient({
-  apiKey: process.env.UPNODE_API_KEY,
-  projectId: process.env.UPNODE_PROJECT_ID,
-});
-
-// Send a heartbeat ping
-await upnode.monitors.ping("mon_abc123", {
-  status: "ok",
-  latency_ms: performance.now(),
-});
-
-// Open an incident when a health check fails
-await upnode.incidents.create({
-  title: "DB Connection Pool Exhausted",
-  severity: "critical",
-  notify: true,
-});`}
-      />
-      <InfoBox type="success">
-        The SDK ships with full TypeScript types, automatic retry logic with
-        exponential backoff, and built-in request telemetry.
-      </InfoBox>
+      <DocsFeedback sectionTitle="API Reference" />
     </div>
   );
 }
 
-// ─── Configuring Alerts Section ───────────────────────────────────────────────────
+// ─── Alerting & Notifications Content ─────────────────────────────────────────
 function ConfiguringAlertsSection() {
   return (
-    <div>
+    <div className="font-mono">
       <SectionHeading id="configuring-alerts" level={1}>
-        Configuring Alerts
+        Alerting & Notifications
       </SectionHeading>
-      <p
-        className="text-sm leading-relaxed mb-6"
-        style={{ color: "var(--lp-text-mid)" }}
-      >
-        Alerts are the notification layer of UpNode. Configure where, when, and
-        how your team gets paged when a monitor detects an issue.
+      <p className="text-xs leading-relaxed mb-6 text-slate-400">
+        Alerts ensure your on-call engineers are paged immediately when service
+        degradation or outage occurs.
       </p>
 
       <SectionHeading id="alert-channels" level={2}>
-        <Bell className="w-4 h-4 opacity-60" />
+        <Bell className="w-3.5 h-3.5 text-purple-400 opacity-80" />
         Alert Channels
       </SectionHeading>
-      <p
-        className="text-sm leading-relaxed mb-4"
-        style={{ color: "var(--lp-text-mid)" }}
-      >
-        Navigate to{" "}
-        <strong style={{ color: "var(--lp-text-primary)" }}>
-          Project → Settings → Alert Channels
-        </strong>{" "}
-        to configure notification destinations.
-      </p>
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-6">
         {[
           {
             name: "Slack",
-            desc: "Post rich alert cards to any channel",
+            desc: "Send rich block cards to #incidents channels",
             badge: "webhook",
             color: "purple" as const,
           },
           {
             name: "PagerDuty",
-            desc: "Trigger PagerDuty incidents & escalations",
+            desc: "Trigger PagerDuty incident escalations",
             badge: "native",
             color: "red" as const,
           },
           {
             name: "Email",
-            desc: "Send to individuals or distribution lists",
+            desc: "Notify team distribution lists",
             badge: "smtp",
             color: "blue" as const,
           },
           {
-            name: "Webhook",
-            desc: "POST JSON payload to any URL",
+            name: "Custom Webhook",
+            desc: "POST JSON event payloads to any HTTPS URL",
             badge: "custom",
             color: "green" as const,
           },
           {
             name: "Microsoft Teams",
-            desc: "Adaptive card alerts in your team channel",
+            desc: "Adaptive cards in Teams channels",
             badge: "webhook",
             color: "purple" as const,
           },
           {
-            name: "SMS / Twilio",
-            desc: "Critical-only SMS for on-call engineers",
-            badge: "api",
+            name: "Twilio SMS",
+            desc: "Direct SMS pages for critical outages",
+            badge: "sms",
             color: "yellow" as const,
           },
         ].map((ch) => (
           <div
             key={ch.name}
-            className="flex items-start gap-3 p-3.5 rounded-xl"
-            style={{
-              background: "rgba(255,255,255,0.03)",
-              border: "0.5px solid var(--lp-border)",
-            }}
+            className="flex items-start gap-3 p-3.5 rounded-none bg-black border border-neutral-800 hover:border-neutral-705 transition-all shadow-xs"
           >
-            <div
-              className="w-7 h-7 rounded-lg flex items-center justify-center flex-shrink-0"
-              style={{
-                background: "rgba(255,255,255,0.06)",
-                border: "0.5px solid var(--lp-border)",
-              }}
-            >
-              <Bell
-                className="w-3.5 h-3.5"
-                style={{ color: "var(--lp-text-mid)" }}
-              />
+            <div className="w-7 h-7 rounded-none bg-neutral-900 border border-neutral-800 flex items-center justify-center flex-shrink-0 text-neutral-400">
+              <Bell className="w-3.5 h-3.5" />
             </div>
             <div className="flex-1 min-w-0">
               <div className="flex items-center gap-2 mb-0.5">
-                <p
-                  className="font-mono text-[12px] font-semibold"
-                  style={{ color: "var(--lp-text-primary)" }}
-                >
+                <p className="font-mono text-xs font-semibold text-white">
                   {ch.name}
                 </p>
                 <Badge color={ch.color}>{ch.badge}</Badge>
               </div>
-              <p
-                className="text-[11px]"
-                style={{ color: "var(--lp-text-dim)" }}
-              >
-                {ch.desc}
-              </p>
+              <p className="text-[11px] text-neutral-500">{ch.desc}</p>
             </div>
           </div>
         ))}
       </div>
-      <TerminalBlock
-        title="shell — configure slack webhook"
-        lang="bash"
-        code={`curl -X POST https://api.upnode.io/v1/projects/proj_xyz/alert-channels \\
-  --header "Authorization: Bearer $UPNODE_API_KEY" \\
-  --header "Content-Type: application/json" \\
-  --data '{
-    "type": "slack",
-    "name": "Engineering Alerts",
-    "config": {
-      "webhook_url": "https://hooks.slack.com/services/T00000/B00000/XXXXXX",
-      "channel": "#incidents",
-      "mention_on_critical": "@oncall"
-    }
-  }'`}
-      />
 
       <SectionHeading id="alert-rules" level={2}>
-        <Zap className="w-4 h-4 opacity-60" />
-        Alert Rules & Thresholds
+        <Zap className="w-3.5 h-3.5 text-amber-400 opacity-80" />
+        Alert Rules & Threshold Matrix
       </SectionHeading>
-      <p
-        className="text-sm leading-relaxed mb-4"
-        style={{ color: "var(--lp-text-mid)" }}
-      >
-        Alert rules define when a notification fires. Each rule is attached to a
-        monitor and specifies a condition, threshold, and severity.
-      </p>
-      <div className="overflow-x-auto mb-5">
-        <table
-          className="w-full font-mono text-[11px]"
-          style={{ borderCollapse: "collapse" }}
-        >
-          <thead>
-            <tr style={{ borderBottom: "0.5px solid var(--lp-border)" }}>
-              {["Condition", "Example Threshold", "Severity"].map((h) => (
-                <th
-                  key={h}
-                  className="text-left py-2 px-3"
-                  style={{ color: "var(--lp-text-faint)" }}
-                >
-                  {h}
-                </th>
-              ))}
+      <div className="overflow-x-auto my-5 rounded-none border border-neutral-850 bg-black">
+        <table className="w-full text-left font-mono text-[10px]">
+          <thead className="bg-neutral-900 border-b border-neutral-850">
+            <tr>
+              <th className="py-2.5 px-4 text-neutral-400">Condition</th>
+              <th className="py-2.5 px-4 text-neutral-400">Threshold</th>
+              <th className="py-2.5 px-4 text-neutral-400">Severity</th>
             </tr>
           </thead>
-          <tbody>
+          <tbody className="divide-y divide-neutral-900 text-slate-300">
             {[
               ["response_time_ms > X", "> 500ms", "warning", "blue"],
               ["response_time_ms > X", "> 2000ms", "critical", "red"],
-              ["status_code != 200", "4xx / 5xx", "high", "yellow"],
+              ["status_code != 200", "4xx / 5xx error", "high", "yellow"],
               ["heartbeat_missed", "1 missed ping", "critical", "red"],
-              ["ssl_expiry_days < X", "< 7 days", "high", "yellow"],
-              ["uptime_pct < X", "< 99.9%", "warning", "blue"],
+              ["ssl_expiry_days < X", "< 7 days remaining", "high", "yellow"],
             ].map(([cond, val, sev, badgeColor], i) => (
-              <tr
-                key={i}
-                style={{ borderBottom: "0.5px solid var(--lp-border)" }}
-              >
-                <td className="py-2.5 px-3" style={{ color: "#86efac" }}>
+              <tr key={i}>
+                <td className="py-2.5 px-4 text-emerald-400 font-semibold">
                   {cond}
                 </td>
-                <td
-                  className="py-2.5 px-3"
-                  style={{ color: "var(--lp-text-mid)" }}
-                >
-                  {val}
-                </td>
-                <td className="py-2.5 px-3">
+                <td className="py-2.5 px-4">{val}</td>
+                <td className="py-2.5 px-4">
                   <Badge color={badgeColor as "blue" | "red" | "yellow"}>
                     {sev}
                   </Badge>
@@ -920,120 +750,204 @@ function ConfiguringAlertsSection() {
           </tbody>
         </table>
       </div>
-      <TerminalBlock
-        title="shell — create alert rule"
-        lang="bash"
-        code={`curl -X POST https://api.upnode.io/v1/monitors/mon_abc123/alert-rules \\
-  --header "Authorization: Bearer $UPNODE_API_KEY" \\
-  --header "Content-Type: application/json" \\
-  --data '{
-    "condition": "response_time_ms",
-    "operator": "gt",
-    "threshold": 2000,
-    "severity": "critical",
-    "channels": ["chan_slack_01", "chan_pagerduty_01"],
-    "consecutive_failures": 2
-  }'`}
-      />
 
       <SectionHeading id="escalation-policy" level={2}>
-        <ExternalLink className="w-4 h-4 opacity-60" />
+        <Workflow className="w-3.5 h-3.5 text-blue-400 opacity-80" />
         Escalation Policies
       </SectionHeading>
-      <p
-        className="text-sm leading-relaxed mb-4"
-        style={{ color: "var(--lp-text-mid)" }}
-      >
-        If an alert goes unacknowledged, escalation policies ensure the right
-        person is reached.
+      <p className="text-xs leading-relaxed mb-3 text-slate-400">
+        If an alert goes unacknowledged, escalation rules auto-page backup team
+        members:
       </p>
-      <TerminalBlock
-        title="json — escalation policy config"
-        lang="json"
-        code={`{
-  "name": "On-Call Engineering Escalation",
+
+      <DocsCodeBlock
+        title="json — escalation policy structure"
+        snippets={[
+          {
+            lang: "json",
+            label: "JSON Policy",
+            code: `{
+  "name": "On-Call Tier 1 Escalation",
   "steps": [
-    {
-      "delay_minutes": 0,
-      "notify": ["user_alice@acme.com"],
-      "channels": ["slack", "email"]
-    },
-    {
-      "delay_minutes": 5,
-      "notify": ["user_bob@acme.com"],
-      "channels": ["pagerduty", "sms"]
-    },
-    {
-      "delay_minutes": 15,
-      "notify": ["user_manager@acme.com"],
-      "channels": ["pagerduty", "email", "sms"]
-    }
-  ],
-  "repeat_after_minutes": 30
-}`}
+    { "delay_min": 0, "targets": ["oncall_primary@acme.com"], "channels": ["slack"] },
+    { "delay_min": 5, "targets": ["oncall_secondary@acme.com"], "channels": ["pagerduty", "sms"] },
+    { "delay_min": 15, "targets": ["eng_lead@acme.com"], "channels": ["pagerduty", "sms", "email"] }
+  ]
+}`,
+          },
+        ]}
       />
 
       <SectionHeading id="silence-windows" level={2}>
-        <X className="w-4 h-4 opacity-60" />
-        Silence Windows
+        <X className="w-3.5 h-3.5 text-rose-400 opacity-80" />
+        Silence & Maintenance Windows
       </SectionHeading>
-      <p
-        className="text-sm leading-relaxed mb-4"
-        style={{ color: "var(--lp-text-mid)" }}
-      >
-        Silence Windows suppress alerts during scheduled maintenance. No
-        incidents are created and no notifications are sent while a window is
-        active.
+      <p className="text-xs leading-relaxed mb-3 text-slate-400">
+        Suppress alert pages during scheduled server maintenance to avoid false
+        alarms.
       </p>
-      <TerminalBlock
-        title="shell — create silence window"
-        lang="bash"
-        code={`curl -X POST https://api.upnode.io/v1/projects/proj_xyz/silence-windows \\
-  --header "Authorization: Bearer $UPNODE_API_KEY" \\
-  --header "Content-Type: application/json" \\
-  --data '{
-    "name": "Weekly DB Maintenance",
-    "start": "2026-08-03T02:00:00Z",
-    "end": "2026-08-03T04:00:00Z",
-    "recurrence": "weekly",
-    "monitor_ids": ["mon_abc123", "mon_db_replica"]
-  }'`}
-      />
-      <InfoBox type="success">
-        Silence windows can be created up to 90 days in advance. Recurring
-        windows support daily, weekly, and monthly cadences.
-      </InfoBox>
+
+      <DocsFeedback sectionTitle="Alerting & Notifications" />
     </div>
   );
 }
 
-// ─── Main Docs Page ───────────────────────────────────────────────────────────────
+// ─── SDKs & Integrations Section Content ──────────────────────────────────────
+function SdksIntegrationsSection() {
+  return (
+    <div className="font-mono">
+      <SectionHeading id="sdks-integrations" level={1}>
+        SDKs & Integrations
+      </SectionHeading>
+      <p className="text-xs leading-relaxed mb-6 text-slate-400">
+        Integrate UpNode into Node.js, Python, GitHub Actions, Docker, or
+        Kubernetes pipelines seamlessly.
+      </p>
+
+      <SectionHeading id="typescript-sdk" level={2}>
+        <Code2 className="w-3.5 h-3.5 text-blue-400 opacity-80" />
+        TypeScript / Node.js SDK
+      </SectionHeading>
+
+      <DocsCodeBlock
+        title="typescript — install and initialize"
+        snippets={[
+          {
+            lang: "bash",
+            label: "npm / pnpm",
+            code: "npm install @upnode/sdk",
+          },
+          {
+            lang: "typescript",
+            label: "index.ts",
+            code: `import { UpNodeClient } from "@upnode/sdk";
+
+const upnode = new UpNodeClient({
+  apiKey: process.env.UPNODE_API_KEY!,
+});
+
+// Send continuous ping
+await upnode.monitors.ping("mon_api", { status: "ok", latency_ms: 18 });`,
+          },
+        ]}
+      />
+
+      <SectionHeading id="python-sdk" level={2}>
+        <Cpu className="w-3.5 h-3.5 text-purple-400 opacity-80" />
+        Python SDK
+      </SectionHeading>
+
+      <DocsCodeBlock
+        title="python — install and send ping"
+        snippets={[
+          {
+            lang: "bash",
+            label: "pip",
+            code: "pip install upnode-python",
+          },
+          {
+            lang: "python",
+            label: "main.py",
+            code: `from upnode import UpNode
+
+client = UpNode(api_key="upn_live_xxxxxxxx")
+client.ping("mon_worker_01", status="ok", latency_ms=35)`,
+          },
+        ]}
+      />
+
+      <SectionHeading id="cicd-github-actions" level={2}>
+        <Layers className="w-3.5 h-3.5 text-amber-400 opacity-80" />
+        GitHub Actions CI/CD Pipeline
+      </SectionHeading>
+      <p className="text-xs leading-relaxed mb-3 text-slate-400">
+        Automatically notify UpNode of deployments or start maintenance windows
+        inside your GitHub workflow:
+      </p>
+
+      <DocsCodeBlock
+        title="yaml — .github/workflows/deploy.yml"
+        snippets={[
+          {
+            lang: "bash",
+            label: "GitHub Actions YAML",
+            code: `name: Production Deployment
+on:
+  push:
+    branches: [main]
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Report Deployment to UpNode
+        uses: upnode/github-action-ping@v1
+        with:
+          api-key: \${{ secrets.UPNODE_API_KEY }}
+          monitor-id: "mon_production_api"
+          status: "ok"`,
+          },
+        ]}
+      />
+
+      <SectionHeading id="docker-k8s-probes" level={2}>
+        <Terminal className="w-3.5 h-3.5 text-emerald-400 opacity-80" />
+        Docker & Kubernetes Probes
+      </SectionHeading>
+
+      <DocsCodeBlock
+        title="dockerfile & k8s health check"
+        snippets={[
+          {
+            lang: "bash",
+            label: "Dockerfile",
+            code: `HEALTHCHECK --interval=30s --timeout=5s \\
+  CMD curl -f -X POST https://api.upnode.io/v1/monitors/$MONITOR_ID/ping \\
+      -H "Authorization: Bearer $UPNODE_API_KEY" || exit 1`,
+          },
+        ]}
+      />
+
+      <DocsFeedback sectionTitle="SDKs & Integrations" />
+    </div>
+  );
+}
+
+// ─── Main Docs Page Component ────────────────────────────────────────────────
 export default function DocsPage() {
-  const [search, setSearch] = useState("");
   const [activeSection, setActiveSection] = useState("getting-started");
   const [mobileNavOpen, setMobileNavOpen] = useState(false);
-  const [searchResults, setSearchResults] = useState<
-    { id: string; label: string; parent: string }[]
-  >([]);
+  const [searchModalOpen, setSearchModalOpen] = useState(false);
 
-  const allSubsections = SECTIONS.flatMap((s) =>
-    s.subsections.map((sub) => ({ ...sub, parent: s.label })),
+  // Flatten items for search palette
+  const searchItems: DocSearchItem[] = SECTIONS.flatMap((s) =>
+    s.subsections.map((sub) => ({
+      id: sub.id,
+      label: sub.label,
+      category: s.label,
+      description: `Documentation on ${sub.label} under ${s.label}`,
+    })),
   );
 
+  // Listen for global Cmd+K, Ctrl+K, or / keydown
   useEffect(() => {
-    if (search.trim().length < 2) {
-      setSearchResults([]);
-      return;
-    }
-    const q = search.toLowerCase();
-    setSearchResults(
-      allSubsections.filter(
-        (item) =>
-          item.label.toLowerCase().includes(q) ||
-          item.parent.toLowerCase().includes(q),
-      ),
-    );
-  }, [search]);
+    const handleGlobalKeyDown = (e: KeyboardEvent) => {
+      if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === "k") {
+        e.preventDefault();
+        setSearchModalOpen(true);
+      } else if (
+        e.key === "/" &&
+        document.activeElement?.tagName !== "INPUT" &&
+        document.activeElement?.tagName !== "TEXTAREA"
+      ) {
+        e.preventDefault();
+        setSearchModalOpen(true);
+      }
+    };
+
+    window.addEventListener("keydown", handleGlobalKeyDown);
+    return () => window.removeEventListener("keydown", handleGlobalKeyDown);
+  }, []);
 
   const scrollTo = (id: string) => {
     const el = document.getElementById(id);
@@ -1041,11 +955,10 @@ export default function DocsPage() {
       el.scrollIntoView({ behavior: "smooth", block: "start" });
       setActiveSection(id);
       setMobileNavOpen(false);
-      setSearch("");
-      setSearchResults([]);
     }
   };
 
+  // Intersection Observer for Scrollspy
   useEffect(() => {
     const allIds = SECTIONS.flatMap((s) => [
       s.id,
@@ -1057,7 +970,7 @@ export default function DocsPage() {
           if (entry.isIntersecting) setActiveSection(entry.target.id);
         }
       },
-      { rootMargin: "-20% 0px -70% 0px", threshold: 0 },
+      { rootMargin: "-15% 0px -70% 0px", threshold: 0 },
     );
     allIds.forEach((id) => {
       const el = document.getElementById(id);
@@ -1067,155 +980,64 @@ export default function DocsPage() {
   }, []);
 
   return (
-    <div
-      className="min-h-screen transition-colors"
-      style={{ background: "var(--lp-bg)", color: "var(--lp-text-primary)" }}
-    >
-      {/* Grid background */}
-      <div className="fixed inset-0 pointer-events-none opacity-[0.03] z-0 bg-[radial-gradient(#000_1px,transparent_1px)] dark:bg-[radial-gradient(#fff_1px,transparent_1px)] [background-size:16px_16px]" />
+    <div className="min-h-screen bg-black text-neutral-200 font-mono selection:bg-neutral-800 selection:text-white">
+      {/* Top Scroll Reading Progress */}
+      <DocsReadingProgress />
+
+      {/* Grid Pattern Background Overlay */}
+      <div className="fixed inset-0 pointer-events-none opacity-[0.04] dark:opacity-[0.06] z-0 bg-[radial-gradient(#fff_1px,transparent_1px)] [background-size:16px_16px]" />
 
       <LandingNavbar />
 
-      {/* Hero */}
-      <div
-        className="relative z-10 border-b"
-        style={{ borderColor: "var(--lp-border)", background: "var(--lp-bg)" }}
-      >
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 sm:py-16">
-          <div
-            className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full font-mono text-[10px] tracking-widest uppercase mb-5"
-            style={{
-              background: "var(--lp-surface)",
-              border: "0.5px solid var(--lp-border)",
-              color: "var(--lp-text-dim)",
-            }}
-          >
-            <span className="w-1 h-1 rounded-full bg-current inline-block" />
-            Documentation
+      {/* Hero Header */}
+      <div className="relative z-10 border-b border-dashed border-neutral-850 bg-black">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 sm:py-14">
+          <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-none font-mono text-[9px] tracking-widest uppercase mb-4 bg-neutral-900 border border-neutral-800 text-neutral-400">
+            <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
+            [System Documentation]
           </div>
 
-          <h1
-            className="text-3xl sm:text-4xl font-bold tracking-tight mb-3"
-            style={{ color: "var(--lp-text-primary)" }}
-          >
-            Help Center
+          <h1 className="text-2xl sm:text-3xl font-extralight tracking-wider uppercase mb-3 text-white">
+            UpNode Developer Hub
           </h1>
-          <p
-            className="text-sm leading-relaxed mb-8 max-w-2xl"
-            style={{ color: "var(--lp-text-mid)" }}
-          >
-            Everything you need to integrate UpNode into your stack — from
-            generating your first API key to configuring escalation policies.
+          <p className="text-xs leading-relaxed mb-6 max-w-2xl text-neutral-400">
+            Comprehensive guides, REST API reference, and SDKs to monitor your
+            services with second-level precision.
           </p>
 
-          {/* Search */}
+          {/* Search Trigger Input Bar */}
           <div className="relative max-w-xl">
-            <div
-              className="flex items-center gap-3 px-4 py-3 rounded-xl transition-all focus-within:ring-1 focus-within:ring-blue-500/30"
-              style={{
-                background: "var(--lp-surface)",
-                border: "0.5px solid var(--lp-border)",
-                backdropFilter: "blur(20px)",
-              }}
+            <button
+              onClick={() => setSearchModalOpen(true)}
+              className="w-full flex items-center justify-between px-4 py-2.5 rounded-none transition-all text-left cursor-pointer border border-neutral-800 bg-neutral-950/80 hover:border-neutral-700 font-mono text-xs group"
             >
-              <Search
-                className="w-4 h-4 flex-shrink-0"
-                style={{ color: "var(--lp-text-faint)" }}
-              />
-              <input
-                id="docs-search"
-                type="text"
-                placeholder="Search documentation..."
-                value={search}
-                onChange={(e) => setSearch(e.target.value)}
-                className="flex-1 bg-transparent outline-none font-mono text-[12px] placeholder:opacity-40"
-                style={{ color: "var(--lp-text-primary)" }}
-              />
-              {search && (
-                <button
-                  onClick={() => {
-                    setSearch("");
-                    setSearchResults([]);
-                  }}
-                  className="cursor-pointer opacity-50 hover:opacity-100 transition-opacity"
-                >
-                  <X
-                    className="w-3 h-3"
-                    style={{ color: "var(--lp-text-mid)" }}
-                  />
-                </button>
-              )}
-              <span
-                className="hidden sm:flex font-mono text-[9px] tracking-widest px-1.5 py-1 rounded"
-                style={{
-                  background: "rgba(255,255,255,0.04)",
-                  border: "0.5px solid var(--lp-border)",
-                  color: "var(--lp-text-faint)",
-                }}
-              >
-                ⌘K
-              </span>
-            </div>
-
-            <AnimatePresence>
-              {searchResults.length > 0 && (
-                <motion.div
-                  initial={{ opacity: 0, y: -8, scale: 0.98 }}
-                  animate={{ opacity: 1, y: 0, scale: 1 }}
-                  exit={{ opacity: 0, y: -4, scale: 0.98 }}
-                  transition={{ duration: 0.15 }}
-                  className="absolute top-full mt-2 left-0 right-0 rounded-xl z-50 overflow-hidden py-1"
-                  style={{ ...GLASS, boxShadow: "0 16px 40px rgba(0,0,0,0.3)" }}
-                >
-                  {searchResults.map((r) => (
-                    <button
-                      key={r.id}
-                      onClick={() => scrollTo(r.id)}
-                      className="w-full flex items-center gap-3 px-4 py-2.5 text-left transition-all cursor-pointer hover:bg-white/5"
-                    >
-                      <Hash
-                        className="w-3 h-3 flex-shrink-0"
-                        style={{ color: "var(--lp-text-faint)" }}
-                      />
-                      <div>
-                        <p
-                          className="font-mono text-[11px]"
-                          style={{ color: "var(--lp-text-primary)" }}
-                        >
-                          {r.label}
-                        </p>
-                        <p
-                          className="font-mono text-[9px] tracking-widest uppercase"
-                          style={{ color: "var(--lp-text-faint)" }}
-                        >
-                          {r.parent}
-                        </p>
-                      </div>
-                    </button>
-                  ))}
-                </motion.div>
-              )}
-            </AnimatePresence>
+              <div className="flex items-center gap-3">
+                <Search className="w-3.5 h-3.5 flex-shrink-0 text-neutral-500 group-hover:text-emerald-400 transition-colors" />
+                <span className="font-mono text-xs text-neutral-500">
+                  Search documentation topics...
+                </span>
+              </div>
+              <div className="flex items-center gap-1.5">
+                <kbd className="font-mono text-[9px] tracking-widest px-2 py-0.5 rounded-none bg-neutral-900 border border-neutral-800 text-neutral-400">
+                  [CMD+K]
+                </kbd>
+                <kbd className="hidden sm:inline-block font-mono text-[9px] tracking-widest px-2 py-0.5 rounded-none bg-neutral-900 border border-neutral-800 text-neutral-400">
+                  [/]
+                </kbd>
+              </div>
+            </button>
           </div>
 
-          {/* Quick Jump */}
-          <div className="flex flex-wrap items-center gap-2 mt-5">
-            <span
-              className="font-mono text-[9px] tracking-widest uppercase"
-              style={{ color: "var(--lp-text-faint)" }}
-            >
-              Jump to
+          {/* Quick Jump Badges */}
+          <div className="flex flex-wrap items-center gap-2 mt-5 font-mono">
+            <span className="text-[9px] tracking-widest uppercase mr-1 text-neutral-500">
+              [Quick Jump]
             </span>
             {SECTIONS.map((s) => (
               <button
                 key={s.id}
                 onClick={() => scrollTo(s.id)}
-                className="flex items-center gap-1.5 px-3 py-1 rounded-full font-mono text-[10px] tracking-wider uppercase transition-all cursor-pointer hover:opacity-100 opacity-70"
-                style={{
-                  background: "var(--lp-surface)",
-                  border: "0.5px solid var(--lp-border)",
-                  color: "var(--lp-text-primary)",
-                }}
+                className="flex items-center gap-1.5 px-3 py-1 rounded-none border border-neutral-850 hover:border-neutral-700 bg-neutral-950/50 text-[10px] uppercase font-bold text-neutral-300 transition-all cursor-pointer"
               >
                 {s.icon}
                 {s.label}
@@ -1225,106 +1047,82 @@ export default function DocsPage() {
         </div>
       </div>
 
-      {/* Layout */}
+      {/* Main Layout Area */}
       <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
         <div className="flex gap-10">
-          {/* Desktop Sidebar */}
-          <aside className="hidden lg:block w-56 flex-shrink-0">
-            <div className="sticky top-24">
+          {/* Desktop Left Navigation Sidebar */}
+          <aside className="hidden lg:block w-60 flex-shrink-0">
+            <div className="sticky top-24 space-y-6">
               {SECTIONS.map((section) => (
-                <div key={section.id} className="mb-6">
+                <div key={section.id} className="space-y-1.5">
                   <button
                     onClick={() => scrollTo(section.id)}
-                    className="w-full flex items-center gap-2 font-mono text-[10px] tracking-widest uppercase font-semibold mb-2 cursor-pointer text-left transition-colors"
+                    className="w-full flex items-center gap-2 font-mono text-[11px] tracking-wider uppercase font-bold text-left transition-colors py-1 cursor-pointer"
                     style={{
                       color:
                         activeSection === section.id ||
                         section.subsections.some((s) => s.id === activeSection)
-                          ? "var(--lp-text-primary)"
-                          : "var(--lp-text-faint)",
+                          ? "#10b981"
+                          : "#525252",
                     }}
                   >
-                    {section.icon}
+                    <span className="p-1 rounded-none bg-neutral-950 border border-neutral-850 text-emerald-400">
+                      {section.icon}
+                    </span>
                     {section.label}
                   </button>
-                  <div
-                    className="space-y-0.5 pl-2 border-l"
-                    style={{ borderColor: "var(--lp-border)" }}
-                  >
-                    {section.subsections.map((sub) => (
-                      <button
-                        key={sub.id}
-                        onClick={() => scrollTo(sub.id)}
-                        className="w-full text-left px-3 py-1.5 font-mono text-[11px] transition-all cursor-pointer block"
-                        style={{
-                          color:
-                            activeSection === sub.id
-                              ? "var(--lp-text-primary)"
-                              : "var(--lp-text-dim)",
-                          background:
-                            activeSection === sub.id
-                              ? "rgba(255,255,255,0.06)"
-                              : "transparent",
-                          borderLeft:
-                            activeSection === sub.id
-                              ? "1px solid #60a5fa"
-                              : "1px solid transparent",
-                          marginLeft: "-1px",
-                        }}
-                      >
-                        {sub.label}
-                      </button>
-                    ))}
+
+                  <div className="space-y-0.5 pl-3 border-l border-dashed border-neutral-850">
+                    {section.subsections.map((sub) => {
+                      const isActive = activeSection === sub.id;
+                      return (
+                        <button
+                          key={sub.id}
+                          onClick={() => scrollTo(sub.id)}
+                          className={`w-full text-left px-3 py-1.5 font-mono text-[11px] transition-all cursor-pointer block rounded-none ${
+                            isActive
+                              ? "bg-neutral-950 text-emerald-400 font-bold border-l-2 border-emerald-400 -ml-[13px] pl-3"
+                              : "text-neutral-500 hover:text-neutral-300 hover:bg-neutral-950/30"
+                          }`}
+                        >
+                          {isActive ? `▶ ${sub.label}` : `  ${sub.label}`}
+                        </button>
+                      );
+                    })}
                   </div>
                 </div>
               ))}
-              <div
-                className="mt-8 p-3.5 rounded-xl"
-                style={{
-                  background: "rgba(96,165,250,0.06)",
-                  border: "0.5px solid rgba(96,165,250,0.2)",
-                }}
-              >
-                <p
-                  className="font-mono text-[10px] font-semibold mb-1"
-                  style={{ color: "#93c5fd" }}
-                >
+
+              {/* Support Card */}
+              <div className="mt-8 p-4 rounded-none border border-neutral-800 bg-neutral-950/50">
+                <p className="font-mono text-xs font-semibold text-white mb-1">
                   Need Help?
                 </p>
-                <p
-                  className="font-mono text-[10px] mb-3"
-                  style={{ color: "var(--lp-text-dim)" }}
-                >
-                  Our support team responds in &lt; 2 hours.
+                <p className="font-mono text-[10px] text-neutral-500 mb-3 leading-relaxed">
+                  Our engineering team responds in &lt; 2 hours.
                 </p>
                 <a
                   href="mailto:support@upnode.io"
-                  className="flex items-center gap-1.5 font-mono text-[10px] tracking-wider uppercase"
-                  style={{ color: "#60a5fa" }}
+                  className="inline-flex items-center gap-1.5 font-mono text-xs text-emerald-400 font-semibold hover:underline"
                 >
-                  Contact Support <ArrowRight className="w-3 h-3" />
+                  [Contact Support] <ArrowRight className="w-3 h-3" />
                 </a>
               </div>
             </div>
           </aside>
 
-          {/* Mobile Nav FAB */}
+          {/* Mobile Navigation Trigger Floating Button */}
           <div className="lg:hidden fixed bottom-6 right-6 z-50">
             <button
               onClick={() => setMobileNavOpen((v) => !v)}
-              className="flex items-center gap-2 px-4 py-2.5 rounded-full font-mono text-[11px] font-semibold shadow-2xl cursor-pointer transition-all active:scale-95"
-              style={{
-                background: "var(--lp-cta-bg)",
-                color: "var(--lp-cta-text)",
-                border: "0.5px solid var(--lp-border-top)",
-              }}
+              className="flex items-center gap-2 px-4 py-2.5 rounded-none font-mono text-xs font-semibold shadow-2xl cursor-pointer transition-all active:scale-95 bg-neutral-950 text-white border border-neutral-800"
             >
-              <Menu className="w-3.5 h-3.5" />
+              <Menu className="w-4 h-4" />
               Sections
             </button>
           </div>
 
-          {/* Mobile Bottom Sheet */}
+          {/* Mobile Bottom Navigation Sheet */}
           <AnimatePresence>
             {mobileNavOpen && (
               <>
@@ -1340,45 +1138,31 @@ export default function DocsPage() {
                   animate={{ y: 0 }}
                   exit={{ y: "100%" }}
                   transition={{ type: "spring", damping: 28, stiffness: 250 }}
-                  className="fixed bottom-0 left-0 right-0 z-50 rounded-t-2xl p-6 max-h-[70vh] overflow-y-auto lg:hidden"
-                  style={{
-                    ...GLASS,
-                    boxShadow: "0 -16px 40px rgba(0,0,0,0.3)",
-                  }}
+                  className="fixed bottom-0 left-0 right-0 z-50 rounded-t-none p-6 max-h-[75vh] overflow-y-auto lg:hidden bg-black border-t border-neutral-800 shadow-2xl"
                 >
-                  <div className="flex items-center justify-between mb-5">
-                    <p
-                      className="font-mono text-[10px] tracking-widest uppercase"
-                      style={{ color: "var(--lp-text-faint)" }}
-                    >
-                      Sections
+                  <div className="flex items-center justify-between mb-5 pb-3 border-b border-neutral-850">
+                    <p className="font-mono text-xs font-bold uppercase tracking-widest text-neutral-450">
+                      [Documentation Topics]
                     </p>
                     <button
                       onClick={() => setMobileNavOpen(false)}
-                      className="cursor-pointer opacity-60 hover:opacity-100"
+                      className="p-1 rounded-none text-neutral-500 hover:text-neutral-350 cursor-pointer"
                     >
-                      <X
-                        className="w-4 h-4"
-                        style={{ color: "var(--lp-text-mid)" }}
-                      />
+                      <X className="w-4 h-4" />
                     </button>
                   </div>
                   {SECTIONS.map((section) => (
-                    <div key={section.id} className="mb-5">
-                      <p
-                        className="flex items-center gap-2 font-mono text-[10px] tracking-widest uppercase font-semibold mb-2"
-                        style={{ color: "var(--lp-text-mid)" }}
-                      >
+                    <div key={section.id} className="mb-5 space-y-2">
+                      <p className="flex items-center gap-2 font-mono text-xs tracking-widest uppercase font-bold text-white">
                         {section.icon}
                         {section.label}
                       </p>
-                      <div className="space-y-1 pl-3">
+                      <div className="space-y-1 pl-3 border-l border-neutral-850">
                         {section.subsections.map((sub) => (
                           <button
                             key={sub.id}
                             onClick={() => scrollTo(sub.id)}
-                            className="w-full text-left py-1.5 font-mono text-[12px] cursor-pointer transition-colors hover:opacity-100 opacity-70"
-                            style={{ color: "var(--lp-text-primary)" }}
+                            className="w-full text-left py-1.5 font-mono text-xs text-neutral-400 hover:text-emerald-450 cursor-pointer block"
                           >
                             {sub.label}
                           </button>
@@ -1391,136 +1175,107 @@ export default function DocsPage() {
             )}
           </AnimatePresence>
 
-          {/* Main Content */}
+          {/* Main Documentation Article Content */}
           <main className="flex-1 min-w-0 max-w-3xl">
-            {/* Breadcrumb */}
-            <div
-              className="flex items-center gap-1.5 font-mono text-[10px] tracking-widest uppercase mb-8"
-              style={{ color: "var(--lp-text-faint)" }}
-            >
-              <Link
-                href="/"
-                className="hover:opacity-100 transition-opacity opacity-60"
-                style={{ color: "var(--lp-text-mid)" }}
-              >
+            {/* Top Breadcrumb Trail */}
+            <div className="flex items-center gap-1.5 font-mono text-[10px] tracking-wider uppercase mb-6 text-neutral-500">
+              <Link href="/" className="hover:text-white">
                 UpNode
               </Link>
-              <ChevronRight className="w-3 h-3 opacity-40" />
-              <span>Docs</span>
+              <ChevronRight className="w-3 h-3" />
+              <span className="text-neutral-300 font-semibold">Docs</span>
             </div>
 
-            {/* Section Overview Cards */}
-            <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 mb-12">
+            {/* Quick Overview Category Cards */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 mb-10">
               {SECTIONS.map((s, i) => (
                 <motion.button
                   key={s.id}
                   onClick={() => scrollTo(s.id)}
                   initial={{ opacity: 0, y: 12 }}
                   animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: i * 0.07, duration: 0.3 }}
+                  transition={{ delay: i * 0.05, duration: 0.25 }}
                   whileHover={{ y: -2 }}
-                  className="text-left p-4 rounded-xl transition-all cursor-pointer group"
-                  style={{ ...GLASS, borderRadius: "14px" }}
+                  className="text-left p-4 rounded-none border border-neutral-800 bg-neutral-950/20 hover:bg-neutral-950/80 hover:border-neutral-700 transition-all cursor-pointer group relative overflow-hidden"
                 >
-                  <div
-                    className="w-7 h-7 rounded-lg flex items-center justify-center mb-3"
-                    style={{
-                      background: "rgba(255,255,255,0.06)",
-                      border: "0.5px solid var(--lp-border)",
-                      color: "var(--lp-text-mid)",
-                    }}
-                  >
-                    {s.icon}
+                  <div className="flex items-center justify-between mb-2">
+                    <span className="text-[9px] font-mono text-neutral-500 uppercase tracking-widest">
+                      MODULE 0{i + 1}
+                    </span>
+                    <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
                   </div>
-                  <p
-                    className="font-mono text-[12px] font-semibold mb-1 group-hover:text-blue-400 transition-colors"
-                    style={{ color: "var(--lp-text-primary)" }}
-                  >
+                  <p className="font-mono text-xs font-bold text-white group-hover:text-emerald-400 transition-colors uppercase tracking-wider mb-2">
                     {s.label}
                   </p>
-                  <p
-                    className="font-mono text-[10px]"
-                    style={{ color: "var(--lp-text-faint)" }}
-                  >
-                    {s.subsections.length} topics
+                  <p className="font-mono text-[18px] font-light text-neutral-400">
+                    {String(s.subsections.length).padStart(2, "0")}{" "}
+                    <span className="text-[10px] text-neutral-500 uppercase">
+                      topics
+                    </span>
                   </p>
                 </motion.button>
               ))}
             </div>
 
-            <div
-              className="w-full h-px mb-12"
-              style={{ background: "var(--lp-border)" }}
-            />
+            <div className="w-full h-px mb-10 bg-neutral-850 border-t border-dashed border-neutral-850" />
 
-            {/* Doc Content */}
+            {/* Documentation Sections */}
             <div className="space-y-16">
-              <motion.section
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.4, delay: 0.1 }}
-              >
+              <section>
                 <GettingStartedSection />
-              </motion.section>
-              <div
-                className="w-full h-px"
-                style={{ background: "var(--lp-border)" }}
-              />
-              <motion.section
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.4, delay: 0.2 }}
-              >
+              </section>
+
+              <div className="w-full h-px bg-neutral-850 border-t border-dashed border-neutral-850" />
+
+              <section>
                 <ApiIntegrationSection />
-              </motion.section>
-              <div
-                className="w-full h-px"
-                style={{ background: "var(--lp-border)" }}
-              />
-              <motion.section
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.4, delay: 0.3 }}
-              >
+              </section>
+
+              <div className="w-full h-px bg-neutral-850 border-t border-dashed border-neutral-850" />
+
+              <section>
                 <ConfiguringAlertsSection />
-              </motion.section>
+              </section>
+
+              <div className="w-full h-px bg-neutral-850 border-t border-dashed border-neutral-850" />
+
+              <section>
+                <SdksIntegrationsSection />
+              </section>
             </div>
 
-            {/* Footer Nav */}
-            <div
-              className="flex flex-col sm:flex-row items-center justify-between gap-4 mt-16 pt-8"
-              style={{ borderTop: "0.5px solid var(--lp-border)" }}
-            >
+            {/* Bottom Footer Call to Action */}
+            <div className="flex flex-col sm:flex-row items-center justify-between gap-4 mt-16 pt-8 border-t border-dashed border-neutral-850">
               <div>
-                <p
-                  className="font-mono text-[10px] tracking-widest uppercase mb-1"
-                  style={{ color: "var(--lp-text-faint)" }}
-                >
-                  Need more help?
+                <p className="font-mono text-[9px] uppercase tracking-widest text-neutral-550 mb-1">
+                  Need custom assistance?
                 </p>
                 <a
                   href="mailto:support@upnode.io"
-                  className="flex items-center gap-1.5 font-mono text-[12px] transition-opacity hover:opacity-80"
-                  style={{ color: "#60a5fa" }}
+                  className="inline-flex items-center gap-1.5 font-mono text-xs text-emerald-400 font-semibold hover:underline"
                 >
-                  Contact support <ExternalLink className="w-3 h-3" />
+                  Contact technical support <ExternalLink className="w-3 h-3" />
                 </a>
               </div>
+
               <Link
                 href="/dashboard"
-                className="flex items-center gap-1.5 px-4 py-2 rounded-xl font-mono text-[11px] font-semibold transition-all active:scale-95 cursor-pointer"
-                style={{
-                  background: "var(--lp-cta-bg)",
-                  color: "var(--lp-cta-text)",
-                  border: "0.5px solid var(--lp-border-top)",
-                }}
+                className="inline-flex items-center gap-2 px-4 py-2 rounded-none bg-white hover:bg-neutral-200 text-black font-mono text-xs font-bold shadow-md transition-all cursor-pointer active:scale-95"
               >
-                Open Dashboard <ArrowRight className="w-3.5 h-3.5" />
+                Go to Dashboard <ArrowRight className="w-3.5 h-3.5" />
               </Link>
             </div>
           </main>
         </div>
       </div>
+
+      {/* Global Command Palette Search Modal */}
+      <DocsSearchModal
+        isOpen={searchModalOpen}
+        onClose={() => setSearchModalOpen(false)}
+        onSelect={scrollTo}
+        items={searchItems}
+      />
 
       <LandingFooter />
     </div>
