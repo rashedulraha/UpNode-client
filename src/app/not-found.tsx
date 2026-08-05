@@ -1,6 +1,5 @@
 "use client";
 
-import React from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { motion } from "framer-motion";
@@ -28,7 +27,6 @@ export default function NotFound() {
 
       {/* Main Content Area */}
       <main className="my-auto max-w-4xl w-full mx-auto grid grid-cols-1 md:grid-cols-12 gap-8 items-center justify-center relative z-10 py-10">
-        
         {/* Left Column: Text Content */}
         <div className="md:col-span-6 space-y-6 text-center md:text-left">
           <motion.div
@@ -41,7 +39,7 @@ export default function NotFound() {
           </motion.div>
 
           <div className="space-y-3">
-            <motion.h1 
+            <motion.h1
               initial={{ opacity: 0, y: 10 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.1 }}
@@ -49,18 +47,19 @@ export default function NotFound() {
             >
               LOST IN THE GRID
             </motion.h1>
-            <motion.p 
+            <motion.p
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               transition={{ delay: 0.2 }}
               className="text-xs sm:text-sm font-mono text-slate-500 dark:text-neutral-400 leading-relaxed max-w-md mx-auto md:mx-0"
             >
-              The telemetry node you are trying to ping does not exist or has been decommissioned from our operational clusters.
+              The telemetry node you are trying to ping does not exist or has
+              been decommissioned from our operational clusters.
             </motion.p>
           </div>
 
           {/* Quick Terminal Code Block Mock */}
-          <motion.div 
+          <motion.div
             initial={{ opacity: 0, y: 15 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.3 }}
@@ -72,15 +71,19 @@ export default function NotFound() {
               <span className="w-2.5 h-2.5 rounded-full bg-emerald-500" />
             </div>
             <div className="space-y-1">
-              <p className="text-slate-500">$ curl -I http://upnode.dev/invalid-route</p>
+              <p className="text-slate-500">
+                $ curl -I http://upnode.dev/invalid-route
+              </p>
               <p className="text-rose-500">HTTP/1.1 404 NOT FOUND</p>
               <p className="text-slate-500">Content-Type: text/plain</p>
-              <p className="text-emerald-400">Response: Telemetry Node offline.</p>
+              <p className="text-emerald-400">
+                Response: Telemetry Node offline.
+              </p>
             </div>
           </motion.div>
 
           {/* Navigation Action Buttons */}
-          <motion.div 
+          <motion.div
             initial={{ opacity: 0, y: 15 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.4 }}
@@ -104,7 +107,7 @@ export default function NotFound() {
         </div>
 
         {/* Right Column: Illustration Image */}
-        <motion.div 
+        <motion.div
           initial={{ opacity: 0, scale: 0.95 }}
           animate={{ opacity: 1, scale: 1 }}
           transition={{ duration: 0.5, delay: 0.2 }}
