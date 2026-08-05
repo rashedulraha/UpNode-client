@@ -47,7 +47,7 @@ test.describe('Authentication Flow', () => {
     await page.click('button[type="submit"]');
     
     // Should show error message
-    await expect(page.locator('text=Invalid credentials')).toBeVisible();
+    await expect(page.locator('text=AUTHENTICATION_FAILED')).toBeVisible();
   });
 
   test('should protect dashboard route', async ({ page }) => {
