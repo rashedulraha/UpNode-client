@@ -11,7 +11,7 @@ interface ProtectedRouteProps {
 }
 
 function ProtectedRouteGuard({ children, requireAuth = true }: ProtectedRouteProps) {
-  const { isAuthenticated, isLoading } = useAuth();
+  const { user, isAuthenticated, isLoading } = useAuth();
   const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();
@@ -19,14 +19,22 @@ function ProtectedRouteGuard({ children, requireAuth = true }: ProtectedRoutePro
   useEffect(() => {
     if (isLoading) return;
 
-    if (requireAuth && !isAuthenticated) {
-      const redirectTo = searchParams.get("redirectTo") || pathname;
-      router.push(`/login?redirectTo=${encodeURIComponent(redirectTo)}`);
+    if (requireAuth) {
+      if (!isAuthenticated) {
+        const redirectTo = searchParams.get("redirectTo") || pathname;
+        router.push(`/login?redirectTo=${encodeURIComponent(redirectTo)}`);
+      } else if (user && !user.emailVerified && pathname !== "/verify-email") {
+        router.push("/verify-email");
+      }
     } else if (!requireAuth && isAuthenticated) {
-      const redirectTo = searchParams.get("redirectTo") || "/dashboard";
-      router.push(redirectTo);
+      if (user && !user.emailVerified && pathname !== "/verify-email") {
+        router.push("/verify-email");
+      } else {
+        const redirectTo = searchParams.get("redirectTo") || "/dashboard";
+        router.push(redirectTo);
+      }
     }
-  }, [isAuthenticated, isLoading, requireAuth, router, pathname, searchParams]);
+  }, [user, isAuthenticated, isLoading, requireAuth, router, pathname, searchParams]);
 
   if (isLoading) {
     return (
