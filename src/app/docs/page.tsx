@@ -9,7 +9,6 @@ import {
   ChevronRight,
   Code2,
   Check,
-  Copy,
   Key,
   Search,
   Zap,
@@ -979,7 +978,7 @@ export default function DocsPage() {
 
       // Expand only the parent of the active link, collapse others
       const parentSection = SECTIONS.find(
-        (s) => s.id === id || s.subsections.some((sub) => sub.id === id)
+        (s) => s.id === id || s.subsections.some((sub) => sub.id === id),
       );
       if (parentSection) {
         setCollapsedSections(() => ({
