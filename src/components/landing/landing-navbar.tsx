@@ -33,14 +33,31 @@ export function LandingNavbar() {
 
   const isLandingPage = pathname === "/";
 
+  const handleNavClick = (
+    e: React.MouseEvent<HTMLAnchorElement>,
+    href: string,
+    targetId?: string
+  ) => {
+    if (targetId && pathname === "/") {
+      e.preventDefault();
+      const element = document.getElementById(targetId);
+      if (element) {
+        element.scrollIntoView({ behavior: "smooth" });
+      }
+      window.history.pushState(null, "", href);
+      setIsDrawerOpen(false);
+    }
+  };
+
   const navLinks = [
-    { label: "Platform", href: isLandingPage ? "#platform" : "/#platform" },
-    { label: "Features", href: isLandingPage ? "#features" : "/#features" },
+    { label: "Platform", href: "/#platform", targetId: "platform" },
+    { label: "Features", href: "/#features", targetId: "features" },
     {
       label: "Architecture",
-      href: isLandingPage ? "#architecture" : "/#architecture",
+      href: "/#architecture",
+      targetId: "architecture",
     },
-    { label: "Pricing", href: isLandingPage ? "#pricing" : "/#pricing" },
+    { label: "Pricing", href: "/#pricing", targetId: "pricing" },
     { label: "Docs", href: "/docs" },
   ];
 
@@ -89,6 +106,7 @@ export function LandingNavbar() {
                 <Link
                   key={l.label}
                   href={l.href}
+                  onClick={(e) => handleNavClick(e, l.href, l.targetId)}
                   className={`hover:opacity-100 transition-opacity py-1 ${
                     isActive
                       ? "text-emerald-500 dark:text-emerald-450 font-bold opacity-100 border-b border-emerald-500 dark:border-emerald-400"
@@ -256,7 +274,7 @@ export function LandingNavbar() {
                       <Link
                         key={l.label}
                         href={l.href}
-                        onClick={() => setIsDrawerOpen(false)}
+                        onClick={(e) => handleNavClick(e, l.href, l.targetId)}
                         className={`py-1.5 px-2 rounded-none transition-all ${
                           isActive
                             ? "bg-neutral-900 border border-neutral-800 text-emerald-400 font-bold"
