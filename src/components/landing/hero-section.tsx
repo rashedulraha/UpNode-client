@@ -51,12 +51,7 @@ function MonitoringCard() {
   const [hoveredLogId, setHoveredLogId] = useState<string | null>(null);
   const [isCardHovered, setIsCardHovered] = useState(false);
 
-  useEffect(() => {
-    setLogs(
-      LOG_POOL.slice(0, 9).map((l) => ({ ...l, id: uid(), ts: nowTS() })),
-    );
-  }, []);
-
+  // Keep initial static logs for clean SSR hydration
   useEffect(() => {
     const t = setInterval(() => setCursor((c) => !c), 520);
     return () => clearInterval(t);
