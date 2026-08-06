@@ -1,6 +1,7 @@
 "use client";
 
 import React from "react";
+import Link from "next/link";
 import { useCustomTheme } from "@/hooks/use-custom-theme";
 import {
   DEVELOPER_THEME_LIST,
@@ -13,9 +14,13 @@ import {
   Sun,
   Terminal,
   Activity,
-  ShieldCheck,
+  ArrowLeft,
   Sparkles,
   Layers,
+  User,
+  Users,
+  Sliders,
+  RotateCcw,
 } from "lucide-react";
 import { motion } from "framer-motion";
 
@@ -29,38 +34,100 @@ export function ThemeSettings() {
   } = useCustomTheme();
 
   return (
-    <div className="space-y-8 font-mono">
-      {/* Page Section Header */}
-      <div className="border border-slate-200 dark:border-neutral-800 bg-white/80 dark:bg-neutral-950/80 p-6 rounded-none space-y-4">
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+    <div className="space-y-6 font-mono selection:bg-slate-800">
+      {/* Top Header Navigation & Settings Tabs Bar */}
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-slate-200 dark:border-neutral-800">
+        <div className="flex items-center gap-3">
+          <Link
+            href="/dashboard"
+            className="px-3 py-1.5 border border-slate-200 dark:border-neutral-800 bg-white dark:bg-neutral-950 text-slate-700 dark:text-neutral-300 hover:text-slate-900 dark:hover:text-white hover:border-slate-400 dark:hover:border-neutral-600 transition-all text-xs font-mono uppercase flex items-center gap-1.5 shrink-0"
+          >
+            <ArrowLeft className="w-3.5 h-3.5" />
+            <span>[BACK_TO_DASHBOARD]</span>
+          </Link>
+          <span className="text-slate-300 dark:text-neutral-700">/</span>
+          <span className="text-xs text-slate-500 dark:text-neutral-400 font-bold uppercase">
+            SETTINGS // THEME_CONSOLE
+          </span>
+        </div>
+
+        {/* Settings Navigation Tabs */}
+        <div className="flex items-center gap-2 overflow-x-auto text-xs">
+          <Link
+            href="/dashboard/settings/profile"
+            className="px-3 py-1.5 border border-slate-200 dark:border-neutral-800 bg-white dark:bg-neutral-950 text-slate-600 dark:text-neutral-400 hover:text-slate-900 dark:hover:text-white uppercase transition-colors shrink-0 flex items-center gap-1.5"
+          >
+            <User className="w-3.5 h-3.5" />
+            <span>[MY_ACCOUNT]</span>
+          </Link>
+
+          <Link
+            href="/dashboard/settings/theme"
+            className="px-3 py-1.5 border border-emerald-500/40 bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 font-bold uppercase transition-colors shrink-0 flex items-center gap-1.5 shadow-sm"
+          >
+            <Palette className="w-3.5 h-3.5 text-emerald-500" />
+            <span>[THEME_CONSOLE]</span>
+          </Link>
+
+          <Link
+            href="/dashboard/settings/team"
+            className="px-3 py-1.5 border border-slate-200 dark:border-neutral-800 bg-white dark:bg-neutral-950 text-slate-600 dark:text-neutral-400 hover:text-slate-900 dark:hover:text-white uppercase transition-colors shrink-0 flex items-center gap-1.5"
+          >
+            <Users className="w-3.5 h-3.5" />
+            <span>[TEAM_MANAGEMENT]</span>
+          </Link>
+
+          <Link
+            href="/dashboard/settings/integrations"
+            className="px-3 py-1.5 border border-slate-200 dark:border-neutral-800 bg-white dark:bg-neutral-950 text-slate-600 dark:text-neutral-400 hover:text-slate-900 dark:hover:text-white uppercase transition-colors shrink-0 flex items-center gap-1.5"
+          >
+            <Sliders className="w-3.5 h-3.5" />
+            <span>[INTEGRATIONS]</span>
+          </Link>
+        </div>
+      </div>
+
+      {/* Main Glassmorphism Console Box */}
+      <div className="border border-slate-200 dark:border-neutral-800 bg-white/80 dark:bg-neutral-950/80 p-6 rounded-none space-y-5 backdrop-blur-2xl">
+        <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
           <div className="space-y-1">
             <div className="flex items-center gap-2 text-xs text-slate-500 dark:text-neutral-400">
               <Terminal className="w-4 h-4 text-emerald-500" />
               <span>THEME_ENGINE // CUSTOMIZATION_REGISTRY</span>
             </div>
-            <h1 className="text-xl font-bold uppercase tracking-tight text-slate-900 dark:text-white">
+            <h1 className="text-2xl font-bold uppercase tracking-tight text-slate-900 dark:text-white">
               Developer Theme Console
             </h1>
-            <p className="text-xs text-slate-500 dark:text-neutral-400 max-w-2xl">
-              Choose your preferred developer color palette. The top navigation toggle will seamlessly switch between Light Mode and your selected Developer Theme.
+            <p className="text-xs text-slate-500 dark:text-neutral-400 max-w-2xl leading-relaxed">
+              Select your preferred high-contrast developer theme. The top header button dynamically switches between Light Mode and your chosen Developer Palette.
             </p>
           </div>
 
-          {/* Active Theme Badge */}
-          <div className="flex items-center gap-2 px-3 py-1.5 border border-emerald-500/30 bg-emerald-500/10 text-emerald-700 dark:text-emerald-400 text-xs font-bold shrink-0 uppercase">
-            <Sparkles className="w-3.5 h-3.5" />
-            <span>ACTIVE: {mode === "light" ? "LIGHT THEME" : activeDeveloperTheme.name}</span>
+          <div className="flex items-center gap-2 shrink-0">
+            <button
+              onClick={() => setDeveloperThemeId("obsidian")}
+              className="px-3 py-1.5 border border-slate-300 dark:border-neutral-700 bg-slate-100 dark:bg-neutral-900 text-slate-700 dark:text-neutral-300 hover:text-slate-900 dark:hover:text-white text-xs uppercase flex items-center gap-1.5 cursor-pointer transition-colors"
+              title="Reset theme to default Obsidian Monochrome Black & White"
+            >
+              <RotateCcw className="w-3.5 h-3.5" />
+              <span>[RESET_OBSIDIAN]</span>
+            </button>
+
+            <div className="flex items-center gap-2 px-3.5 py-1.5 border border-emerald-500/30 bg-emerald-500/10 text-emerald-700 dark:text-emerald-400 text-xs font-bold uppercase">
+              <Sparkles className="w-3.5 h-3.5" />
+              <span>ACTIVE: {mode === "light" ? "LIGHT THEME" : activeDeveloperTheme.name}</span>
+            </div>
           </div>
         </div>
 
-        {/* Global Mode Switcher */}
+        {/* Global Mode Select Toggle */}
         <div className="flex flex-wrap items-center gap-3 pt-4 border-t border-slate-200 dark:border-neutral-800">
           <span className="text-xs text-slate-500 dark:text-neutral-400 uppercase font-bold">
-            MODE_SELECT:
+            ACTIVE_MODE:
           </span>
           <button
             onClick={() => setMode("light")}
-            className={`px-3 py-1.5 text-xs uppercase flex items-center gap-2 border transition-all cursor-pointer ${
+            className={`px-3.5 py-1.5 text-xs uppercase flex items-center gap-2 border transition-all cursor-pointer ${
               mode === "light"
                 ? "bg-slate-900 dark:bg-white text-white dark:text-black border-slate-900 dark:border-white font-bold"
                 : "bg-slate-100 dark:bg-neutral-900 text-slate-600 dark:text-neutral-400 border-slate-200 dark:border-neutral-800 hover:text-slate-900 dark:hover:text-white"
@@ -72,7 +139,7 @@ export function ThemeSettings() {
 
           <button
             onClick={() => setMode("developer")}
-            className={`px-3 py-1.5 text-xs uppercase flex items-center gap-2 border transition-all cursor-pointer ${
+            className={`px-3.5 py-1.5 text-xs uppercase flex items-center gap-2 border transition-all cursor-pointer ${
               mode === "developer"
                 ? "bg-emerald-500 text-slate-950 border-emerald-400 font-bold shadow-[0_0_12px_rgba(16,185,129,0.3)]"
                 : "bg-slate-100 dark:bg-neutral-900 text-slate-600 dark:text-neutral-400 border-slate-200 dark:border-neutral-800 hover:text-slate-900 dark:hover:text-white"
@@ -89,10 +156,10 @@ export function ThemeSettings() {
         <div className="flex items-center justify-between">
           <h2 className="text-xs font-bold uppercase tracking-widest text-slate-500 dark:text-neutral-400 flex items-center gap-2">
             <Layers className="w-4 h-4 text-emerald-500" />
-            <span>AVAILABLE_DEVELOPER_THEMES ({DEVELOPER_THEME_LIST.length})</span>
+            <span>CURATED_DEVELOPER_THEMES ({DEVELOPER_THEME_LIST.length})</span>
           </h2>
-          <span className="text-[10px] text-slate-400 dark:text-neutral-500 uppercase">
-            Click to apply theme
+          <span className="text-[10px] text-slate-400 dark:text-neutral-500 uppercase font-mono">
+            [CLICK_CARD_TO_APPLY]
           </span>
         </div>
 

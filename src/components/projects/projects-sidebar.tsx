@@ -283,38 +283,7 @@ export function ProjectsSidebar({
                   </span>
                 </div>
               </Link>
-
-              <Link
-                href="/dashboard/settings/profile"
-                className={`w-full flex items-center justify-between px-3 py-1.5 rounded-none transition-colors cursor-pointer border ${
-                  isProfilePage
-                    ? "bg-slate-100 dark:bg-neutral-900/60 text-slate-900 dark:text-white border-slate-300 dark:border-neutral-700 font-bold shadow-sm"
-                    : "bg-slate-50 dark:bg-neutral-950 text-slate-700 dark:text-neutral-400 border-slate-200 dark:border-neutral-800 hover:text-slate-900 dark:hover:text-white hover:border-slate-300 dark:hover:border-neutral-700"
-                }`}
-              >
-                <div className="flex items-center gap-2 min-w-0">
-                  <User className="w-3.5 h-3.5 shrink-0 text-slate-400 dark:text-neutral-500" />
-                  <span className="truncate uppercase font-medium">
-                    [MY_ACCOUNT]
-                  </span>
-                </div>
-              </Link>
-
-              <Link
-                href="/dashboard/settings/theme"
-                className={`w-full flex items-center justify-between px-3 py-1.5 rounded-none transition-colors cursor-pointer border ${
-                  isThemePage
-                    ? "bg-slate-100 dark:bg-neutral-900/60 text-slate-900 dark:text-white border-slate-300 dark:border-neutral-700 font-bold shadow-sm"
-                    : "bg-slate-50 dark:bg-neutral-950 text-slate-700 dark:text-neutral-400 border-slate-200 dark:border-neutral-800 hover:text-slate-900 dark:hover:text-white hover:border-slate-300 dark:hover:border-neutral-700"
-                }`}
-              >
-                <div className="flex items-center gap-2 min-w-0">
-                  <Palette className="w-3.5 h-3.5 shrink-0 text-emerald-500" />
-                  <span className="truncate uppercase font-medium">
-                    [THEME_SYSTEM]
-                  </span>
-                </div>
-              </Link>
+            </div>
             </div>
           </div>
 

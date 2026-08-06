@@ -24,6 +24,10 @@ import {
   ToggleLeft,
   ToggleRight,
   ChevronRight,
+  ArrowLeft,
+  Palette,
+  Users,
+  Sliders,
   RefreshCw,
 } from "lucide-react";
 import { ThemeToggle } from "@/components/ui/theme-toggle";
@@ -978,23 +982,55 @@ export default function ProfilePage() {
       <div className="fixed inset-0 pointer-events-none opacity-[0.035] z-0 bg-[radial-gradient(#000_1px,transparent_1px)] dark:bg-[radial-gradient(#fff_1px,transparent_1px)] [background-size:16px_16px]" />
 
       {/* Top Minimal Navigation Header */}
-      <header className="border-b border-slate-200 dark:border-neutral-800 bg-white/70 dark:bg-black/70 backdrop-blur-3xl px-6 py-3.5 flex items-center justify-between sticky top-0 z-20 font-mono">
-        <div className="flex items-center gap-2 text-xs text-slate-500 dark:text-neutral-400">
+      <header className="border-b border-slate-200 dark:border-neutral-800 bg-white/70 dark:bg-black/70 backdrop-blur-3xl px-6 py-3.5 flex flex-col sm:flex-row sm:items-center justify-between gap-4 sticky top-0 z-20 font-mono text-xs">
+        <div className="flex items-center gap-3">
           <Link
             href="/dashboard"
-            className="hover:text-slate-900 dark:hover:text-white transition-colors"
+            className="px-3 py-1.5 border border-slate-200 dark:border-neutral-800 bg-white dark:bg-neutral-950 text-slate-700 dark:text-neutral-300 hover:text-slate-900 dark:hover:text-white hover:border-slate-400 dark:hover:border-neutral-600 transition-all text-xs font-mono uppercase flex items-center gap-1.5 shrink-0"
           >
-            [DASHBOARD]
+            <ArrowLeft className="w-3.5 h-3.5" />
+            <span>[BACK_TO_DASHBOARD]</span>
           </Link>
           <span className="text-slate-300 dark:text-neutral-700">/</span>
-          <span>SETTINGS</span>
-          <span className="text-slate-300 dark:text-neutral-700">/</span>
           <span className="font-bold text-slate-900 dark:text-white">
-            [PROFILE_SECURITY]
+            [MY_ACCOUNT_SETTINGS]
           </span>
         </div>
 
         <div className="flex items-center gap-3">
+          <div className="flex items-center gap-2 overflow-x-auto text-xs">
+            <Link
+              href="/dashboard/settings/profile"
+              className="px-3 py-1.5 border border-emerald-500/40 bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 font-bold uppercase transition-colors shrink-0 flex items-center gap-1.5 shadow-sm"
+            >
+              <User className="w-3.5 h-3.5 text-emerald-500" />
+              <span>[MY_ACCOUNT]</span>
+            </Link>
+
+            <Link
+              href="/dashboard/settings/theme"
+              className="px-3 py-1.5 border border-slate-200 dark:border-neutral-800 bg-white dark:bg-neutral-950 text-slate-600 dark:text-neutral-400 hover:text-slate-900 dark:hover:text-white uppercase transition-colors shrink-0 flex items-center gap-1.5"
+            >
+              <Palette className="w-3.5 h-3.5" />
+              <span>[THEME_CONSOLE]</span>
+            </Link>
+
+            <Link
+              href="/dashboard/settings/team"
+              className="px-3 py-1.5 border border-slate-200 dark:border-neutral-800 bg-white dark:bg-neutral-950 text-slate-600 dark:text-neutral-400 hover:text-slate-900 dark:hover:text-white uppercase transition-colors shrink-0 flex items-center gap-1.5"
+            >
+              <Users className="w-3.5 h-3.5" />
+              <span>[TEAM_MANAGEMENT]</span>
+            </Link>
+
+            <Link
+              href="/dashboard/settings/integrations"
+              className="px-3 py-1.5 border border-slate-200 dark:border-neutral-800 bg-white dark:bg-neutral-950 text-slate-600 dark:text-neutral-400 hover:text-slate-900 dark:hover:text-white uppercase transition-colors shrink-0 flex items-center gap-1.5"
+            >
+              <Sliders className="w-3.5 h-3.5" />
+              <span>[INTEGRATIONS]</span>
+            </Link>
+          </div>
           <ThemeToggle />
         </div>
       </header>
