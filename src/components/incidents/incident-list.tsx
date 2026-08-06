@@ -62,11 +62,12 @@ export function IncidentList({
   ];
 
   return (
-    <div className="flex flex-col h-full space-y-3.5 font-mono min-w-0 overflow-hidden text-xs">
-      {/* Filters Bar with Sharp Square Borders */}
-      <div className="p-4 sm:p-5 rounded-none bg-white dark:bg-neutral-950 border border-slate-200 dark:border-neutral-800 space-y-3 backdrop-blur-3xl shadow-sm transition-colors">
+    <div className="flex flex-col h-full rounded-none bg-white dark:bg-black border border-slate-200 dark:border-neutral-800 font-mono min-w-0 overflow-hidden text-xs shadow-sm transition-colors">
+      {/* Filters & Control Header Section */}
+      <div className="p-4 sm:p-5 border-b border-slate-200 dark:border-neutral-800 space-y-3 bg-slate-50/50 dark:bg-neutral-950/40">
         <div className="flex items-center justify-between border-b border-slate-200 dark:border-neutral-900 pb-2.5">
-          <span className="text-[10px] font-bold text-slate-400 dark:text-neutral-500 uppercase tracking-widest">
+          <span className="text-[10px] font-bold text-slate-400 dark:text-neutral-500 uppercase tracking-widest flex items-center gap-2">
+            <span className="w-1.5 h-1.5 bg-emerald-500 rounded-full animate-pulse" />
             [TELEMETRY_STREAM]
           </span>
           <button
@@ -115,26 +116,36 @@ export function IncidentList({
         </div>
       </div>
 
-      {/* Incidents Stream List */}
-      <div className="flex-1 overflow-y-auto space-y-3 px-1 py-1">
+      {/* Incidents Stream Content Body */}
+      <div className="flex-1 overflow-y-auto p-4 space-y-3">
         {isLoading ? (
-          <div className="space-y-3">
-            {[1, 2, 3].map((i) => (
+          <div className="space-y-3 font-mono">
+            <div className="text-[10px] text-slate-400 dark:text-neutral-600 uppercase tracking-widest flex items-center gap-2 animate-pulse mb-2">
+              <span className="w-2 h-2 bg-emerald-500 rounded-full animate-ping" />
+              <span>[STREAM_CONNECTING_SKELETON_FETCH...]</span>
+            </div>
+            {[1, 2, 3, 4].map((i) => (
               <div
                 key={i}
-                className="p-5 rounded-none bg-white dark:bg-black border border-slate-200 dark:border-neutral-900 animate-pulse space-y-3 font-mono"
+                className="p-4 rounded-none bg-slate-50/60 dark:bg-neutral-950/60 border border-slate-200 dark:border-neutral-800/80 animate-pulse space-y-3"
               >
-                <div className="flex gap-2">
-                  <div className="w-16 h-3 bg-slate-200 dark:bg-neutral-900" />
-                  <div className="w-20 h-3 bg-slate-200 dark:bg-neutral-900" />
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-2">
+                    <div className="w-16 h-3.5 bg-slate-200 dark:bg-neutral-800 rounded-none" />
+                    <div className="w-20 h-3.5 bg-slate-200 dark:bg-neutral-800 rounded-none" />
+                  </div>
+                  <div className="w-12 h-3 bg-slate-200 dark:bg-neutral-800 rounded-none" />
                 </div>
-                <div className="w-3/4 h-4 bg-slate-200 dark:bg-neutral-900" />
-                <div className="w-1/2 h-3 bg-slate-200 dark:bg-neutral-900" />
+                <div className="w-3/4 h-4 bg-slate-300 dark:bg-neutral-700 rounded-none" />
+                <div className="flex items-center justify-between pt-1">
+                  <div className="w-1/2 h-3 bg-slate-200 dark:bg-neutral-800 rounded-none" />
+                  <div className="w-14 h-3 bg-slate-200 dark:bg-neutral-800 rounded-none" />
+                </div>
               </div>
             ))}
           </div>
         ) : error ? (
-          <div className="p-6 rounded-none bg-rose-50/50 dark:bg-black border border-rose-200 dark:border-rose-900/60 text-rose-800 dark:text-rose-300 space-y-2 text-center font-mono">
+          <div className="p-6 rounded-none bg-rose-50/50 dark:bg-black border border-rose-200 dark:border-rose-900/60 text-rose-800 dark:text-rose-300 space-y-2 text-center font-mono my-4">
             <p className="font-bold text-xs">[FAILED_TO_LOAD_TELEMETRY_STREAM]</p>
             <p className="text-[11px] text-rose-600 dark:text-rose-400">{error.message}</p>
             <button
@@ -164,7 +175,7 @@ export function IncidentList({
             </AnimatePresence>
           </motion.div>
         ) : (
-          <div className="p-12 text-center rounded-none bg-white dark:bg-black border border-slate-200 dark:border-neutral-800 space-y-3 font-mono text-slate-500 dark:text-neutral-500">
+          <div className="p-10 text-center rounded-none bg-slate-50/40 dark:bg-neutral-950/40 border border-slate-200 dark:border-neutral-800 space-y-3 font-mono text-slate-500 dark:text-neutral-500 my-4">
             <p className="text-slate-800 dark:text-neutral-300 font-bold text-xs">[NO_INCIDENTS_FOUND]</p>
             <p className="text-[11px]">
               Adjust telemetry filters or report a new incident.

@@ -155,8 +155,27 @@ export function IncidentDetails({
 
   if (isLoading) {
     return (
-      <div className="flex flex-col items-center justify-center h-full p-8 text-slate-500 dark:text-neutral-500 gap-3 font-mono text-xs">
-        <span>[LOADING_TELEMETRY_DIAGNOSTICS...]</span>
+      <div className="flex flex-col h-full space-y-4 font-mono text-xs select-none">
+        <div className="flex-1 p-6 rounded-none bg-white dark:bg-black border border-slate-200 dark:border-neutral-800 animate-pulse space-y-4">
+          <div className="flex items-center justify-between">
+            <div className="w-44 h-5 bg-slate-200 dark:bg-neutral-800 rounded-none" />
+            <div className="w-20 h-5 bg-slate-200 dark:bg-neutral-800 rounded-none" />
+          </div>
+          <div className="w-3/4 h-6 bg-slate-300 dark:bg-neutral-700 rounded-none" />
+          <div className="w-full h-32 bg-slate-100 dark:bg-neutral-900 rounded-none border border-slate-200 dark:border-neutral-800" />
+          <div className="space-y-2 pt-2">
+            <div className="w-full h-4 bg-slate-200 dark:bg-neutral-800 rounded-none" />
+            <div className="w-5/6 h-4 bg-slate-200 dark:bg-neutral-800 rounded-none" />
+          </div>
+        </div>
+        <div className="p-5 rounded-none bg-white dark:bg-black border border-slate-200 dark:border-neutral-800 animate-pulse space-y-3">
+          <div className="w-36 h-4 bg-slate-200 dark:bg-neutral-800 rounded-none" />
+          <div className="grid grid-cols-3 gap-3">
+            <div className="h-12 bg-slate-100 dark:bg-neutral-900 rounded-none border border-slate-200 dark:border-neutral-800" />
+            <div className="h-12 bg-slate-100 dark:bg-neutral-900 rounded-none border border-slate-200 dark:border-neutral-800" />
+            <div className="h-12 bg-slate-100 dark:bg-neutral-900 rounded-none border border-slate-200 dark:border-neutral-800" />
+          </div>
+        </div>
       </div>
     );
   }
