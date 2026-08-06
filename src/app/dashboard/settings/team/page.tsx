@@ -95,7 +95,7 @@ export default function TeamSettingsPage() {
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 font-mono">
           <div 
             onClick={() => setRoleFilter(roleFilter === "ADMIN" ? "ALL" : "ADMIN")}
-            className={`p-4 rounded-2xl bg-white/70 dark:bg-black/60 border backdrop-blur-3xl space-y-1 shadow-sm transition-all cursor-pointer ${
+            className={`p-4 rounded-none bg-white dark:bg-black border space-y-1 transition-all cursor-pointer ${
               roleFilter === "ADMIN"
                 ? "border-emerald-500/50 bg-emerald-500/5"
                 : "border-slate-200 dark:border-neutral-800 hover:border-slate-400 dark:hover:border-neutral-700"
@@ -114,7 +114,7 @@ export default function TeamSettingsPage() {
 
           <div 
             onClick={() => setRoleFilter(roleFilter === "ENGINEER" ? "ALL" : "ENGINEER")}
-            className={`p-4 rounded-2xl bg-white/70 dark:bg-black/60 border backdrop-blur-3xl space-y-1 shadow-sm transition-all cursor-pointer ${
+            className={`p-4 rounded-none bg-white dark:bg-black border space-y-1 transition-all cursor-pointer ${
               roleFilter === "ENGINEER"
                 ? "border-blue-500/50 bg-blue-500/5"
                 : "border-slate-200 dark:border-neutral-800 hover:border-slate-400 dark:hover:border-neutral-700"
@@ -133,7 +133,7 @@ export default function TeamSettingsPage() {
 
           <div 
             onClick={() => setRoleFilter(roleFilter === "VIEWER" ? "ALL" : "VIEWER")}
-            className={`p-4 rounded-2xl bg-white/70 dark:bg-black/60 border backdrop-blur-3xl space-y-1 shadow-sm transition-all cursor-pointer ${
+            className={`p-4 rounded-none bg-white dark:bg-black border space-y-1 transition-all cursor-pointer ${
               roleFilter === "VIEWER"
                 ? "border-slate-400 dark:border-neutral-600 bg-slate-100 dark:bg-neutral-900"
                 : "border-slate-200 dark:border-neutral-800 hover:border-slate-400 dark:hover:border-neutral-700"
@@ -160,7 +160,7 @@ export default function TeamSettingsPage() {
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 placeholder="[SEARCH NAME / EMAIL / ROLE]"
-                className="w-full sm:w-80 px-3.5 py-2 bg-white dark:bg-black border border-slate-200 dark:border-neutral-800 rounded-xl text-xs text-slate-900 dark:text-white placeholder:text-slate-400 dark:placeholder:text-neutral-600 focus:border-slate-500 dark:focus:border-neutral-500 focus:outline-none transition-all font-mono"
+                className="w-full sm:w-80 px-3.5 py-2 bg-white dark:bg-black border border-slate-200 dark:border-neutral-800 rounded-none text-xs text-slate-900 dark:text-white placeholder:text-slate-400 dark:placeholder:text-neutral-600 focus:border-slate-500 dark:focus:border-neutral-500 focus:outline-none transition-all font-mono"
               />
 
               {/* Role Filter Pills */}

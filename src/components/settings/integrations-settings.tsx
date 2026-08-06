@@ -94,7 +94,7 @@ export function IntegrationsSettings() {
   if (loading) {
     return (
       <div className="space-y-6 font-mono animate-pulse">
-        <div className="p-8 rounded-2xl bg-white/70 dark:bg-black/60 border border-slate-200 dark:border-neutral-800 text-center text-xs text-slate-500 dark:text-neutral-500">
+        <div className="p-8 rounded-none bg-white dark:bg-black border border-slate-200 dark:border-neutral-800 text-center text-xs text-slate-500 dark:text-neutral-500">
           [LOADING_INTEGRATION_SETTINGS...]
         </div>
       </div>
@@ -108,24 +108,24 @@ export function IntegrationsSettings() {
     <form onSubmit={handleSave} className="space-y-7 font-mono text-xs select-none">
       {/* Feedback alerts */}
       {error && (
-        <div className="p-3.5 rounded-xl bg-rose-50 dark:bg-rose-950/40 border border-rose-200 dark:border-rose-900/60 text-rose-800 dark:text-rose-300 text-xs flex items-center gap-3">
+        <div className="p-3.5 rounded-none bg-rose-50 dark:bg-rose-950/40 border border-rose-200 dark:border-rose-900/60 text-rose-800 dark:text-rose-300 text-xs flex items-center gap-3">
           <AlertCircle className="w-4 h-4 shrink-0 text-rose-600 dark:text-rose-400" />
           <span>[ERR]: {error}</span>
         </div>
       )}
 
       {successMessage && (
-        <div className="p-3.5 rounded-xl bg-emerald-50 dark:bg-emerald-950/40 border border-emerald-200 dark:border-emerald-900/60 text-emerald-800 dark:text-emerald-300 text-xs flex items-center gap-3">
+        <div className="p-3.5 rounded-none bg-emerald-50 dark:bg-emerald-950/40 border border-emerald-200 dark:border-emerald-900/60 text-emerald-800 dark:text-emerald-300 text-xs flex items-center gap-3">
           <CheckCircle2 className="w-4 h-4 shrink-0 text-emerald-600 dark:text-emerald-400" />
           <span>[SUCCESS]: {successMessage}</span>
         </div>
       )}
 
       {/* 1. Global / Organization Level Alert Integrations Card */}
-      <div className="p-6 rounded-2xl bg-white/70 dark:bg-black/60 border border-slate-200 dark:border-neutral-800 backdrop-blur-3xl space-y-6 shadow-sm">
+      <div className="p-6 rounded-none bg-white/70 dark:bg-black/60 border border-slate-200 dark:border-neutral-800 backdrop-blur-3xl space-y-6 shadow-sm">
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-4 border-b border-slate-200 dark:border-neutral-800">
           <div className="flex items-center gap-3">
-            <div className="p-2 rounded-xl bg-slate-100 dark:bg-neutral-900 border border-slate-300 dark:border-neutral-700 text-slate-900 dark:text-white shrink-0">
+            <div className="p-2 rounded-none bg-slate-100 dark:bg-neutral-900 border border-slate-300 dark:border-neutral-700 text-slate-900 dark:text-white shrink-0">
               <BellRing className="w-4 h-4" />
             </div>
             <div>
@@ -165,7 +165,7 @@ export function IntegrationsSettings() {
               value={orgSlackWebhook}
               onChange={(e) => setOrgSlackWebhook(e.target.value)}
               placeholder="https://hooks.slack.com/services/T000/B000/XXXX"
-              className="w-full px-3.5 py-2 bg-white dark:bg-black border border-slate-200 dark:border-neutral-800 rounded-xl text-xs font-mono text-slate-900 dark:text-white placeholder:text-slate-400 dark:placeholder:text-neutral-600 focus:border-slate-500 dark:focus:border-neutral-500 focus:outline-none transition-all"
+              className="w-full px-3.5 py-2 bg-white dark:bg-black border border-slate-200 dark:border-neutral-800 rounded-none text-xs font-mono text-slate-900 dark:text-white placeholder:text-slate-400 dark:placeholder:text-neutral-600 focus:border-slate-500 dark:focus:border-neutral-500 focus:outline-none transition-all"
             />
             <p className="text-[11px] text-slate-500 dark:text-neutral-400 leading-relaxed font-mono">
               Slack Webhook posts rich, block-formatted alerts to your team&apos;s Slack channel when an incident triggers.
@@ -193,7 +193,7 @@ export function IntegrationsSettings() {
               value={orgAlertEmail}
               onChange={(e) => setOrgAlertEmail(e.target.value)}
               placeholder="sre@company.com, alerts@company.com"
-              className="w-full px-3.5 py-2 bg-white dark:bg-black border border-slate-200 dark:border-neutral-800 rounded-xl text-xs font-mono text-slate-900 dark:text-white placeholder:text-slate-400 dark:placeholder:text-neutral-600 focus:border-slate-500 dark:focus:border-neutral-500 focus:outline-none transition-all"
+              className="w-full px-3.5 py-2 bg-white dark:bg-black border border-slate-200 dark:border-neutral-800 rounded-none text-xs font-mono text-slate-900 dark:text-white placeholder:text-slate-400 dark:placeholder:text-neutral-600 focus:border-slate-500 dark:focus:border-neutral-500 focus:outline-none transition-all"
             />
             <p className="text-[11px] text-slate-500 dark:text-neutral-400 leading-relaxed font-mono">
               Comma-separated email addresses to receive instant incident email notifications via Resend API.
@@ -203,10 +203,10 @@ export function IntegrationsSettings() {
       </div>
 
       {/* 2. Per-Project Alert Overrides */}
-      <div className="p-6 rounded-2xl bg-white/70 dark:bg-black/60 border border-slate-200 dark:border-neutral-800 backdrop-blur-3xl space-y-6 shadow-sm">
+      <div className="p-6 rounded-none bg-white/70 dark:bg-black/60 border border-slate-200 dark:border-neutral-800 backdrop-blur-3xl space-y-6 shadow-sm">
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-4 border-b border-slate-200 dark:border-neutral-800">
           <div className="flex items-center gap-3">
-            <div className="p-2 rounded-xl bg-slate-100 dark:bg-neutral-900 border border-slate-300 dark:border-neutral-700 text-slate-900 dark:text-white shrink-0">
+            <div className="p-2 rounded-none bg-slate-100 dark:bg-neutral-900 border border-slate-300 dark:border-neutral-700 text-slate-900 dark:text-white shrink-0">
               <Layers className="w-4 h-4" />
             </div>
             <div>
@@ -233,7 +233,7 @@ export function IntegrationsSettings() {
             {projects.map((proj) => (
               <div
                 key={proj.id}
-                className="p-4 rounded-xl bg-white dark:bg-black border border-slate-200 dark:border-neutral-800 space-y-3 transition-colors hover:border-slate-300 dark:hover:border-neutral-700"
+                className="p-4 rounded-none bg-white dark:bg-black border border-slate-200 dark:border-neutral-800 space-y-3 transition-colors hover:border-slate-300 dark:hover:border-neutral-700"
               >
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-2">
@@ -263,7 +263,7 @@ export function IntegrationsSettings() {
                         )
                       }
                       placeholder="[INHERITS ORG SLACK WEBHOOK]"
-                      className="w-full px-3 py-2 bg-slate-50 dark:bg-neutral-950 border border-slate-200 dark:border-neutral-800 rounded-xl text-xs font-mono text-slate-900 dark:text-white placeholder:text-slate-400 dark:placeholder:text-neutral-600 focus:outline-none focus:border-slate-500 dark:focus:border-neutral-500"
+                      className="w-full px-3 py-2 bg-slate-50 dark:bg-neutral-950 border border-slate-200 dark:border-neutral-800 rounded-none text-xs font-mono text-slate-900 dark:text-white placeholder:text-slate-400 dark:placeholder:text-neutral-600 focus:outline-none focus:border-slate-500 dark:focus:border-neutral-500"
                     />
                   </div>
 
@@ -282,7 +282,7 @@ export function IntegrationsSettings() {
                         )
                       }
                       placeholder="[INHERITS ORG ALERT EMAILS]"
-                      className="w-full px-3 py-2 bg-slate-50 dark:bg-neutral-950 border border-slate-200 dark:border-neutral-800 rounded-xl text-xs font-mono text-slate-900 dark:text-white placeholder:text-slate-400 dark:placeholder:text-neutral-600 focus:outline-none focus:border-slate-500 dark:focus:border-neutral-500"
+                      className="w-full px-3 py-2 bg-slate-50 dark:bg-neutral-950 border border-slate-200 dark:border-neutral-800 rounded-none text-xs font-mono text-slate-900 dark:text-white placeholder:text-slate-400 dark:placeholder:text-neutral-600 focus:outline-none focus:border-slate-500 dark:focus:border-neutral-500"
                     />
                   </div>
                 </div>
@@ -305,7 +305,7 @@ export function IntegrationsSettings() {
         <button
           type="submit"
           disabled={saving}
-          className="px-5 py-2.5 border border-slate-900 dark:border-white bg-slate-900 dark:bg-white text-white dark:text-slate-900 font-mono font-bold text-xs transition-all cursor-pointer shrink-0 uppercase tracking-wider shadow-sm hover:opacity-90 flex items-center gap-2 disabled:opacity-50"
+          className="px-5 py-2.5 border border-slate-900 dark:border-white bg-slate-900 dark:bg-white text-white dark:text-slate-900 font-mono font-bold text-xs transition-all cursor-pointer shrink-0 uppercase tracking-wider shadow-sm hover:opacity-90 flex items-center gap-2 disabled:opacity-50 rounded-none"
         >
           {saving ? (
             <>

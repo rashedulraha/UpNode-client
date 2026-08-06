@@ -62,7 +62,7 @@ export function MemberList({ members, isLoading, error }: MemberListProps) {
 
   if (isLoading) {
     return (
-      <div className="p-6 rounded-2xl bg-white/70 dark:bg-black/60 border border-slate-200 dark:border-neutral-800 text-center font-mono text-xs text-slate-500 dark:text-neutral-500 animate-pulse">
+      <div className="p-6 rounded-none bg-white dark:bg-black border border-slate-200 dark:border-neutral-800 text-center font-mono text-xs text-slate-500 dark:text-neutral-500 animate-pulse">
         [LOADING_ORGANIZATION_MEMBERS...]
       </div>
     );
@@ -70,7 +70,7 @@ export function MemberList({ members, isLoading, error }: MemberListProps) {
 
   if (error) {
     return (
-      <div className="p-4 rounded-2xl bg-rose-50 dark:bg-rose-950/40 border border-rose-200 dark:border-rose-900/60 text-rose-800 dark:text-rose-300 text-xs font-mono">
+      <div className="p-4 rounded-none bg-rose-50 dark:bg-rose-950/40 border border-rose-200 dark:border-rose-900/60 text-rose-800 dark:text-rose-300 text-xs font-mono">
         <p className="font-bold">[FAILED TO LOAD MEMBERS]</p>
         <p className="opacity-80">{error.message || "Please check network connection."}</p>
       </div>
@@ -79,7 +79,7 @@ export function MemberList({ members, isLoading, error }: MemberListProps) {
 
   if (!members || members.length === 0) {
     return (
-      <div className="p-8 text-center rounded-2xl bg-white/70 dark:bg-black/60 border border-slate-200 dark:border-neutral-800 font-mono text-xs text-slate-500 dark:text-neutral-500 italic">
+      <div className="p-8 text-center rounded-none bg-white dark:bg-black border border-slate-200 dark:border-neutral-800 font-mono text-xs text-slate-500 dark:text-neutral-500 italic">
         [NO MEMBERS FOUND MATCHING SEARCH CRITERIA]
       </div>
     );
@@ -109,7 +109,7 @@ export function MemberList({ members, isLoading, error }: MemberListProps) {
 
   return (
     <>
-      <div className="rounded-2xl bg-white/80 dark:bg-black/60 border border-slate-200 dark:border-neutral-800 overflow-hidden divide-y divide-slate-200/80 dark:divide-neutral-900 font-mono shadow-sm">
+      <div className="rounded-none bg-white dark:bg-black border border-slate-200 dark:border-neutral-800 overflow-hidden divide-y divide-slate-200/80 dark:divide-neutral-900 font-mono shadow-sm">
         {members.map((member) => (
           <div
             key={member.id}
@@ -117,7 +117,7 @@ export function MemberList({ members, isLoading, error }: MemberListProps) {
           >
             {/* Left: User Avatar & Basic Info */}
             <div className="flex items-center gap-3.5 min-w-0">
-              <div className="w-9 h-9 rounded-xl bg-slate-100 dark:bg-neutral-900 border border-slate-300 dark:border-neutral-700 text-slate-900 dark:text-white font-mono font-bold text-xs flex items-center justify-center shrink-0 uppercase">
+              <div className="w-9 h-9 rounded-none bg-slate-100 dark:bg-neutral-900 border border-slate-300 dark:border-neutral-700 text-slate-900 dark:text-white font-mono font-bold text-xs flex items-center justify-center shrink-0 uppercase">
                 {getInitials(member.user?.name, member.user?.email)}
               </div>
 
@@ -127,7 +127,7 @@ export function MemberList({ members, isLoading, error }: MemberListProps) {
                     {member.user?.name || "UNNAMED"}
                   </h4>
                   <span
-                    className={`px-2 py-0.5 rounded text-[10px] uppercase tracking-wider ${getRoleBadgeStyle(
+                    className={`px-2 py-0.5 rounded-none text-[10px] uppercase tracking-wider ${getRoleBadgeStyle(
                       member.role
                     )}`}
                   >
@@ -164,7 +164,7 @@ export function MemberList({ members, isLoading, error }: MemberListProps) {
                       });
                     }
                   }}
-                  className="bg-white dark:bg-black border border-slate-300 dark:border-neutral-800 rounded-lg px-2.5 py-1 text-[11px] font-mono text-slate-900 dark:text-white focus:outline-none transition-all cursor-pointer uppercase"
+                  className="bg-white dark:bg-black border border-slate-300 dark:border-neutral-800 rounded-none px-2.5 py-1 text-[11px] font-mono text-slate-900 dark:text-white focus:outline-none transition-all cursor-pointer uppercase"
                 >
                   <option value="ADMIN">ADMIN</option>
                   <option value="ENGINEER">ENGINEER</option>
@@ -198,10 +198,10 @@ export function MemberList({ members, isLoading, error }: MemberListProps) {
               initial={{ opacity: 0, scale: 0.96 }}
               animate={{ opacity: 1, scale: 1 }}
               exit={{ opacity: 0, scale: 0.96 }}
-              className="w-full max-w-md p-6 border border-slate-300 dark:border-neutral-700 bg-white dark:bg-neutral-950 shadow-2xl space-y-6 relative rounded-2xl"
+              className="w-full max-w-md p-6 border border-slate-300 dark:border-neutral-700 bg-white dark:bg-black shadow-2xl space-y-6 relative rounded-none"
             >
               <div className="space-y-2">
-                <span className="text-[10px] text-rose-600 dark:text-rose-400 border border-rose-300 dark:border-rose-900/60 bg-rose-50 dark:bg-rose-950/40 px-2.5 py-0.5 font-bold uppercase tracking-wider rounded">
+                <span className="text-[10px] text-rose-600 dark:text-rose-400 border border-rose-300 dark:border-rose-900/60 bg-rose-50 dark:bg-rose-950/40 px-2.5 py-0.5 font-bold uppercase tracking-wider rounded-none">
                   [CONFIRMATION_REQUIRED]
                 </span>
 
@@ -229,14 +229,14 @@ export function MemberList({ members, isLoading, error }: MemberListProps) {
                     setActionError(null);
                   }}
                   disabled={isSubmitting}
-                  className="px-4 py-2 border border-slate-300 dark:border-neutral-700 bg-slate-100 dark:bg-black text-slate-700 dark:text-neutral-300 hover:text-slate-900 dark:hover:text-white uppercase cursor-pointer rounded-lg disabled:opacity-50"
+                  className="px-4 py-2 border border-slate-300 dark:border-neutral-700 bg-slate-100 dark:bg-black text-slate-700 dark:text-neutral-300 hover:text-slate-900 dark:hover:text-white uppercase cursor-pointer rounded-none disabled:opacity-50"
                 >
                   [CANCEL]
                 </button>
                 <button
                   onClick={handleConfirmAction}
                   disabled={isSubmitting}
-                  className={`px-4 py-2 border uppercase cursor-pointer disabled:opacity-50 font-bold rounded-lg ${
+                  className={`px-4 py-2 border uppercase cursor-pointer disabled:opacity-50 font-bold rounded-none ${
                     modalAction.type === "remove_member"
                       ? "border-rose-600 bg-rose-600 dark:bg-rose-950/60 text-white dark:text-rose-200 hover:bg-rose-700 dark:hover:bg-rose-900 hover:shadow-[0_0_15px_rgba(244,63,94,0.4)]"
                       : "border-slate-900 dark:border-white bg-slate-900 dark:bg-white text-white dark:text-slate-900 hover:opacity-90"

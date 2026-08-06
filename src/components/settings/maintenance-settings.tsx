@@ -169,7 +169,7 @@ export function MaintenanceSettings({ projectId, projectName }: Props) {
       {/* Header */}
       <div className="flex items-center gap-3 mb-1">
         <div
-          className="w-8 h-8 rounded-xl flex items-center justify-center"
+          className="w-8 h-8 rounded-none flex items-center justify-center"
           style={{ background: "rgba(251,191,36,0.12)", border: "0.5px solid rgba(251,191,36,0.25)" }}
         >
           <Construction className="w-4 h-4" style={{ color: "#fbbf24" }} />
@@ -189,7 +189,7 @@ export function MaintenanceSettings({ projectId, projectName }: Props) {
           <motion.div
             initial={{ opacity: 0, scale: 0.9 }}
             animate={{ opacity: 1, scale: 1 }}
-            className="ml-auto flex items-center gap-1.5 px-2.5 py-1 rounded-full font-mono text-[10px] font-semibold tracking-widest uppercase"
+            className="ml-auto flex items-center gap-1.5 px-2.5 py-1 rounded-none font-mono text-[10px] font-semibold tracking-widest uppercase"
             style={{
               background: "rgba(251,191,36,0.15)",
               border: "0.5px solid rgba(251,191,36,0.35)",
@@ -209,7 +209,7 @@ export function MaintenanceSettings({ projectId, projectName }: Props) {
             initial={{ opacity: 0, y: -6 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -6 }}
-            className="flex items-start gap-2.5 px-4 py-3 rounded-xl font-mono text-[11px] leading-relaxed"
+            className="flex items-start gap-2.5 px-4 py-3 rounded-none font-mono text-[11px] leading-relaxed"
             style={{
               background: "rgba(251,191,36,0.07)",
               border: "0.5px solid rgba(251,191,36,0.25)",
@@ -232,7 +232,7 @@ export function MaintenanceSettings({ projectId, projectName }: Props) {
             initial={{ opacity: 0, y: -6 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -6 }}
-            className="flex items-center gap-2 px-4 py-2.5 rounded-xl font-mono text-[11px]"
+            className="flex items-center gap-2 px-4 py-2.5 rounded-none font-mono text-[11px]"
             style={{
               background: "rgba(52,211,153,0.08)",
               border: "0.5px solid rgba(52,211,153,0.25)",
@@ -252,7 +252,7 @@ export function MaintenanceSettings({ projectId, projectName }: Props) {
             initial={{ opacity: 0, y: -4 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0 }}
-            className="flex items-center gap-2 px-4 py-2.5 rounded-xl font-mono text-[11px]"
+            className="flex items-center gap-2 px-4 py-2.5 rounded-none font-mono text-[11px]"
             style={{
               background: "rgba(248,113,113,0.08)",
               border: "0.5px solid rgba(248,113,113,0.25)",
@@ -267,8 +267,7 @@ export function MaintenanceSettings({ projectId, projectName }: Props) {
 
       {/* ─── Manual Toggle Card ─────────────────────────────────────────────────── */}
       <div
-        className="p-4 rounded-xl"
-        style={GLASS}
+        className="p-4 rounded-none border border-slate-200 dark:border-neutral-800 bg-white dark:bg-black"
       >
         <div className="flex items-center justify-between gap-4">
           <div className="flex items-start gap-3">
@@ -328,7 +327,7 @@ export function MaintenanceSettings({ projectId, projectName }: Props) {
       </div>
 
       {/* ─── Scheduled Window Card ───────────────────────────────────────────────── */}
-      <div className="rounded-xl overflow-hidden" style={GLASS}>
+      <div className="rounded-none border border-slate-200 dark:border-neutral-800 bg-white dark:bg-black overflow-hidden">
         {/* Collapsible header */}
         <button
           onClick={() => setScheduleExpanded((v) => !v)}
@@ -353,7 +352,7 @@ export function MaintenanceSettings({ projectId, projectName }: Props) {
           <div className="flex items-center gap-2">
             {state?.isScheduledWindowActive && (
               <span
-                className="font-mono text-[9px] tracking-widest uppercase px-2 py-0.5 rounded-full font-semibold"
+                className="font-mono text-[9px] tracking-widest uppercase px-2 py-0.5 rounded-none font-semibold"
                 style={{
                   background: "rgba(251,191,36,0.15)",
                   color: "#fbbf24",
