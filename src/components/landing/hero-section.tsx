@@ -35,13 +35,22 @@ function nowTS(): string {
   return new Date().toISOString().replace("T", " ").slice(0, 19);
 }
 
+const INITIAL_LOGS: LogLine[] = LOG_POOL.slice(0, 9).map((l, i) => ({
+  ...l,
+  id: `init-${i}`,
+  ts: "2026-08-06 05:12:00",
+}));
+
 // ─── Monitoring Card ───────────────────────────────────────────────────────────
 function MonitoringCard() {
-  const [logs, setLogs] = useState<LogLine[]>(() =>
-    LOG_POOL.slice(0, 9).map((l) => ({ ...l, id: uid(), ts: nowTS() }))
-  );
+  const [logs, setLogs] = useState<LogLine[]>(INITIAL_LOGS);
   const poolIdxRef = useRef(9);
   const [cursor, setCursor] = useState(true);
+
+  useEffect(() => {
+    // Sync to current client timestamp on mount
+    setLogs(LOG_POOL.slice(0, 9).map((l) => ({ ...l, id: uid(), ts: nowTS() })));
+  }, []);
 
   useEffect(() => {
     const t = setInterval(() => setCursor((c) => !c), 520);
@@ -155,7 +164,7 @@ function MonitoringCard() {
                     borderLeftColor: "var(--lp-border)",
                   }}
                 >
-                  <span className="shrink-0" style={{ color: "var(--lp-text-faint)" }}>{log.ts}</span>
+                  <span className="shrink-0" style={{ color: "var(--lp-text-faint)" }} suppressHydrationWarning>{log.ts}</span>
                   <span
                     className="shrink-0 px-1 rounded text-[8px] tracking-widest uppercase font-bold"
                     style={{
