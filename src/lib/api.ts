@@ -1,6 +1,6 @@
 import axios, { AxiosError, AxiosInstance, InternalAxiosRequestConfig } from "axios";
 
-const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:4000/api";
+const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000/api";
 
 export const api: AxiosInstance = axios.create({
   baseURL: API_URL,
@@ -11,12 +11,19 @@ export const api: AxiosInstance = axios.create({
   timeout: 15000,
 });
 
-// Request Interceptor: Attach organization ID and credentials
+// Request Interceptor: Attach organization ID and optional role preview header
 api.interceptors.request.use(
   (config: InternalAxiosRequestConfig) => {
     if (typeof window !== "undefined") {
-      const activeOrgId = localStorage.getItem("activeOrganizationId") || "org-upnode-main";
-      config.headers.set("x-organization-id", activeOrgId);
+      const activeOrgId = localStorage.getItem("activeOrganizationId");
+      if (activeOrgId) {
+        config.headers.set("x-organization-id", activeOrgId);
+      }
+
+      const simulatedRole = localStorage.getItem("simulatedRole");
+      if (simulatedRole) {
+        config.headers.set("x-role-preview", simulatedRole);
+      }
     }
     return config;
   },

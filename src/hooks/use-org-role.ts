@@ -6,7 +6,6 @@ import { useAuth } from "@/hooks/use-auth";
 
 /**
  * Returns the current user's role within the active organization.
- * Falls back to the platform-level role for super admins.
  */
 export function useOrgRole() {
   const { user } = useAuth();
@@ -15,12 +14,6 @@ export function useOrgRole() {
 
   useEffect(() => {
     if (!user) {
-      setIsLoading(false);
-      return;
-    }
-    // Super admins bypass org role checks
-    if (user.role === "SUPER_ADMIN") {
-      setOrgRole("SUPER_ADMIN");
       setIsLoading(false);
       return;
     }
@@ -45,13 +38,9 @@ export function useOrgRole() {
       .finally(() => setIsLoading(false));
   }, [user]);
 
-  const isAdmin =
-    orgRole === "ADMIN" ||
-    orgRole === "SUPER_ADMIN" ||
-    user?.role === "SUPER_ADMIN";
+  const isAdmin = orgRole === "ADMIN" || user?.role === "ADMIN";
 
-  const isAtLeastEngineer =
-    isAdmin || orgRole === "ENGINEER";
+  const isAtLeastEngineer = isAdmin || orgRole === "ENGINEER";
 
   return { orgRole, isAdmin, isAtLeastEngineer, isLoading };
 }

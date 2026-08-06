@@ -176,6 +176,15 @@ export interface AdminOrganization {
   slug: string;
   createdAt: string;
   updatedAt: string;
+  plan?: string;
+  subscriptionStatus?: string;
+  monthlyRevenue?: number;
+  owner?: {
+    id: string;
+    name: string;
+    email: string;
+    role: string;
+  } | null;
   _count: {
     members: number;
     projects: number;
@@ -189,11 +198,19 @@ export interface AdminUser {
   role: string;
   isBlocked: boolean;
   createdAt: string;
+  plan?: string;
+  subscriptionStatus?: string;
+  monthlyRevenue?: number;
   members: {
+    role: string;
     organization: {
       id: string;
       name: string;
       slug: string;
+      _count?: {
+        members: number;
+        projects: number;
+      };
     };
   }[];
 }
