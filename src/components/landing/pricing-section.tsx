@@ -5,6 +5,14 @@ import Link from "next/link";
 import { motion } from "framer-motion";
 import { ArrowRight, Check, Zap, Shield, Sparkles, Building2 } from "lucide-react";
 
+const GLASS: React.CSSProperties = {
+  background: "var(--lp-surface)",
+  backdropFilter: "blur(20px)",
+  WebkitBackdropFilter: "blur(20px)",
+  border: "0.5px solid var(--lp-border)",
+  borderTop: "0.5px solid var(--lp-border-top)",
+};
+
 export function PricingSection() {
   const [billingCycle, setBillingCycle] = useState<"monthly" | "yearly">("yearly");
 
@@ -18,7 +26,7 @@ export function PricingSection() {
       featured: false,
       cta: "Get Started Free",
       href: "/login?signup=true",
-      icon: <Zap className="w-5 h-5 text-slate-400 dark:text-neutral-400" />,
+      icon: <Zap className="w-5 h-5" style={{ color: "var(--lp-text-dim)" }} />,
       features: [
         "Up to 5 Projects Included",
         "10,000 Ping Telemetry Events/mo",
@@ -37,7 +45,7 @@ export function PricingSection() {
       badge: "Most Popular",
       cta: "Start 14-Day Free Trial",
       href: "/login?signup=true",
-      icon: <Sparkles className="w-5 h-5 text-emerald-400 animate-pulse" />,
+      icon: <Sparkles className="w-5 h-5 animate-pulse" style={{ color: "var(--lp-text-primary)" }} />,
       features: [
         "Unlimited Projects & Monitors",
         "500,000 Telemetry Ping Events/mo",
@@ -57,7 +65,7 @@ export function PricingSection() {
       featured: false,
       cta: "Contact Enterprise Sales",
       href: "mailto:enterprise@upnode.io",
-      icon: <Building2 className="w-5 h-5 text-purple-400" />,
+      icon: <Building2 className="w-5 h-5" style={{ color: "var(--lp-text-mid)" }} />,
       features: [
         "Unlimited Telemetry & Logs",
         "1-Year Custom Data Retention",
@@ -73,54 +81,83 @@ export function PricingSection() {
   return (
     <section
       id="pricing"
-      className="py-24 relative overflow-hidden bg-slate-50 dark:bg-black text-slate-900 dark:text-neutral-100 font-sans border-b border-slate-200 dark:border-neutral-800"
+      className="py-24 relative"
+      style={{ background: "var(--lp-bg)", borderBottom: "0.5px solid var(--lp-border)" }}
     >
-      {/* Background glow effects */}
-      <div className="absolute top-1/3 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[300px] bg-emerald-500/10 dark:bg-emerald-500/5 blur-[120px] pointer-events-none rounded-full" />
-
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 space-y-12 relative z-10">
         {/* Header */}
         <motion.div
-          initial={{ opacity: 0, y: 16 }}
+          initial={{ opacity: 0, y: 14 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.5 }}
-          className="text-center space-y-4 font-mono"
+          className="text-center space-y-4 font-sans"
         >
-          <div className="inline-flex items-center gap-2 px-3 py-1 border border-emerald-500/30 bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 text-[10px] uppercase font-bold tracking-widest rounded-full">
-            <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
-            TRANSPARENT & PREDICTABLE PRICING
+          {/* Section Label */}
+          <div
+            className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full font-mono text-[10px] tracking-widest uppercase"
+            style={{
+              background: "var(--lp-surface)",
+              border: "0.5px solid var(--lp-border)",
+              color: "var(--lp-text-dim)",
+            }}
+          >
+            <span className="w-1.5 h-1.5 rounded-full inline-block" style={{ background: "var(--lp-text-mid)" }} />
+            Transparent & Predictable Pricing
           </div>
-          <h2 className="text-3xl sm:text-5xl font-extralight tracking-tight text-slate-900 dark:text-white uppercase">
-            Built to scale with your infrastructure.
+
+          <h2
+            className="text-3xl sm:text-5xl font-bold tracking-tighter leading-tight"
+            style={{ color: "var(--lp-text-primary)" }}
+          >
+            Built to scale with<br />
+            <span style={{ WebkitTextStroke: "1px var(--lp-stroke)", color: "transparent" }}>
+              your infrastructure.
+            </span>
           </h2>
-          <p className="text-xs sm:text-sm text-slate-500 dark:text-neutral-400 max-w-xl mx-auto font-sans leading-relaxed">
+
+          <p
+            className="text-xs sm:text-sm max-w-xl mx-auto font-sans leading-relaxed"
+            style={{ color: "var(--lp-text-dim)" }}
+          >
             Choose the plan that fits your monitoring scale. No hidden fees or surprise billings.
           </p>
 
           {/* Billing Cycle Toggle */}
-          <div className="flex justify-center pt-4">
-            <div className="flex items-center gap-1 p-1 bg-slate-200 dark:bg-neutral-900 border border-slate-300 dark:border-neutral-800 rounded-lg text-xs font-mono">
+          <div className="flex justify-center pt-4 font-mono">
+            <div
+              className="inline-flex items-center gap-1 p-1 rounded-xl text-xs"
+              style={{
+                background: "var(--lp-surface)",
+                border: "0.5px solid var(--lp-border)",
+              }}
+            >
               <button
                 onClick={() => setBillingCycle("monthly")}
-                className={`px-4 py-1.5 rounded-md transition-all cursor-pointer font-bold uppercase ${
-                  billingCycle === "monthly"
-                    ? "bg-slate-900 dark:bg-black text-white shadow-sm"
-                    : "text-slate-600 dark:text-neutral-400 hover:text-slate-900 dark:hover:text-white"
-                }`}
+                className="px-4 py-1.5 rounded-lg transition-all cursor-pointer font-bold uppercase text-[11px]"
+                style={{
+                  background: billingCycle === "monthly" ? "var(--lp-text-primary)" : "transparent",
+                  color: billingCycle === "monthly" ? "var(--lp-bg)" : "var(--lp-text-dim)",
+                }}
               >
                 Monthly Billing
               </button>
               <button
                 onClick={() => setBillingCycle("yearly")}
-                className={`px-4 py-1.5 rounded-md transition-all cursor-pointer font-bold uppercase flex items-center gap-1.5 ${
-                  billingCycle === "yearly"
-                    ? "bg-slate-900 dark:bg-black text-white shadow-sm"
-                    : "text-slate-600 dark:text-neutral-400 hover:text-slate-900 dark:hover:text-white"
-                }`}
+                className="px-4 py-1.5 rounded-lg transition-all cursor-pointer font-bold uppercase text-[11px] flex items-center gap-1.5"
+                style={{
+                  background: billingCycle === "yearly" ? "var(--lp-text-primary)" : "transparent",
+                  color: billingCycle === "yearly" ? "var(--lp-bg)" : "var(--lp-text-dim)",
+                }}
               >
                 <span>Annual Billing</span>
-                <span className="px-1.5 py-0.5 bg-emerald-500/20 text-emerald-600 dark:text-emerald-400 text-[9px] font-bold rounded">
+                <span
+                  className="px-1.5 py-0.5 text-[9px] font-bold rounded"
+                  style={{
+                    background: "var(--lp-border)",
+                    color: billingCycle === "yearly" ? "var(--lp-bg)" : "var(--lp-text-mid)",
+                  }}
+                >
                   SAVE 20%
                 </span>
               </button>
@@ -140,14 +177,22 @@ export function PricingSection() {
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
                 transition={{ duration: 0.4, delay: i * 0.1 }}
-                className={`p-6 sm:p-8 rounded-xl flex flex-col justify-between relative transition-all duration-200 ${
-                  plan.featured
-                    ? "border-2 border-emerald-500/80 bg-white dark:bg-neutral-950 shadow-xl dark:shadow-[0_0_30px_rgba(16,185,129,0.15)] ring-1 ring-emerald-500/50"
-                    : "border border-slate-200 dark:border-neutral-800 bg-white/70 dark:bg-neutral-950/60 shadow-sm hover:border-slate-300 dark:hover:border-neutral-700"
-                }`}
+                className="p-6 sm:p-8 rounded-3xl flex flex-col justify-between relative transition-all duration-200"
+                style={{
+                  ...GLASS,
+                  border: plan.featured
+                    ? "1px solid var(--lp-text-primary)"
+                    : "0.5px solid var(--lp-border)",
+                }}
               >
                 {plan.badge && (
-                  <div className="absolute -top-3.5 left-1/2 -translate-x-1/2 px-3 py-0.5 bg-emerald-500 text-black text-[10px] font-mono font-bold tracking-widest uppercase rounded-full shadow-sm">
+                  <div
+                    className="absolute -top-3 left-1/2 -translate-x-1/2 px-3 py-0.5 text-[10px] font-mono font-bold tracking-widest uppercase rounded-full shadow-sm"
+                    style={{
+                      background: "var(--lp-text-primary)",
+                      color: "var(--lp-bg)",
+                    }}
+                  >
                     {plan.badge}
                   </div>
                 )}
@@ -156,36 +201,56 @@ export function PricingSection() {
                   {/* Card Header */}
                   <div className="space-y-2">
                     <div className="flex items-center justify-between">
-                      <h3 className="text-lg font-mono font-bold uppercase tracking-wider text-slate-900 dark:text-white">
+                      <h3
+                        className="text-lg font-mono font-bold uppercase tracking-wider"
+                        style={{ color: "var(--lp-text-primary)" }}
+                      >
                         {plan.name}
                       </h3>
                       {plan.icon}
                     </div>
-                    <p className="text-xs text-slate-500 dark:text-neutral-400 font-sans leading-relaxed">
+                    <p
+                      className="text-xs font-sans leading-relaxed"
+                      style={{ color: "var(--lp-text-dim)" }}
+                    >
                       {plan.desc}
                     </p>
                   </div>
 
                   {/* Pricing Display */}
-                  <div className="py-2 border-y border-slate-100 dark:border-neutral-900 font-mono">
+                  <div
+                    className="py-3 border-y font-mono"
+                    style={{ borderColor: "var(--lp-border)" }}
+                  >
                     <div className="flex items-baseline gap-1">
-                      <span className="text-4xl font-extralight text-slate-900 dark:text-white tracking-tight">
+                      <span
+                        className="text-4xl font-extralight tracking-tight"
+                        style={{ color: "var(--lp-text-primary)" }}
+                      >
                         ${displayPrice}
                       </span>
-                      <span className="text-xs text-slate-500 dark:text-neutral-400">{plan.unit}</span>
+                      <span className="text-xs" style={{ color: "var(--lp-text-dim)" }}>
+                        {plan.unit}
+                      </span>
                     </div>
                     {billingCycle === "yearly" && displayPrice !== "0" && (
-                      <span className="text-[10px] text-emerald-600 dark:text-emerald-400 font-semibold block mt-1">
+                      <span
+                        className="text-[10px] font-mono font-semibold block mt-1"
+                        style={{ color: "var(--lp-text-mid)" }}
+                      >
                         Billed annually (${Number(displayPrice) * 12}/yr)
                       </span>
                     )}
                   </div>
 
                   {/* Feature Checklist */}
-                  <ul className="space-y-2.5 font-mono text-xs text-slate-700 dark:text-neutral-300">
+                  <ul className="space-y-2.5 font-mono text-xs">
                     {plan.features.map((feature) => (
-                      <li key={feature} className="flex items-start gap-2.5">
-                        <Check className="w-4 h-4 text-emerald-500 shrink-0 mt-0.5" />
+                      <li key={feature} className="flex items-start gap-2.5" style={{ color: "var(--lp-text-mid)" }}>
+                        <Check
+                          className="w-4 h-4 shrink-0 mt-0.5"
+                          style={{ color: "var(--lp-text-primary)" }}
+                        />
                         <span>{feature}</span>
                       </li>
                     ))}
@@ -193,14 +258,15 @@ export function PricingSection() {
                 </div>
 
                 {/* Call to Action Button */}
-                <div className="pt-8">
+                <div className="pt-8 font-mono">
                   <Link
                     href={plan.href}
-                    className={`w-full py-3 px-4 font-mono text-xs font-bold uppercase tracking-wider rounded-md text-center flex items-center justify-center gap-2 transition-all cursor-pointer ${
-                      plan.featured
-                        ? "bg-emerald-500 hover:bg-emerald-400 text-black border border-emerald-400 shadow-md"
-                        : "bg-slate-900 hover:bg-slate-800 text-white dark:bg-white dark:hover:bg-neutral-200 dark:text-black"
-                    }`}
+                    className="w-full py-3 px-4 text-xs font-bold uppercase tracking-wider rounded-xl text-center flex items-center justify-center gap-2 transition-all cursor-pointer"
+                    style={{
+                      background: plan.featured ? "var(--lp-text-primary)" : "var(--lp-surface)",
+                      color: plan.featured ? "var(--lp-bg)" : "var(--lp-text-primary)",
+                      border: plan.featured ? "none" : "0.5px solid var(--lp-border)",
+                    }}
                   >
                     <span>{plan.cta}</span>
                     <ArrowRight className="w-3.5 h-3.5" />
