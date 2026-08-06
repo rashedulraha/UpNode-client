@@ -284,7 +284,6 @@ export function ProjectsSidebar({
                 </div>
               </Link>
             </div>
-            </div>
           </div>
 
           {/* Registered Services / Projects Section */}
