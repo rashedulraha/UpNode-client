@@ -288,14 +288,84 @@ function SubmitButton({
   );
 }
 
+// ─── Section Skeleton Loader ──────────────────────────────────────────────────
+
+function SectionSkeleton({
+  tag,
+  title,
+  subtitle,
+}: {
+  tag: string;
+  title: string;
+  subtitle: string;
+}) {
+  return (
+    <div className="p-6 rounded-none bg-white/70 dark:bg-black/60 border border-slate-200 dark:border-neutral-800 backdrop-blur-3xl space-y-6 shadow-sm font-mono relative overflow-hidden animate-pulse">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-slate-200 dark:border-neutral-800">
+        <div className="space-y-2">
+          <div className="w-36 h-4 bg-slate-200 dark:bg-neutral-800 rounded-none" />
+          <h2 className="text-base sm:text-lg font-light tracking-tight text-slate-900 dark:text-white uppercase font-mono">
+            {title}
+          </h2>
+          <p className="text-xs text-slate-500 dark:text-neutral-400 leading-relaxed">
+            {subtitle}
+          </p>
+        </div>
+      </div>
+
+      <div className="space-y-4">
+        <div className="flex items-center gap-4 p-4 bg-slate-50 dark:bg-black border border-slate-200 dark:border-neutral-800">
+          <div className="w-14 h-14 bg-slate-200 dark:bg-neutral-800 rounded-none shrink-0" />
+          <div className="space-y-2 flex-1">
+            <div className="w-40 h-4 bg-slate-300 dark:bg-neutral-700 rounded-none" />
+            <div className="w-56 h-3 bg-slate-200 dark:bg-neutral-800 rounded-none" />
+          </div>
+        </div>
+
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <div className="space-y-2">
+            <div className="w-24 h-3 bg-slate-200 dark:bg-neutral-800 rounded-none" />
+            <div className="h-10 bg-slate-100 dark:bg-neutral-900 border border-slate-200 dark:border-neutral-800 rounded-none" />
+          </div>
+          <div className="space-y-2">
+            <div className="w-28 h-3 bg-slate-200 dark:bg-neutral-800 rounded-none" />
+            <div className="h-10 bg-slate-100 dark:bg-neutral-900 border border-slate-200 dark:border-neutral-800 rounded-none" />
+          </div>
+        </div>
+
+        <div className="flex justify-end pt-2">
+          <div className="w-32 h-9 bg-slate-900 dark:bg-white/20 rounded-none" />
+        </div>
+      </div>
+    </div>
+  );
+}
+
 // ─── Section 1: User Profile ─────────────────────────────────────────────────
 
 function ProfileSection({ onSuccess }: { onSuccess: (msg: string) => void }) {
-  const { user, refetchSession } = useAuth();
+  const { user, isLoading: authLoading, refetchSession } = useAuth();
   const [name, setName] = useState(user?.name ?? "");
   const [image, setImage] = useState(user?.image ?? "");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    if (user) {
+      setName(user.name ?? "");
+      setImage(user.image ?? "");
+    }
+  }, [user]);
+
+  if (authLoading || !user) {
+    return (
+      <SectionSkeleton
+        tag="PROFILE // CREDENTIALS"
+        title="User Identity"
+        subtitle="Update public display name and avatar profile image link"
+      />
+    );
+  }
 
   const initials = getInitials(name || user?.name, user?.email);
 
@@ -611,9 +681,26 @@ function SessionsSection({ onSuccess }: { onSuccess: (msg: string) => void }) {
       }
     >
       {loading ? (
-        <div className="flex items-center justify-center py-8 text-xs font-mono text-slate-500 dark:text-neutral-500">
-          <Loader2 className="w-4 h-4 animate-spin mr-2" />
-          <span>FETCHING SESSIONS...</span>
+        <div className="space-y-3 font-mono">
+          <div className="text-[10px] text-slate-400 dark:text-neutral-500 uppercase tracking-widest flex items-center gap-2 animate-pulse mb-2">
+            <span className="w-2 h-2 bg-emerald-500 rounded-full animate-ping" />
+            <span>[SYNCING_ACTIVE_SESSIONS_SKELETON...]</span>
+          </div>
+          {[1, 2, 3].map((i) => (
+            <div
+              key={i}
+              className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 p-4 rounded-none border border-slate-200 dark:border-neutral-800 bg-slate-50/60 dark:bg-neutral-950/60 animate-pulse"
+            >
+              <div className="flex items-center gap-3">
+                <div className="w-9 h-9 bg-slate-200 dark:bg-neutral-800 rounded-none shrink-0" />
+                <div className="space-y-1.5 min-w-0">
+                  <div className="w-40 h-4 bg-slate-300 dark:bg-neutral-700 rounded-none" />
+                  <div className="w-56 h-3 bg-slate-200 dark:bg-neutral-800 rounded-none" />
+                </div>
+              </div>
+              <div className="w-20 h-7 bg-slate-200 dark:bg-neutral-800 rounded-none shrink-0" />
+            </div>
+          ))}
         </div>
       ) : (
         <div className="space-y-3 font-mono">
@@ -769,9 +856,26 @@ function NotificationsSection({
       subtitle="Enable or disable personal notification dispatch channels across all projects"
     >
       {loading ? (
-        <div className="flex items-center justify-center py-8 text-xs font-mono text-slate-500 dark:text-neutral-500">
-          <Loader2 className="w-4 h-4 animate-spin mr-2" />
-          <span>LOADING PREFERENCES...</span>
+        <div className="space-y-3 font-mono">
+          <div className="text-[10px] text-slate-400 dark:text-neutral-500 uppercase tracking-widest flex items-center gap-2 animate-pulse mb-2">
+            <span className="w-2 h-2 bg-emerald-500 rounded-full animate-ping" />
+            <span>[FETCHING_NOTIFICATION_RULES_SKELETON...]</span>
+          </div>
+          {[1, 2].map((i) => (
+            <div
+              key={i}
+              className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 p-4 rounded-none border border-slate-200 dark:border-neutral-800 bg-slate-50/60 dark:bg-neutral-950/60 animate-pulse"
+            >
+              <div className="flex items-start gap-3">
+                <div className="w-8 h-8 bg-slate-200 dark:bg-neutral-800 rounded-none shrink-0" />
+                <div className="space-y-1.5 min-w-0">
+                  <div className="w-48 h-4 bg-slate-300 dark:bg-neutral-700 rounded-none" />
+                  <div className="w-64 h-3 bg-slate-200 dark:bg-neutral-800 rounded-none" />
+                </div>
+              </div>
+              <div className="w-20 h-6 bg-slate-200 dark:bg-neutral-800 rounded-none shrink-0" />
+            </div>
+          ))}
         </div>
       ) : (
         <div className="space-y-3 font-mono">
