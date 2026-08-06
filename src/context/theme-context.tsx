@@ -27,7 +27,7 @@ const DEV_THEME_STORAGE_KEY = "upnode_dev_theme_id";
 
 export function CustomThemeProvider({ children }: { children: React.ReactNode }) {
   const [mode, setModeState] = useState<ThemeMode>("developer");
-  const [developerThemeId, setDeveloperThemeIdState] = useState<DeveloperThemeId>("dracula");
+  const [developerThemeId, setDeveloperThemeIdState] = useState<DeveloperThemeId>("obsidian");
   const [isMounted, setIsMounted] = useState(false);
 
   // Read saved values from localStorage on mount
@@ -49,7 +49,7 @@ export function CustomThemeProvider({ children }: { children: React.ReactNode })
     }
   }, []);
 
-  const activeDeveloperTheme = DEVELOPER_THEMES[developerThemeId] || DEVELOPER_THEMES.dracula;
+  const activeDeveloperTheme = DEVELOPER_THEMES[developerThemeId] || DEVELOPER_THEMES.obsidian;
   const activeTheme = mode === "light" ? LIGHT_THEME : activeDeveloperTheme;
 
   // Apply CSS Variables to :root / document.documentElement whenever active theme changes
