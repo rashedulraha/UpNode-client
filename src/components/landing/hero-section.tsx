@@ -388,18 +388,48 @@ export function HeroSection() {
               ) : (
                 <Copy className="w-3 h-3" />
               )}
-                  </span>
-                </div>
-              ))}
-            </motion.div>
+            </motion.button>
           </motion.div>
 
-          {/* ── RIGHT: Monitoring Card ──────────────────────────────────────── */}
-          <div className="w-full pt-2">
-            <MonitoringCard />
-          </div>
-        </div>
+          {/* Stats */}
+          <motion.div
+            variants={itemVariants}
+            className="flex flex-wrap items-center justify-center gap-8 sm:gap-12 pt-4 w-full max-w-2xl"
+            style={{
+              borderTop: "0.5px solid var(--lp-border)",
+              marginTop: "16px",
+            }}
+          >
+            {[
+              { label: "Edge Nodes", value: "48" },
+              { label: "Avg MTTD", value: "< 4s" },
+              { label: "Resolved", value: "99.97%" },
+              { label: "Engineers", value: "2,400+" },
+            ].map((s) => (
+              <div key={s.label} className="flex flex-col items-center gap-0.5">
+                <span
+                  className="font-mono text-base font-bold tracking-tight"
+                  style={{ color: "var(--lp-text-mid)" }}
+                >
+                  {s.value}
+                </span>
+                <span
+                  className="font-mono text-[8px] tracking-widest uppercase"
+                  style={{ color: "var(--lp-text-faint)" }}
+                >
+                  {s.label}
+                </span>
+              </div>
+            ))}
+          </motion.div>
+        </motion.div>
+
+        {/* Subtle Interactive Tech Visual */}
+        <InteractiveTechVisual />
       </div>
     </section>
   );
 }
+
+export default HeroSection;
+
