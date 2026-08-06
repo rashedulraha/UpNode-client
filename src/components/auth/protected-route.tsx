@@ -3,7 +3,6 @@
 import React, { useEffect, Suspense } from "react";
 import { useRouter, usePathname, useSearchParams } from "next/navigation";
 import { useAuth } from "@/hooks/use-auth";
-import { Loader2 } from "lucide-react";
 
 interface ProtectedRouteProps {
   children: React.ReactNode;
@@ -36,37 +35,22 @@ function ProtectedRouteGuard({ children, requireAuth = true }: ProtectedRoutePro
     }
   }, [user, isAuthenticated, isLoading, requireAuth, router, pathname, searchParams]);
 
-  if (isLoading) {
-    return (
-      <div className="flex min-h-screen items-center justify-center bg-zinc-950 text-white">
-        <div className="flex flex-col items-center gap-3">
-          <Loader2 className="h-8 w-8 animate-spin text-indigo-500" />
-          <p className="text-sm font-medium text-zinc-400">Verifying session...</p>
-        </div>
-      </div>
-    );
-  }
-
-  if (requireAuth && !isAuthenticated) {
+  // If session check completes and user is unauthenticated, hide content while redirecting
+  if (!isLoading && requireAuth && !isAuthenticated) {
     return null;
   }
 
-  if (!requireAuth && isAuthenticated) {
+  if (!isLoading && !requireAuth && isAuthenticated) {
     return null;
   }
 
+  // Render children immediately so skeleton loaders inside dashboard render without full-screen blocking spinner
   return <>{children}</>;
 }
 
 export function ProtectedRoute(props: ProtectedRouteProps) {
   return (
-    <Suspense
-      fallback={
-        <div className="flex min-h-screen items-center justify-center bg-zinc-950 text-white">
-          <Loader2 className="h-8 w-8 animate-spin text-indigo-500" />
-        </div>
-      }
-    >
+    <Suspense fallback={<>{props.children}</>}>
       <ProtectedRouteGuard {...props} />
     </Suspense>
   );
