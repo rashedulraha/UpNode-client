@@ -82,10 +82,10 @@ export function RoleSwitcher() {
             className="fixed inset-0 z-40"
             onClick={() => setIsOpen(false)}
           />
-          <div className="absolute right-0 mt-2 w-64 bg-neutral-950 border border-neutral-800 rounded-lg shadow-2xl z-50 p-2 text-xs space-y-1">
-            <div className="px-2 py-1.5 text-[10px] text-neutral-400 uppercase tracking-wider font-bold border-b border-neutral-800 flex items-center justify-between">
+          <div className="absolute right-0 mt-2 w-64 bg-white dark:bg-black border border-slate-200 dark:border-neutral-800 shadow-2xl z-50 p-2 text-xs space-y-1 font-mono">
+            <div className="px-2 py-1.5 text-[10px] text-slate-500 dark:text-neutral-400 uppercase tracking-wider font-bold border-b border-slate-200 dark:border-neutral-800 flex items-center justify-between">
               <span>[SIMULATE ROLE VIEW]</span>
-              <button onClick={() => setIsOpen(false)} className="text-neutral-500 hover:text-white">
+              <button onClick={() => setIsOpen(false)} className="text-slate-400 hover:text-slate-900 dark:hover:text-white cursor-pointer">
                 <X className="w-3 h-3" />
               </button>
             </div>
@@ -97,18 +97,18 @@ export function RoleSwitcher() {
                 <button
                   key={r}
                   onClick={() => handleRoleSelect(r)}
-                  className={`w-full text-left px-2.5 py-2 rounded flex flex-col gap-0.5 transition-colors cursor-pointer ${
+                  className={`w-full text-left px-2.5 py-2 transition-colors cursor-pointer ${
                     isSelected
-                      ? "bg-neutral-800 text-white font-bold"
-                      : "text-neutral-400 hover:bg-neutral-900 hover:text-white"
+                      ? "bg-slate-100 dark:bg-neutral-900 text-slate-900 dark:text-white font-bold"
+                      : "text-slate-600 dark:text-neutral-400 hover:bg-slate-50 dark:hover:bg-neutral-900/60 hover:text-slate-900 dark:hover:text-white"
                   }`}
                 >
                   <div className="flex items-center gap-2 text-xs">
                     {cfg.icon}
                     <span>{cfg.label}</span>
-                    {isSelected && <span className="ml-auto text-[9px] text-emerald-400 uppercase">[ACTIVE]</span>}
+                    {isSelected && <span className="ml-auto text-[9px] text-emerald-600 dark:text-emerald-400 uppercase">[ACTIVE]</span>}
                   </div>
-                  <span className="text-[10px] text-neutral-500 font-normal leading-tight">
+                  <span className="text-[10px] text-slate-500 dark:text-neutral-500 font-normal leading-tight">
                     {cfg.desc}
                   </span>
                 </button>
