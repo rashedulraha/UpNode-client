@@ -6,7 +6,7 @@ import DashboardHeader from "@/components/dashboard/dashboard-header";
 import { useIncidentStream } from "@/hooks/useIncidentStream";
 
 export default function ThemeSettingsPage() {
-  const { status: streamStatus } = useIncidentStream();
+  const { streamStatus } = useIncidentStream();
   const [searchQuery, setSearchQuery] = useState("");
 
   return (
