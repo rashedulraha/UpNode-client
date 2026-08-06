@@ -230,10 +230,10 @@ export function ProjectsSidebar({
 
       {/* Promotion / Plan Info Banner */}
       {showPromo && (
-        <div className="mx-4 mb-4 p-5 border border-amber-500/30 dark:border-amber-500/20 bg-amber-500/[0.03] dark:bg-amber-500/[0.01] relative font-mono text-[11px] space-y-4 min-h-[210px] flex flex-col justify-between">
+        <div className="mx-4 mb-4 p-4 border border-amber-500/30 dark:border-amber-500/20 bg-amber-500/[0.03] dark:bg-amber-500/[0.01] relative font-mono text-[11px] space-y-3">
           {/* Header */}
           <div className="flex items-center justify-between">
-            <span className="text-amber-600 dark:text-amber-500 font-bold uppercase tracking-wider">
+            <span className="text-amber-600 dark:text-amber-500 font-bold uppercase tracking-wider text-[10px]">
               [BETA_v2.6 // FREE_PLAN]
             </span>
 
@@ -246,58 +246,23 @@ export function ProjectsSidebar({
             </button>
           </div>
 
-          {/* Description */}
-          <p className="text-slate-500 dark:text-neutral-400 leading-relaxed text-[10px]">
-            LIMIT_REACHED: SSL monitoring, Slack alerts and advanced uptime
-            analytics are currently disabled on the Free plan. Upgrade to unlock
-            unlimited monitoring with faster response times.
-          </p>
-
-          {/* Feature List */}
-          <div className="space-y-1 text-[10px] text-slate-500 dark:text-neutral-400">
-            <div className="flex justify-between">
-              <span>[✓] 30 Second Ping</span>
-              <span className="text-green-500">ACTIVE</span>
-            </div>
-
-            <div className="flex justify-between">
-              <span>[✗] SSL Certificate Monitor</span>
-              <span className="text-amber-500">LOCKED</span>
-            </div>
-
-            <div className="flex justify-between">
-              <span>[✗] Slack Notifications</span>
-              <span className="text-amber-500">LOCKED</span>
-            </div>
-
-            <div className="flex justify-between">
-              <span>[✗] Unlimited Projects</span>
-              <span className="text-amber-500">PREMIUM</span>
-            </div>
-
-            <div className="flex justify-between">
-              <span>[✗] 24/7 Incident Timeline</span>
-              <span className="text-amber-500">PREMIUM</span>
-            </div>
-          </div>
-
-          {/* Footer */}
-          <div className="border-t border-amber-500/15 pt-3">
-            <p className="text-[9px] text-slate-400 dark:text-neutral-500 mb-3 uppercase tracking-wide">
+          {/* Footer Info & Action Buttons */}
+          <div className="pt-1">
+            <p className="text-[9px] text-slate-400 dark:text-neutral-500 mb-2.5 uppercase tracking-wide">
               NEXT RESET: 12H 18M • FREE PLAN LIMIT: 3 PROJECTS
             </p>
 
             <div className="flex items-center gap-2">
               <a
                 href="/docs"
-                className="flex-1 py-2 px-2 text-center border border-slate-300 dark:border-neutral-700 bg-slate-100 dark:bg-neutral-900 text-slate-800 dark:text-neutral-300 hover:bg-slate-200 dark:hover:bg-neutral-800 transition-colors uppercase text-[9px] font-bold"
+                className="flex-1 py-1.5 px-2 text-center border border-slate-300 dark:border-neutral-700 bg-slate-100 dark:bg-neutral-900 text-slate-800 dark:text-neutral-300 hover:bg-slate-200 dark:hover:bg-neutral-800 transition-colors uppercase text-[9px] font-bold"
               >
                 [READ_DOCS]
               </a>
 
               <a
                 href="/dashboard/settings/profile#pricing"
-                className="flex-1 py-2 px-2 text-center border border-amber-500/40 bg-amber-500/10 text-amber-700 dark:text-amber-400 hover:bg-amber-500/20 transition-all uppercase text-[9px] font-bold"
+                className="flex-1 py-1.5 px-2 text-center border border-amber-500/40 bg-amber-500/10 text-amber-700 dark:text-amber-400 hover:bg-amber-500/20 transition-all uppercase text-[9px] font-bold"
               >
                 [UPGRADE_NOW]
               </a>
