@@ -57,7 +57,7 @@ export default function TeamSettingsPage() {
         <div className="flex items-center gap-3">
           <button
             onClick={() => refetch()}
-            className="px-3 py-1 text-xs font-mono text-slate-700 dark:text-neutral-300 hover:text-slate-900 dark:hover:text-white bg-slate-100 dark:bg-neutral-900 border border-slate-200 dark:border-neutral-800 rounded-lg transition-all cursor-pointer uppercase"
+            className="h-8 px-3 text-xs font-mono text-slate-700 dark:text-neutral-300 hover:text-slate-900 dark:hover:text-white bg-slate-100 dark:bg-black border border-slate-200 dark:border-neutral-800 transition-all cursor-pointer uppercase flex items-center shrink-0"
           >
             {isLoading ? "[SYNCING...]" : "[REFRESH]"}
           </button>

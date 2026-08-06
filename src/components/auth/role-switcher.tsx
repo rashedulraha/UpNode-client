@@ -67,7 +67,7 @@ export function RoleSwitcher() {
     <div className="relative inline-block text-left font-mono">
       <button
         onClick={() => setIsOpen(!isOpen)}
-        className={`flex items-center gap-2 px-2.5 py-1 text-xs border rounded transition-all cursor-pointer ${currentConfig.color}`}
+        className={`h-8 px-2.5 flex items-center gap-2 text-xs border transition-all cursor-pointer ${currentConfig.color}`}
         title="Switch Role View Mode"
       >
         <Sparkles className="w-3 h-3 text-amber-400 animate-pulse" />

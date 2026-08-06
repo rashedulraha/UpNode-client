@@ -29,7 +29,7 @@ export function DashboardHeader({
       <div className="flex items-center gap-2.5 sm:gap-3">
         <Link
           href="/"
-          className="p-1.5 rounded-none text-slate-600 dark:text-neutral-400 hover:text-slate-900 dark:hover:text-white bg-slate-100 dark:bg-black hover:bg-slate-200 dark:hover:bg-neutral-900 transition-colors cursor-pointer border border-slate-200 dark:border-neutral-800 shrink-0"
+          className="h-8 px-2.5 flex items-center justify-center text-slate-600 dark:text-neutral-400 hover:text-slate-900 dark:hover:text-white bg-slate-100 dark:bg-black hover:bg-slate-200 dark:hover:bg-neutral-900 transition-colors cursor-pointer border border-slate-200 dark:border-neutral-800 shrink-0"
           title="Go to Home"
         >
           <Home className="w-3.5 h-3.5 text-slate-900 dark:text-white" />
@@ -39,7 +39,7 @@ export function DashboardHeader({
           <span className="font-bold text-sm tracking-widest text-slate-900 dark:text-white uppercase">
             UPNODE
           </span>
-          <span className="text-[9px] font-mono px-1.5 py-0.5 rounded-none bg-slate-100 dark:bg-black text-slate-500 dark:text-neutral-400 border border-slate-200 dark:border-neutral-800">
+          <span className="text-[9px] font-mono px-1.5 py-0.5 bg-slate-100 dark:bg-black text-slate-500 dark:text-neutral-400 border border-slate-200 dark:border-neutral-800">
             v2.6
           </span>
         </div>
@@ -64,23 +64,23 @@ export function DashboardHeader({
 
       {/* Middle: Clean Minimal Search Input */}
       <div className="flex-1 max-w-xs sm:max-w-sm hidden md:block font-mono">
-        <div className="relative flex items-center">
+        <div className="relative flex items-center h-8">
           <Search className="absolute left-3 h-3.5 w-3.5 text-slate-400 dark:text-neutral-500 pointer-events-none" />
           <input
             type="text"
             placeholder="[SEARCH ORG OR PROJECT]"
             value={searchQuery}
             onChange={(e) => onSearchChange(e.target.value)}
-            className="w-full pl-8 pr-3 py-1 bg-white dark:bg-black border border-slate-200 dark:border-neutral-800 rounded-none text-xs text-slate-900 dark:text-white placeholder:text-slate-400 dark:placeholder:text-neutral-600 focus:outline-none focus:border-slate-500 dark:focus:border-neutral-500 transition-all font-mono"
+            className="w-full h-8 pl-8 pr-3 bg-white dark:bg-black border border-slate-200 dark:border-neutral-800 text-xs text-slate-900 dark:text-white placeholder:text-slate-400 dark:placeholder:text-neutral-600 focus:outline-none focus:border-slate-500 dark:focus:border-neutral-500 transition-all font-mono"
           />
         </div>
       </div>
 
       {/* Right: Actions & User Profile */}
-      <div className="flex items-center gap-2 sm:gap-3 ml-auto">
+      <div className="flex items-center gap-2 sm:gap-2.5 ml-auto">
         <Link
           href="/dashboard/settings/team"
-          className="flex items-center gap-1.5 px-2.5 py-1 text-slate-700 dark:text-neutral-300 hover:text-slate-900 dark:hover:text-white bg-slate-100 dark:bg-black hover:bg-slate-200 dark:hover:bg-neutral-900 border border-slate-200 dark:border-neutral-800 transition-colors text-xs font-mono"
+          className="h-8 px-2.5 flex items-center gap-1.5 text-slate-700 dark:text-neutral-300 hover:text-slate-900 dark:hover:text-white bg-slate-100 dark:bg-black hover:bg-slate-200 dark:hover:bg-neutral-900 border border-slate-200 dark:border-neutral-800 transition-colors text-xs font-mono shrink-0"
           title="Team Management & Admin Access"
         >
           <Users className="w-3.5 h-3.5 text-slate-900 dark:text-white" />
@@ -92,16 +92,16 @@ export function DashboardHeader({
 
         <button
           onClick={onOpenCreateModal}
-          className="flex items-center gap-1.5 px-3 py-1 bg-slate-900 dark:bg-white text-white dark:text-black hover:opacity-90 rounded-none text-xs font-mono font-bold transition-all cursor-pointer shadow-sm uppercase tracking-wider border border-slate-900 dark:border-white"
+          className="h-8 px-3 flex items-center gap-1.5 bg-slate-900 dark:bg-white text-white dark:text-black hover:opacity-90 text-xs font-mono font-bold transition-all cursor-pointer shadow-sm uppercase tracking-wider border border-slate-900 dark:border-white shrink-0"
         >
           <Plus className="w-3.5 h-3.5" />
           <span className="hidden sm:inline">[NEW_INCIDENT]</span>
         </button>
 
-        <div className="flex items-center gap-2 pl-2 sm:pl-3 border-l border-slate-200 dark:border-neutral-800">
+        <div className="flex items-center pl-2 border-l border-slate-200 dark:border-neutral-800 shrink-0">
           <Link
             href="/dashboard/settings/profile"
-            className="flex items-center gap-2 px-2.5 py-1 rounded bg-slate-100 dark:bg-neutral-900 border border-slate-200 dark:border-neutral-800 hover:border-slate-400 dark:hover:border-neutral-600 text-xs font-mono text-slate-800 dark:text-neutral-200 transition-colors cursor-pointer"
+            className="h-8 px-2.5 flex items-center gap-2 bg-slate-100 dark:bg-black border border-slate-200 dark:border-neutral-800 hover:border-slate-400 dark:hover:border-neutral-600 text-xs font-mono text-slate-800 dark:text-neutral-200 transition-colors cursor-pointer"
             title="Profile & Security Settings"
           >
             <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 dark:bg-white animate-pulse" />
