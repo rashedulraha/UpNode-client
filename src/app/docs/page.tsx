@@ -118,33 +118,33 @@ function InfoBox({
   const styles = {
     info: {
       label: "DIAGNOSTIC // INFO",
-      icon: <Info className="w-3.5 h-3.5 flex-shrink-0 text-blue-400" />,
+      icon: <Info className="w-3.5 h-3.5 flex-shrink-0 text-blue-500 dark:text-blue-400" />,
       container:
-        "bg-black dark:bg-black border-blue-900/60 text-slate-300 dark:text-slate-300",
+        "bg-blue-50/60 dark:bg-blue-950/20 border-blue-200 dark:border-blue-900/60 text-slate-800 dark:text-slate-200",
     },
     warning: {
       label: "DIAGNOSTIC // WARNING",
       icon: (
-        <AlertTriangle className="w-3.5 h-3.5 flex-shrink-0 text-amber-400" />
+        <AlertTriangle className="w-3.5 h-3.5 flex-shrink-0 text-amber-500 dark:text-amber-400" />
       ),
       container:
-        "bg-black dark:bg-black border-amber-900/60 text-slate-300 dark:text-slate-300",
+        "bg-amber-50/60 dark:bg-amber-950/20 border-amber-200 dark:border-amber-900/60 text-slate-800 dark:text-slate-200",
     },
     success: {
       label: "DIAGNOSTIC // SUCCESS",
       icon: (
-        <CheckCircle2 className="w-3.5 h-3.5 flex-shrink-0 text-emerald-400" />
+        <CheckCircle2 className="w-3.5 h-3.5 flex-shrink-0 text-emerald-500 dark:text-emerald-400" />
       ),
       container:
-        "bg-black dark:bg-black border-emerald-900/60 text-slate-300 dark:text-slate-300",
+        "bg-emerald-50/60 dark:bg-emerald-950/20 border-emerald-200 dark:border-emerald-900/60 text-slate-800 dark:text-slate-200",
     },
   }[type];
 
   return (
     <div
-      className={`my-5 font-mono text-[11px] leading-relaxed border border-dashed p-4 rounded-none bg-black ${styles.container}`}
+      className={`my-5 font-mono text-[11px] leading-relaxed border border-dashed p-4 rounded-xl ${styles.container}`}
     >
-      <div className="flex items-center gap-2 mb-2 font-bold tracking-wider text-[10px] opacity-80">
+      <div className="flex items-center gap-2 mb-2 font-bold tracking-wider text-[10px] opacity-90">
         {styles.icon}
         <span>{styles.label}</span>
       </div>
@@ -175,25 +175,25 @@ function SectionHeading({
 
   const Tag = `h${level}` as "h1" | "h2" | "h3";
   const sizeMap = {
-    1: "text-xl font-bold font-mono tracking-widest mb-5 mt-14 text-slate-900 dark:text-white pb-2 border-b border-dashed border-neutral-800 flex items-center gap-2 uppercase",
-    2: "text-sm font-bold font-mono tracking-wider mb-4 mt-10 text-slate-800 dark:text-slate-100 flex items-center gap-2.5 uppercase",
-    3: "text-xs font-bold font-mono tracking-wide mb-3 mt-8 text-slate-700 dark:text-slate-200 flex items-center gap-2 uppercase",
+    1: "text-xl font-bold font-mono tracking-widest mb-5 mt-14 text-slate-900 dark:text-white pb-2 border-b border-dashed border-slate-200 dark:border-neutral-800 flex items-center gap-2 uppercase",
+    2: "text-sm font-bold font-mono tracking-wider mb-4 mt-10 text-slate-900 dark:text-slate-100 flex items-center gap-2.5 uppercase",
+    3: "text-xs font-bold font-mono tracking-wide mb-3 mt-8 text-slate-800 dark:text-slate-200 flex items-center gap-2 uppercase",
   };
 
   return (
     <Tag id={id} className={`group scroll-mt-24 relative ${sizeMap[level]}`}>
       {level === 1 && (
-        <span className="text-emerald-400 font-bold">&gt;&gt;</span>
+        <span className="text-emerald-500 dark:text-emerald-400 font-bold">&gt;&gt;</span>
       )}
       {children}
       {level !== 1 && (
         <button
           onClick={handleCopyLink}
-          className="ml-2 inline-flex items-center text-slate-500 hover:text-emerald-400 opacity-0 group-hover:opacity-100 transition-opacity cursor-pointer"
+          className="ml-2 inline-flex items-center text-slate-400 dark:text-slate-500 hover:text-emerald-500 dark:hover:text-emerald-400 opacity-0 group-hover:opacity-100 transition-opacity cursor-pointer"
           title="Copy direct link to section"
         >
           {copied ? (
-            <Check className="w-3.5 h-3.5 text-emerald-400" />
+            <Check className="w-3.5 h-3.5 text-emerald-500 dark:text-emerald-400" />
           ) : (
             <Hash className="w-3.5 h-3.5" />
           )}
@@ -212,16 +212,16 @@ function Badge({
   color?: "blue" | "green" | "yellow" | "red" | "purple";
 }) {
   const badgeStyles = {
-    blue: "border-blue-900/80 text-blue-400 bg-blue-950/20",
-    green: "border-emerald-900/80 text-emerald-400 bg-emerald-950/20",
-    yellow: "border-amber-900/80 text-amber-400 bg-amber-950/20",
-    red: "border-rose-900/80 text-rose-400 bg-rose-950/20",
-    purple: "border-purple-900/80 text-purple-400 bg-purple-950/20",
+    blue: "border-blue-300 dark:border-blue-900/80 text-blue-700 dark:text-blue-400 bg-blue-50 dark:bg-blue-950/20",
+    green: "border-emerald-300 dark:border-emerald-900/80 text-emerald-700 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-950/20",
+    yellow: "border-amber-300 dark:border-amber-900/80 text-amber-700 dark:text-amber-400 bg-amber-50 dark:bg-amber-950/20",
+    red: "border-rose-300 dark:border-rose-900/80 text-rose-700 dark:text-rose-400 bg-rose-50 dark:bg-rose-950/20",
+    purple: "border-purple-300 dark:border-purple-900/80 text-purple-700 dark:text-purple-400 bg-purple-50 dark:bg-purple-950/20",
   }[color];
 
   return (
     <span
-      className={`inline-flex items-center px-2 py-0.5 rounded-none font-mono text-[9px] tracking-widest uppercase font-bold border ${badgeStyles}`}
+      className={`inline-flex items-center px-2 py-0.5 rounded font-mono text-[9px] tracking-widest uppercase font-bold border ${badgeStyles}`}
     >
       [{children}]
     </span>
@@ -231,7 +231,7 @@ function Badge({
 // ─── Inline Code Tag ─────────────────────────────────────────────────────────
 function InlineCode({ children }: { children: React.ReactNode }) {
   return (
-    <code className="font-mono text-[11px] px-1.5 py-0.5 rounded-none bg-neutral-900 dark:bg-black text-emerald-400 border border-neutral-800 font-bold">
+    <code className="font-mono text-[11px] px-1.5 py-0.5 rounded bg-slate-100 dark:bg-neutral-900 text-emerald-700 dark:text-emerald-400 border border-slate-200 dark:border-neutral-800 font-bold">
       {children}
     </code>
   );
@@ -1014,27 +1014,52 @@ export default function DocsPage() {
   }, []);
 
   return (
-    <div className="min-h-screen bg-black text-neutral-200 font-mono selection:bg-neutral-800 selection:text-white">
+    <div
+      className="min-h-screen font-mono selection:bg-slate-800 selection:text-white transition-colors"
+      style={{ background: "var(--lp-bg)", color: "var(--lp-text-primary)" }}
+    >
       {/* Top Scroll Reading Progress */}
       <DocsReadingProgress />
 
       {/* Grid Pattern Background Overlay */}
-      <div className="fixed inset-0 pointer-events-none opacity-[0.04] dark:opacity-[0.06] z-0 bg-[radial-gradient(#fff_1px,transparent_1px)] [background-size:16px_16px]" />
+      <div
+        className="fixed inset-0 pointer-events-none opacity-[0.04] dark:opacity-[0.06] z-0"
+        style={{
+          backgroundImage: "radial-gradient(circle, var(--lp-dot) 1px, transparent 1px)",
+          backgroundSize: "20px 20px",
+        }}
+      />
 
       <LandingNavbar />
 
       {/* Hero Header */}
-      <div className="relative z-10 border-b border-dashed border-neutral-850 bg-black">
+      <div
+        className="relative z-10 border-b transition-colors"
+        style={{ background: "var(--lp-surface)", borderBottom: "0.5px solid var(--lp-border)" }}
+      >
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 sm:py-14">
-          <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-none font-mono text-[9px] tracking-widest uppercase mb-4 bg-neutral-900 border border-neutral-800 text-neutral-400">
+          <div
+            className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full font-mono text-[9px] tracking-widest uppercase mb-4"
+            style={{
+              background: "var(--lp-surface)",
+              border: "0.5px solid var(--lp-border)",
+              color: "var(--lp-text-dim)",
+            }}
+          >
             <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
             [System Documentation]
           </div>
 
-          <h1 className="text-2xl sm:text-3xl font-extralight tracking-wider uppercase mb-3 text-white">
+          <h1
+            className="text-2xl sm:text-4xl font-bold tracking-wider uppercase mb-3"
+            style={{ color: "var(--lp-text-primary)" }}
+          >
             UpNode Developer Hub
           </h1>
-          <p className="text-xs leading-relaxed mb-6 max-w-2xl text-neutral-400">
+          <p
+            className="text-xs sm:text-sm leading-relaxed mb-6 max-w-2xl"
+            style={{ color: "var(--lp-text-mid)" }}
+          >
             Comprehensive guides, REST API reference, and SDKs to monitor your
             services with second-level precision.
           </p>
@@ -1043,20 +1068,29 @@ export default function DocsPage() {
           <div className="relative max-w-xl">
             <button
               onClick={() => setSearchModalOpen(true)}
-              className="w-full flex items-center justify-between px-4 py-2.5 rounded-none transition-all text-left cursor-pointer border border-neutral-800 bg-neutral-950/80 hover:border-neutral-700 font-mono text-xs group"
+              className="w-full flex items-center justify-between px-4 py-2.5 rounded-xl transition-all text-left cursor-pointer font-mono text-xs group shadow-xs"
+              style={{
+                background: "var(--lp-surface)",
+                border: "0.5px solid var(--lp-border)",
+                color: "var(--lp-text-primary)",
+              }}
             >
               <div className="flex items-center gap-3">
-                <Search className="w-3.5 h-3.5 flex-shrink-0 text-neutral-500 group-hover:text-emerald-400 transition-colors" />
-                <span className="font-mono text-xs text-neutral-500">
+                <Search className="w-3.5 h-3.5 flex-shrink-0 transition-colors" style={{ color: "var(--lp-text-dim)" }} />
+                <span className="font-mono text-xs" style={{ color: "var(--lp-text-dim)" }}>
                   Search documentation topics...
                 </span>
               </div>
               <div className="flex items-center gap-1.5">
-                <kbd className="font-mono text-[9px] tracking-widest px-2 py-0.5 rounded-none bg-neutral-900 border border-neutral-800 text-neutral-400">
+                <kbd
+                  className="font-mono text-[9px] tracking-widest px-2 py-0.5 rounded"
+                  style={{
+                    background: "var(--lp-bg)",
+                    border: "0.5px solid var(--lp-border)",
+                    color: "var(--lp-text-dim)",
+                  }}
+                >
                   [CMD+K]
-                </kbd>
-                <kbd className="hidden sm:inline-block font-mono text-[9px] tracking-widest px-2 py-0.5 rounded-none bg-neutral-900 border border-neutral-800 text-neutral-400">
-                  [/]
                 </kbd>
               </div>
             </button>
@@ -1064,14 +1098,19 @@ export default function DocsPage() {
 
           {/* Quick Jump Badges */}
           <div className="flex flex-wrap items-center gap-2 mt-5 font-mono">
-            <span className="text-[9px] tracking-widest uppercase mr-1 text-neutral-500">
+            <span className="text-[9px] tracking-widest uppercase mr-1" style={{ color: "var(--lp-text-dim)" }}>
               [Quick Jump]
             </span>
             {SECTIONS.map((s) => (
               <button
                 key={s.id}
                 onClick={() => scrollTo(s.id)}
-                className="flex items-center gap-1.5 px-3 py-1 rounded-none border border-neutral-850 hover:border-neutral-700 bg-neutral-950/50 text-[10px] uppercase font-bold text-neutral-300 transition-all cursor-pointer"
+                className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-[10px] uppercase font-bold transition-all cursor-pointer hover:opacity-90"
+                style={{
+                  background: "var(--lp-surface)",
+                  border: "0.5px solid var(--lp-border)",
+                  color: "var(--lp-text-mid)",
+                }}
               >
                 {s.icon}
                 {s.label}
@@ -1089,26 +1128,31 @@ export default function DocsPage() {
             <div className="sticky top-24 space-y-6">
               {SECTIONS.map((section) => {
                 const isCollapsed = collapsedSections[section.id];
+                const isSectionActive =
+                  activeSection === section.id ||
+                  section.subsections.some((s) => s.id === activeSection);
                 return (
-                  <div key={section.id} className="space-y-1.5">
+                  <div key={section.id} className="space-y-1.5 font-mono">
                     <button
                       onClick={() => {
                         toggleSection(section.id);
                         scrollTo(section.id);
                       }}
-                      className="w-full flex items-center justify-between font-mono text-[11px] tracking-wider uppercase font-bold text-left transition-colors py-1 cursor-pointer group"
+                      className="w-full flex items-center justify-between text-[11px] tracking-wider uppercase font-bold text-left transition-colors py-1 cursor-pointer group"
                       style={{
-                        color:
-                          activeSection === section.id ||
-                          section.subsections.some(
-                            (s) => s.id === activeSection,
-                          )
-                            ? "#10b981"
-                            : "#525252",
+                        color: isSectionActive
+                          ? "var(--lp-text-primary)"
+                          : "var(--lp-text-dim)",
                       }}
                     >
                       <div className="flex items-center gap-2">
-                        <span className="p-1 rounded-none bg-neutral-950 border border-neutral-850 text-emerald-400">
+                        <span
+                          className="p-1 rounded text-emerald-500 dark:text-emerald-400"
+                          style={{
+                            background: "var(--lp-surface)",
+                            border: "0.5px solid var(--lp-border)",
+                          }}
+                        >
                           {section.icon}
                         </span>
                         {section.label}
@@ -1124,18 +1168,22 @@ export default function DocsPage() {
                     </button>
 
                     {!isCollapsed && (
-                      <div className="space-y-0.5 pl-3 border-l border-dashed border-neutral-850">
+                      <div className="space-y-0.5 pl-3 border-l border-dashed" style={{ borderColor: "var(--lp-border)" }}>
                         {section.subsections.map((sub) => {
                           const isActive = activeSection === sub.id;
                           return (
                             <button
                               key={sub.id}
                               onClick={() => scrollTo(sub.id)}
-                              className={`w-full text-left px-3 py-1.5 font-mono text-[11px] transition-all cursor-pointer block rounded-none ${
+                              className={`w-full text-left px-3 py-1.5 font-mono text-[11px] transition-all cursor-pointer block rounded-lg ${
                                 isActive
-                                  ? "bg-neutral-950 text-emerald-400 font-bold border-l-2 border-emerald-400 -ml-[13px] pl-3"
-                                  : "text-neutral-500 hover:text-neutral-300 hover:bg-neutral-950/30"
+                                  ? "text-emerald-500 dark:text-emerald-400 font-bold border-l-2 border-emerald-500 dark:border-emerald-400 -ml-[13px] pl-3"
+                                  : "hover:opacity-100 opacity-70"
                               }`}
+                              style={{
+                                background: isActive ? "var(--lp-surface)" : "transparent",
+                                color: isActive ? "var(--lp-text-primary)" : "var(--lp-text-dim)",
+                              }}
                             >
                               {isActive ? `▶ ${sub.label}` : `  ${sub.label}`}
                             </button>
@@ -1148,16 +1196,16 @@ export default function DocsPage() {
               })}
 
               {/* Support Card */}
-              <div className="mt-8 p-4 rounded-none border border-neutral-800 bg-neutral-950/50">
-                <p className="font-mono text-xs font-semibold text-white mb-1">
+              <div className="mt-8 p-4 rounded-2xl font-mono" style={GLASS}>
+                <p className="text-xs font-semibold mb-1" style={{ color: "var(--lp-text-primary)" }}>
                   Need Help?
                 </p>
-                <p className="font-mono text-[10px] text-neutral-500 mb-3 leading-relaxed">
+                <p className="text-[10px] mb-3 leading-relaxed" style={{ color: "var(--lp-text-dim)" }}>
                   Our engineering team responds in &lt; 2 hours.
                 </p>
                 <a
                   href="mailto:support@upnode.io"
-                  className="inline-flex items-center gap-1.5 font-mono text-xs text-emerald-400 font-semibold hover:underline"
+                  className="inline-flex items-center gap-1.5 text-xs text-emerald-500 dark:text-emerald-400 font-semibold hover:underline"
                 >
                   [Contact Support] <ArrowRight className="w-3 h-3" />
                 </a>
@@ -1166,10 +1214,15 @@ export default function DocsPage() {
           </aside>
 
           {/* Mobile Navigation Trigger Floating Button */}
-          <div className="lg:hidden fixed bottom-6 right-6 z-50">
+          <div className="lg:hidden fixed bottom-6 right-6 z-50 font-mono">
             <button
               onClick={() => setMobileNavOpen((v) => !v)}
-              className="flex items-center gap-2 px-4 py-2.5 rounded-none font-mono text-xs font-semibold shadow-2xl cursor-pointer transition-all active:scale-95 bg-neutral-950 text-white border border-neutral-800"
+              className="flex items-center gap-2 px-4 py-2.5 rounded-xl text-xs font-semibold shadow-2xl cursor-pointer transition-all active:scale-95"
+              style={{
+                background: "var(--lp-cta-bg)",
+                color: "var(--lp-cta-text)",
+                border: "0.5px solid var(--lp-border-top)",
+              }}
             >
               <Menu className="w-4 h-4" />
               Sections
@@ -1185,38 +1238,40 @@ export default function DocsPage() {
                   animate={{ opacity: 1 }}
                   exit={{ opacity: 0 }}
                   onClick={() => setMobileNavOpen(false)}
-                  className="fixed inset-0 z-40 bg-black/60 backdrop-blur-sm lg:hidden"
+                  className="fixed inset-0 z-40 bg-slate-900/60 dark:bg-black/80 backdrop-blur-sm lg:hidden"
                 />
                 <motion.div
                   initial={{ y: "100%" }}
                   animate={{ y: 0 }}
                   exit={{ y: "100%" }}
                   transition={{ type: "spring", damping: 28, stiffness: 250 }}
-                  className="fixed bottom-0 left-0 right-0 z-50 rounded-t-none p-6 max-h-[75vh] overflow-y-auto lg:hidden bg-black border-t border-neutral-800 shadow-2xl"
+                  className="fixed bottom-0 left-0 right-0 z-50 p-6 max-h-[75vh] overflow-y-auto lg:hidden rounded-t-3xl shadow-2xl font-mono"
+                  style={{ background: "var(--lp-bg)", borderTop: "0.5px solid var(--lp-border)" }}
                 >
-                  <div className="flex items-center justify-between mb-5 pb-3 border-b border-neutral-850">
-                    <p className="font-mono text-xs font-bold uppercase tracking-widest text-neutral-450">
+                  <div className="flex items-center justify-between mb-5 pb-3 border-b" style={{ borderColor: "var(--lp-border)" }}>
+                    <p className="text-xs font-bold uppercase tracking-widest" style={{ color: "var(--lp-text-dim)" }}>
                       [Documentation Topics]
                     </p>
                     <button
                       onClick={() => setMobileNavOpen(false)}
-                      className="p-1 rounded-none text-neutral-500 hover:text-neutral-350 cursor-pointer"
+                      className="p-1 rounded text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 cursor-pointer"
                     >
                       <X className="w-4 h-4" />
                     </button>
                   </div>
                   {SECTIONS.map((section) => (
                     <div key={section.id} className="mb-5 space-y-2">
-                      <p className="flex items-center gap-2 font-mono text-xs tracking-widest uppercase font-bold text-white">
+                      <p className="flex items-center gap-2 text-xs tracking-widest uppercase font-bold" style={{ color: "var(--lp-text-primary)" }}>
                         {section.icon}
                         {section.label}
                       </p>
-                      <div className="space-y-1 pl-3 border-l border-neutral-850">
+                      <div className="space-y-1 pl-3 border-l border-dashed" style={{ borderColor: "var(--lp-border)" }}>
                         {section.subsections.map((sub) => (
                           <button
                             key={sub.id}
                             onClick={() => scrollTo(sub.id)}
-                            className="w-full text-left py-1.5 font-mono text-xs text-neutral-400 hover:text-emerald-450 cursor-pointer block"
+                            className="w-full text-left py-1.5 font-mono text-xs cursor-pointer block"
+                            style={{ color: "var(--lp-text-mid)" }}
                           >
                             {sub.label}
                           </button>
@@ -1230,14 +1285,14 @@ export default function DocsPage() {
           </AnimatePresence>
 
           {/* Main Documentation Article Content */}
-          <main className="flex-1 min-w-0 max-w-3xl">
+          <main className="flex-1 min-w-0 max-w-3xl font-mono">
             {/* Top Breadcrumb Trail */}
-            <div className="flex items-center gap-1.5 font-mono text-[10px] tracking-wider uppercase mb-6 text-neutral-500">
-              <Link href="/" className="hover:text-white">
+            <div className="flex items-center gap-1.5 font-mono text-[10px] tracking-wider uppercase mb-6" style={{ color: "var(--lp-text-dim)" }}>
+              <Link href="/" className="hover:opacity-100 transition-opacity">
                 UpNode
               </Link>
               <ChevronRight className="w-3 h-3" />
-              <span className="text-neutral-300 font-semibold">Docs</span>
+              <span className="font-semibold" style={{ color: "var(--lp-text-primary)" }}>Docs</span>
             </div>
 
             {/* Quick Overview Category Cards */}
@@ -1250,20 +1305,21 @@ export default function DocsPage() {
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: i * 0.05, duration: 0.25 }}
                   whileHover={{ y: -2 }}
-                  className="text-left p-4 rounded-none border border-neutral-800 bg-neutral-950/20 hover:bg-neutral-950/80 hover:border-neutral-700 transition-all cursor-pointer group relative overflow-hidden"
+                  className="text-left p-4 rounded-2xl transition-all cursor-pointer group relative overflow-hidden"
+                  style={GLASS}
                 >
                   <div className="flex items-center justify-between mb-2">
-                    <span className="text-[9px] font-mono text-neutral-500 uppercase tracking-widest">
+                    <span className="text-[9px] font-mono uppercase tracking-widest" style={{ color: "var(--lp-text-dim)" }}>
                       MODULE 0{i + 1}
                     </span>
                     <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
                   </div>
-                  <p className="font-mono text-xs font-bold text-white group-hover:text-emerald-400 transition-colors uppercase tracking-wider mb-2">
+                  <p className="font-mono text-xs font-bold transition-colors uppercase tracking-wider mb-2" style={{ color: "var(--lp-text-primary)" }}>
                     {s.label}
                   </p>
-                  <p className="font-mono text-[18px] font-light text-neutral-400">
+                  <p className="font-mono text-[18px] font-light" style={{ color: "var(--lp-text-mid)" }}>
                     {String(s.subsections.length).padStart(2, "0")}{" "}
-                    <span className="text-[10px] text-neutral-500 uppercase">
+                    <span className="text-[10px] uppercase" style={{ color: "var(--lp-text-dim)" }}>
                       topics
                     </span>
                   </p>
@@ -1271,7 +1327,7 @@ export default function DocsPage() {
               ))}
             </div>
 
-            <div className="w-full h-px mb-10 bg-neutral-850 border-t border-dashed border-neutral-850" />
+            <div className="w-full h-px mb-10 border-t border-dashed" style={{ borderColor: "var(--lp-border)" }} />
 
             {/* Documentation Sections */}
             <div className="space-y-16">
@@ -1279,19 +1335,19 @@ export default function DocsPage() {
                 <GettingStartedSection />
               </section>
 
-              <div className="w-full h-px bg-neutral-850 border-t border-dashed border-neutral-850" />
+              <div className="w-full h-px border-t border-dashed" style={{ borderColor: "var(--lp-border)" }} />
 
               <section>
                 <ApiIntegrationSection />
               </section>
 
-              <div className="w-full h-px bg-neutral-850 border-t border-dashed border-neutral-850" />
+              <div className="w-full h-px border-t border-dashed" style={{ borderColor: "var(--lp-border)" }} />
 
               <section>
                 <ConfiguringAlertsSection />
               </section>
 
-              <div className="w-full h-px bg-neutral-850 border-t border-dashed border-neutral-850" />
+              <div className="w-full h-px border-t border-dashed" style={{ borderColor: "var(--lp-border)" }} />
 
               <section>
                 <SdksIntegrationsSection />
@@ -1299,14 +1355,14 @@ export default function DocsPage() {
             </div>
 
             {/* Bottom Footer Call to Action */}
-            <div className="flex flex-col sm:flex-row items-center justify-between gap-4 mt-16 pt-8 border-t border-dashed border-neutral-850">
+            <div className="flex flex-col sm:flex-row items-center justify-between gap-4 mt-16 pt-8 border-t border-dashed" style={{ borderColor: "var(--lp-border)" }}>
               <div>
-                <p className="font-mono text-[9px] uppercase tracking-widest text-neutral-550 mb-1">
+                <p className="font-mono text-[9px] uppercase tracking-widest mb-1" style={{ color: "var(--lp-text-dim)" }}>
                   Need custom assistance?
                 </p>
                 <a
                   href="mailto:support@upnode.io"
-                  className="inline-flex items-center gap-1.5 font-mono text-xs text-emerald-400 font-semibold hover:underline"
+                  className="inline-flex items-center gap-1.5 font-mono text-xs text-emerald-500 dark:text-emerald-400 font-semibold hover:underline"
                 >
                   Contact technical support <ExternalLink className="w-3 h-3" />
                 </a>
@@ -1314,7 +1370,12 @@ export default function DocsPage() {
 
               <Link
                 href="/dashboard"
-                className="inline-flex items-center gap-2 px-4 py-2 rounded-none bg-white hover:bg-neutral-200 text-black font-mono text-xs font-bold shadow-md transition-all cursor-pointer active:scale-95"
+                className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl font-mono text-xs font-semibold shadow-md transition-all cursor-pointer active:scale-95 hover:opacity-90"
+                style={{
+                  background: "var(--lp-cta-bg)",
+                  color: "var(--lp-cta-text)",
+                  border: "0.5px solid var(--lp-border-top)",
+                }}
               >
                 Go to Dashboard <ArrowRight className="w-3.5 h-3.5" />
               </Link>
