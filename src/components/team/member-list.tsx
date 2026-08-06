@@ -88,12 +88,12 @@ export function MemberList({ members, isLoading, error }: MemberListProps) {
   const getRoleBadgeStyle = (role: MemberRole) => {
     switch (role) {
       case "ADMIN":
-        return "bg-slate-900 dark:bg-white text-white dark:text-slate-900 border-slate-900 dark:border-white font-bold";
+        return "border border-emerald-500/30 bg-emerald-500/10 text-emerald-700 dark:text-emerald-400 font-bold";
       case "ENGINEER":
-        return "bg-slate-100 dark:bg-neutral-900 text-slate-800 dark:text-neutral-200 border-slate-300 dark:border-neutral-700 font-semibold";
+        return "border border-blue-500/30 bg-blue-500/10 text-blue-700 dark:text-blue-400 font-semibold";
       case "VIEWER":
       default:
-        return "bg-slate-100/50 dark:bg-neutral-950 text-slate-500 dark:text-neutral-500 border-slate-200 dark:border-neutral-800";
+        return "border border-slate-300 dark:border-neutral-700 bg-slate-100 dark:bg-neutral-900 text-slate-500 dark:text-neutral-400";
     }
   };
 
@@ -127,7 +127,7 @@ export function MemberList({ members, isLoading, error }: MemberListProps) {
                     {member.user?.name || "UNNAMED"}
                   </h4>
                   <span
-                    className={`px-2 py-0.5 rounded text-[10px] uppercase tracking-wider border ${getRoleBadgeStyle(
+                    className={`px-2 py-0.5 rounded text-[10px] uppercase tracking-wider ${getRoleBadgeStyle(
                       member.role
                     )}`}
                   >

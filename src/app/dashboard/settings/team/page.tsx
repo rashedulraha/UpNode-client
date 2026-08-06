@@ -11,19 +11,26 @@ export default function TeamSettingsPage() {
   const { data: members = [], isLoading, error, refetch } = useMembers();
 
   const [searchQuery, setSearchQuery] = useState("");
+  const [roleFilter, setRoleFilter] = useState<string>("ALL");
   const [isInviteModalOpen, setIsInviteModalOpen] = useState(false);
 
-  // Client-side search filtering
+  // Client-side search & role filtering
   const filteredMembers = useMemo(() => {
-    if (!searchQuery.trim()) return members;
-    const query = searchQuery.toLowerCase().trim();
-    return members.filter(
-      (m) =>
+    return members.filter((m) => {
+      // Role filter
+      if (roleFilter !== "ALL" && m.role !== roleFilter) {
+        return false;
+      }
+      // Search query filter
+      if (!searchQuery.trim()) return true;
+      const query = searchQuery.toLowerCase().trim();
+      return (
         m.user?.email.toLowerCase().includes(query) ||
         (m.user?.name && m.user.name.toLowerCase().includes(query)) ||
         m.role.toLowerCase().includes(query)
-    );
-  }, [members, searchQuery]);
+      );
+    });
+  }, [members, searchQuery, roleFilter]);
 
   // Team Statistics
   const adminCount = members.filter((m) => m.role === "ADMIN").length;
@@ -59,7 +66,7 @@ export default function TeamSettingsPage() {
       </header>
 
       {/* Main Content Area */}
-      <main className="flex-1 max-w-6xl w-full mx-auto p-6 sm:p-8 space-y-7 relative z-10">
+      <main className="flex-1 max-w-6xl w-full mx-auto p-6 sm:p-8 space-y-7 relative z-10 font-mono">
         {/* Minimal Title Header */}
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-slate-200 dark:border-neutral-800 pb-6">
           <div className="space-y-1">
@@ -72,7 +79,7 @@ export default function TeamSettingsPage() {
               Team Management
             </h1>
             <p className="text-xs text-slate-500 dark:text-neutral-400 max-w-xl leading-relaxed font-mono">
-              Manage organization members, assign IAM roles (ADMIN, ENGINEER, VIEWER), and send email invitations.
+              Manage organization members, assign IAM roles (ADMIN, ENGINEER, VIEWER), and send invitations.
             </p>
           </div>
 
@@ -86,24 +93,60 @@ export default function TeamSettingsPage() {
 
         {/* Minimal Role Stats Grid */}
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 font-mono">
-          <div className="p-4 rounded-2xl bg-white/70 dark:bg-black/60 border border-slate-200 dark:border-neutral-800 backdrop-blur-3xl space-y-1 shadow-sm">
-            <p className="text-[10px] text-slate-500 dark:text-neutral-500 font-bold uppercase tracking-widest">
-              [ADMINISTRATORS]
-            </p>
+          <div 
+            onClick={() => setRoleFilter(roleFilter === "ADMIN" ? "ALL" : "ADMIN")}
+            className={`p-4 rounded-2xl bg-white/70 dark:bg-black/60 border backdrop-blur-3xl space-y-1 shadow-sm transition-all cursor-pointer ${
+              roleFilter === "ADMIN"
+                ? "border-emerald-500/50 bg-emerald-500/5"
+                : "border-slate-200 dark:border-neutral-800 hover:border-slate-400 dark:hover:border-neutral-700"
+            }`}
+          >
+            <div className="flex items-center justify-between">
+              <p className="text-[10px] text-slate-500 dark:text-neutral-500 font-bold uppercase tracking-widest">
+                [ADMINISTRATORS]
+              </p>
+              <span className="text-[9px] px-1.5 py-0.5 border border-emerald-500/30 bg-emerald-500/10 text-emerald-700 dark:text-emerald-400 font-bold">
+                FULL ACCESS
+              </span>
+            </div>
             <h3 className="text-3xl font-light text-slate-900 dark:text-white">{adminCount.toString().padStart(2, "0")}</h3>
           </div>
 
-          <div className="p-4 rounded-2xl bg-white/70 dark:bg-black/60 border border-slate-200 dark:border-neutral-800 backdrop-blur-3xl space-y-1 shadow-sm">
-            <p className="text-[10px] text-slate-500 dark:text-neutral-500 font-bold uppercase tracking-widest">
-              [ENGINEERS]
-            </p>
+          <div 
+            onClick={() => setRoleFilter(roleFilter === "ENGINEER" ? "ALL" : "ENGINEER")}
+            className={`p-4 rounded-2xl bg-white/70 dark:bg-black/60 border backdrop-blur-3xl space-y-1 shadow-sm transition-all cursor-pointer ${
+              roleFilter === "ENGINEER"
+                ? "border-blue-500/50 bg-blue-500/5"
+                : "border-slate-200 dark:border-neutral-800 hover:border-slate-400 dark:hover:border-neutral-700"
+            }`}
+          >
+            <div className="flex items-center justify-between">
+              <p className="text-[10px] text-slate-500 dark:text-neutral-500 font-bold uppercase tracking-widest">
+                [ENGINEERS]
+              </p>
+              <span className="text-[9px] px-1.5 py-0.5 border border-blue-500/30 bg-blue-500/10 text-blue-700 dark:text-blue-400 font-bold">
+                OPS CONTROL
+              </span>
+            </div>
             <h3 className="text-3xl font-light text-slate-900 dark:text-white">{engineerCount.toString().padStart(2, "0")}</h3>
           </div>
 
-          <div className="p-4 rounded-2xl bg-white/70 dark:bg-black/60 border border-slate-200 dark:border-neutral-800 backdrop-blur-3xl space-y-1 shadow-sm">
-            <p className="text-[10px] text-slate-500 dark:text-neutral-500 font-bold uppercase tracking-widest">
-              [VIEWERS]
-            </p>
+          <div 
+            onClick={() => setRoleFilter(roleFilter === "VIEWER" ? "ALL" : "VIEWER")}
+            className={`p-4 rounded-2xl bg-white/70 dark:bg-black/60 border backdrop-blur-3xl space-y-1 shadow-sm transition-all cursor-pointer ${
+              roleFilter === "VIEWER"
+                ? "border-slate-400 dark:border-neutral-600 bg-slate-100 dark:bg-neutral-900"
+                : "border-slate-200 dark:border-neutral-800 hover:border-slate-400 dark:hover:border-neutral-700"
+            }`}
+          >
+            <div className="flex items-center justify-between">
+              <p className="text-[10px] text-slate-500 dark:text-neutral-500 font-bold uppercase tracking-widest">
+                [VIEWERS]
+              </p>
+              <span className="text-[9px] px-1.5 py-0.5 border border-slate-300 dark:border-neutral-700 bg-slate-100 dark:bg-neutral-900 text-slate-500 dark:text-neutral-400 font-bold">
+                READ ONLY
+              </span>
+            </div>
             <h3 className="text-3xl font-light text-slate-900 dark:text-white">{viewerCount.toString().padStart(2, "0")}</h3>
           </div>
         </div>
@@ -111,13 +154,32 @@ export default function TeamSettingsPage() {
         {/* Search & Member Table */}
         <div className="space-y-4 font-mono">
           <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
-            <input
-              type="text"
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              placeholder="[SEARCH NAME / EMAIL / ROLE]"
-              className="w-full sm:w-80 px-3.5 py-2 bg-white dark:bg-black border border-slate-200 dark:border-neutral-800 rounded-xl text-xs text-slate-900 dark:text-white placeholder:text-slate-400 dark:placeholder:text-neutral-600 focus:border-slate-500 dark:focus:border-neutral-500 focus:outline-none transition-all font-mono"
-            />
+            <div className="flex items-center gap-2 w-full sm:w-auto">
+              <input
+                type="text"
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                placeholder="[SEARCH NAME / EMAIL / ROLE]"
+                className="w-full sm:w-80 px-3.5 py-2 bg-white dark:bg-black border border-slate-200 dark:border-neutral-800 rounded-xl text-xs text-slate-900 dark:text-white placeholder:text-slate-400 dark:placeholder:text-neutral-600 focus:border-slate-500 dark:focus:border-neutral-500 focus:outline-none transition-all font-mono"
+              />
+
+              {/* Role Filter Pills */}
+              <div className="flex items-center gap-1">
+                {["ALL", "ADMIN", "ENGINEER", "VIEWER"].map((role) => (
+                  <button
+                    key={role}
+                    onClick={() => setRoleFilter(role)}
+                    className={`px-2 py-1 text-[10px] font-mono border transition-all cursor-pointer uppercase ${
+                      roleFilter === role
+                        ? "border-slate-900 dark:border-white bg-slate-900 dark:bg-white text-white dark:text-slate-900 font-bold"
+                        : "border-slate-200 dark:border-neutral-800 bg-white dark:bg-black text-slate-500 dark:text-neutral-400 hover:text-slate-900 dark:hover:text-white"
+                    }`}
+                  >
+                    [{role}]
+                  </button>
+                ))}
+              </div>
+            </div>
 
             <div className="text-[11px] text-slate-500 dark:text-neutral-500 font-mono self-end sm:self-center">
               SHOWING <span className="font-bold text-slate-900 dark:text-white">{filteredMembers.length}</span> OF{" "}
