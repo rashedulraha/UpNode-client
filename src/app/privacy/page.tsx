@@ -1,8 +1,4 @@
-"use client";
-
-import React from "react";
-import Link from "next/link";
-import { ThemeToggle } from "@/components/ui/theme-toggle";
+import { LandingNavbar } from "@/components/landing/landing-navbar";
 import { LandingFooter } from "@/components/landing/landing-footer";
 import { ShieldCheck, Lock, Eye, Server, FileText, ArrowLeft, Terminal } from "lucide-react";
 
@@ -12,27 +8,8 @@ export default function PrivacyPolicyPage() {
       {/* Background Noise Grid */}
       <div className="fixed inset-0 pointer-events-none opacity-[0.035] z-0 bg-[radial-gradient(#000_1px,transparent_1px)] dark:bg-[radial-gradient(#fff_1px,transparent_1px)] [background-size:16px_16px]" />
 
-      {/* Minimal Header */}
-      <header className="border-b border-slate-200 dark:border-neutral-800 bg-white/70 dark:bg-black/70 backdrop-blur-3xl px-6 py-3.5 flex items-center justify-between sticky top-0 z-20 font-mono">
-        <div className="flex items-center gap-3">
-          <Link href="/" className="text-sm font-bold text-slate-900 dark:text-white uppercase tracking-widest flex items-center gap-2">
-            <Terminal className="w-4 h-4 text-emerald-500" />
-            <span>UPNODE</span>
-          </Link>
-          <span className="text-slate-300 dark:text-neutral-700">/</span>
-          <span className="text-xs text-slate-500 dark:text-neutral-400 font-bold">[LEGAL_PRIVACY]</span>
-        </div>
-
-        <div className="flex items-center gap-4 text-xs font-mono">
-          <Link href="/docs" className="text-slate-600 dark:text-neutral-400 hover:text-slate-900 dark:hover:text-white transition-colors">
-            [DOCS]
-          </Link>
-          <Link href="/dashboard" className="text-slate-600 dark:text-neutral-400 hover:text-slate-900 dark:hover:text-white transition-colors">
-            [DASHBOARD]
-          </Link>
-          <ThemeToggle />
-        </div>
-      </header>
+      {/* Fully Responsive Theme Navbar */}
+      <LandingNavbar />
 
       {/* Main Content */}
       <main className="flex-1 max-w-4xl w-full mx-auto p-6 sm:p-10 space-y-8 relative z-10 font-mono">
