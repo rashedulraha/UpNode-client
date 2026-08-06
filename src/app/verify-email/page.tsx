@@ -5,7 +5,7 @@ import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import { authClient } from "@/lib/auth-client";
 import { useAuth } from "@/hooks/use-auth";
-import { Loader2, Mail, CheckCircle2, AlertCircle, RefreshCw, ArrowLeft } from "lucide-react";
+import { Loader2, Mail, CheckCircle2, AlertCircle, RefreshCw, ArrowLeft, FastForward } from "lucide-react";
 import { ThemeToggle } from "@/components/ui/theme-toggle";
 
 export default function VerifyEmailPage() {
@@ -31,6 +31,7 @@ function VerifyEmailContent() {
   const [status, setStatus] = useState<"idle" | "verifying" | "success" | "error">("idle");
   const [message, setMessage] = useState<string | null>(null);
   const [isResending, setIsResending] = useState(false);
+  const [isSkipping, setIsSkipping] = useState(false);
   const [resendSuccess, setResendSuccess] = useState(false);
 
   useEffect(() => {
@@ -90,6 +91,37 @@ function VerifyEmailContent() {
     }
   };
 
+  const handleSkipVerification = async () => {
+    setIsSkipping(true);
+    setMessage(null);
+
+    try {
+      const serverUrl = process.env.NEXT_PUBLIC_SERVER_URL || "http://localhost:8000";
+      const response = await fetch(`${serverUrl}/api/auth/skip-verification`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        credentials: "include",
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json().catch(() => ({}));
+        throw new Error(errorData.error || "Failed to skip verification.");
+      }
+
+      setStatus("success");
+      setMessage("Email verification skipped! Redirecting to dashboard...");
+      await refetchSession();
+      setTimeout(() => {
+        router.push("/dashboard");
+      }, 1000);
+    } catch (err: any) {
+      setStatus("error");
+      setMessage(err?.message || "Failed to skip email verification.");
+    } finally {
+      setIsSkipping(false);
+    }
+  };
+
   return (
     <div className="min-h-screen bg-slate-50 dark:bg-black text-slate-900 dark:text-neutral-100 font-sans flex flex-col justify-between p-6 sm:p-12 relative overflow-hidden">
       {/* Background Noise Grid Overlay */}
@@ -129,7 +161,7 @@ function VerifyEmailContent() {
           </h1>
           <p className="text-slate-500 dark:text-neutral-400 text-[11px] leading-relaxed">
             {status === "success"
-              ? "Your email has been verified. Redirecting you to dashboard..."
+              ? "Your email verification status has been updated. Redirecting you to dashboard..."
               : `A verification link has been sent to ${user?.email || "your registered email"}. Please verify to access your dashboard.`}
           </p>
         </div>
@@ -166,22 +198,42 @@ function VerifyEmailContent() {
           </div>
         )}
 
-        {status !== "success" && user?.email && (
+        {status !== "success" && (
           <div className="space-y-3 pt-2">
+            {user?.email && (
+              <button
+                onClick={handleResendVerification}
+                disabled={isResending || isSkipping}
+                className="w-full py-2.5 px-4 bg-slate-900 dark:bg-white text-white dark:text-black font-bold uppercase tracking-wider text-xs border border-slate-900 dark:border-white hover:opacity-90 transition-all flex items-center justify-center gap-2 cursor-pointer disabled:opacity-50"
+              >
+                {isResending ? (
+                  <>
+                    <Loader2 className="w-3.5 h-3.5 animate-spin" />
+                    RESENDING EMAIL...
+                  </>
+                ) : (
+                  <>
+                    <RefreshCw className="w-3.5 h-3.5" />
+                    Resend Verification Email
+                  </>
+                )}
+              </button>
+            )}
+
             <button
-              onClick={handleResendVerification}
-              disabled={isResending}
-              className="w-full py-2.5 px-4 bg-slate-900 dark:bg-white text-white dark:text-black font-bold uppercase tracking-wider text-xs border border-slate-900 dark:border-white hover:opacity-90 transition-all flex items-center justify-center gap-2 cursor-pointer disabled:opacity-50"
+              onClick={handleSkipVerification}
+              disabled={isSkipping || isResending}
+              className="w-full py-2.5 px-4 bg-amber-500/10 hover:bg-amber-500/20 text-amber-600 dark:text-amber-400 font-bold uppercase tracking-wider text-xs border border-amber-500/30 hover:border-amber-500/50 transition-all flex items-center justify-center gap-2 cursor-pointer disabled:opacity-50"
             >
-              {isResending ? (
+              {isSkipping ? (
                 <>
                   <Loader2 className="w-3.5 h-3.5 animate-spin" />
-                  RESENDING EMAIL...
+                  SKIPPING VERIFICATION...
                 </>
               ) : (
                 <>
-                  <RefreshCw className="w-3.5 h-3.5" />
-                  Resend Verification Email
+                  <FastForward className="w-3.5 h-3.5" />
+                  [SKIP FOR NOW] Continue to Dashboard
                 </>
               )}
             </button>
@@ -191,7 +243,7 @@ function VerifyEmailContent() {
 
       {/* Footer */}
       <div className="text-[10px] font-mono text-slate-400 dark:text-neutral-500 text-center tracking-widest uppercase relative z-10">
-        UPNODE ACCOUNT GATEWAY // MANDATORY EMAIL VERIFICATION
+        UPNODE ACCOUNT GATEWAY // EMAIL VERIFICATION
       </div>
     </div>
   );

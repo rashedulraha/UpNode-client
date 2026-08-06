@@ -6,11 +6,11 @@ import { useIncidents, useIncident } from "@/hooks/use-incidents";
 import { useAuth } from "@/hooks/use-auth";
 import { IncidentStatus, IncidentSeverity } from "@/types";
 import DashboardHeader from "./dashboard-header";
+import { RolePreviewBanner } from "@/components/auth/role-switcher";
 import ProjectsSidebar from "../projects/projects-sidebar";
 import IncidentList from "../incidents/incident-list";
 import IncidentDetails from "../incidents/incident-details";
 import CreateIncidentModal from "../incidents/create-incident-modal";
-import SuperAdminDashboard from "../admin/super-admin-dashboard";
 import CreateProjectModal from "../projects/create-project-modal";
 import ProjectSettingsModal from "../projects/project-settings-modal";
 import { Project } from "@/services/projects.service";
@@ -19,10 +19,6 @@ import { organizationService } from "@/services/organization.service";
 
 export function DashboardView() {
   const { user } = useAuth();
-  const isSuperAdmin = user?.role === "SUPER_ADMIN";
-  const [viewMode, setViewMode] = useState<"super_admin" | "org">(
-    isSuperAdmin ? "super_admin" : "org",
-  );
 
   // Onboarding state — show wizard if user has no org and hasn't completed onboarding
   const [showOnboarding, setShowOnboarding] = useState(false);
@@ -30,11 +26,6 @@ export function DashboardView() {
 
   useEffect(() => {
     if (!user) return;
-    // Super admins skip onboarding
-    if (isSuperAdmin) {
-      setOnboardingChecked(true);
-      return;
-    }
     const alreadyDone = typeof window !== "undefined" && localStorage.getItem(ONBOARDING_KEY) === "true";
     if (alreadyDone) {
       setOnboardingChecked(true);
@@ -55,7 +46,7 @@ export function DashboardView() {
     }).catch(() => {
       setOnboardingChecked(true);
     });
-  }, [user, isSuperAdmin]);
+  }, [user]);
 
   const streamStatus = useIncidentStream();
 
@@ -105,6 +96,9 @@ export function DashboardView() {
 
   return (
     <div className="min-h-screen lg:h-screen lg:max-h-screen w-full max-w-full overflow-x-hidden overflow-y-auto lg:overflow-y-hidden flex flex-col bg-slate-50 dark:bg-black text-slate-900 dark:text-neutral-100 font-sans relative selection:bg-slate-800">
+      {/* Role Preview Banner for Admins */}
+      <RolePreviewBanner />
+
       {/* Background Noise Layer */}
       <div className="fixed inset-0 pointer-events-none opacity-[0.035] z-0 bg-[radial-gradient(#000_1px,transparent_1px)] dark:bg-[radial-gradient(#fff_1px,transparent_1px)] [background-size:16px_16px]" />
 
@@ -114,19 +108,10 @@ export function DashboardView() {
         searchQuery={searchQuery}
         onSearchChange={setSearchQuery}
         onOpenCreateModal={() => setIsCreateModalOpen(true)}
-        isSuperAdmin={isSuperAdmin}
-        viewMode={viewMode}
-        onViewModeChange={setViewMode}
       />
 
-      {/* Body Content */}
-      {isSuperAdmin && viewMode === "super_admin" ? (
-        <div className="flex-1 overflow-hidden w-full h-full min-h-0 relative z-10">
-          <SuperAdminDashboard />
-        </div>
-      ) : (
-        /* Standard Organization View: Responsive Stack on mobile, Split on desktop */
-        <div className="flex flex-col lg:flex-row flex-1 h-full lg:h-[calc(100vh-4rem)] overflow-y-auto lg:overflow-hidden w-full max-w-full relative z-10">
+      {/* Body Content: Responsive Stack on mobile, Split on desktop */}
+      <div className="flex flex-col lg:flex-row flex-1 h-full lg:h-[calc(100vh-4rem)] overflow-y-auto lg:overflow-hidden w-full max-w-full relative z-10">
           {/* Projects Sidebar */}
           <ProjectsSidebar
             selectedProjectId={selectedProjectId}
@@ -169,7 +154,6 @@ export function DashboardView() {
             </div>
           </main>
         </div>
-      )}
 
       {/* Modal for reporting a new incident */}
       <CreateIncidentModal

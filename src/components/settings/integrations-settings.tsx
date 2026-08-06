@@ -3,7 +3,6 @@
 import React, { useState, useEffect } from "react";
 import {
   integrationsService,
-  OrganizationIntegrations,
   ProjectIntegrationSetting,
 } from "@/services/integrations.service";
 import {
@@ -17,7 +16,6 @@ import {
   Sparkles,
 } from "lucide-react";
 import { MaintenanceSettings } from "@/components/settings/maintenance-settings";
-
 
 export function IntegrationsSettings() {
   const [loading, setLoading] = useState(true);
@@ -43,7 +41,9 @@ export function IntegrationsSettings() {
       setOrgAlertEmail(data.alertEmail || "");
       setProjects(data.projects || []);
     } catch (err: any) {
-      setError(err.response?.data?.error || "Failed to load integration settings.");
+      setError(
+        err.response?.data?.error || "Failed to load integration settings.",
+      );
     } finally {
       setLoading(false);
     }
@@ -52,10 +52,10 @@ export function IntegrationsSettings() {
   const handleProjectSettingChange = (
     projectId: string,
     field: "slackWebhookUrl" | "alertEmail",
-    value: string
+    value: string,
   ) => {
     setProjects((prev) =>
-      prev.map((p) => (p.id === projectId ? { ...p, [field]: value } : p))
+      prev.map((p) => (p.id === projectId ? { ...p, [field]: value } : p)),
     );
   };
 
@@ -82,7 +82,9 @@ export function IntegrationsSettings() {
       setSuccessMessage("Integration alert settings updated successfully!");
       setTimeout(() => setSuccessMessage(null), 4000);
     } catch (err: any) {
-      setError(err.response?.data?.error || "Failed to update integration settings.");
+      setError(
+        err.response?.data?.error || "Failed to update integration settings.",
+      );
     } finally {
       setSaving(false);
     }
@@ -126,7 +128,8 @@ export function IntegrationsSettings() {
                 Organization Alert Integrations
               </h2>
               <p className="text-xs text-muted-foreground mt-0.5">
-                Default Slack Webhook URL and email recipients for all incident notifications across your organization.
+                Default Slack Webhook URL and email recipients for all incident
+                notifications across your organization.
               </p>
             </div>
           </div>
@@ -156,7 +159,8 @@ export function IntegrationsSettings() {
               className="w-full px-3.5 py-2.5 bg-card/50 border border-border/40 rounded-xl text-xs font-mono text-foreground placeholder:text-muted-foreground/40 focus:outline-none focus:ring-1 focus:ring-primary transition-all"
             />
             <p className="text-[11px] text-muted-foreground/80 leading-relaxed">
-              Slack Webhook posts rich, block-formatted alerts to your team&apos;s Slack channel when an incident triggers.
+              Slack Webhook posts rich, block-formatted alerts to your
+              team&apos;s Slack channel when an incident triggers.
             </p>
           </div>
 
@@ -179,7 +183,8 @@ export function IntegrationsSettings() {
               className="w-full px-3.5 py-2.5 bg-card/50 border border-border/40 rounded-xl text-xs font-mono text-foreground placeholder:text-muted-foreground/40 focus:outline-none focus:ring-1 focus:ring-primary transition-all"
             />
             <p className="text-[11px] text-muted-foreground/80 leading-relaxed">
-              Comma-separated email addresses to receive instant incident email notifications via Resend API.
+              Comma-separated email addresses to receive instant incident email
+              notifications via Resend API.
             </p>
           </div>
         </div>
@@ -197,7 +202,8 @@ export function IntegrationsSettings() {
                 Project Specific Overrides
               </h2>
               <p className="text-xs text-muted-foreground mt-0.5">
-                Optionally configure dedicated Slack webhooks or email channels for specific microservices or projects.
+                Optionally configure dedicated Slack webhooks or email channels
+                for specific microservices or projects.
               </p>
             </div>
           </div>
@@ -239,7 +245,11 @@ export function IntegrationsSettings() {
                       type="url"
                       value={proj.slackWebhookUrl || ""}
                       onChange={(e) =>
-                        handleProjectSettingChange(proj.id, "slackWebhookUrl", e.target.value)
+                        handleProjectSettingChange(
+                          proj.id,
+                          "slackWebhookUrl",
+                          e.target.value,
+                        )
                       }
                       placeholder="Inherits organization Slack Webhook URL"
                       className="w-full px-3 py-2 bg-background/60 border border-border/30 rounded-xl text-xs font-mono text-foreground placeholder:text-muted-foreground/40 focus:outline-none focus:ring-1 focus:ring-primary"
@@ -254,7 +264,11 @@ export function IntegrationsSettings() {
                       type="text"
                       value={proj.alertEmail || ""}
                       onChange={(e) =>
-                        handleProjectSettingChange(proj.id, "alertEmail", e.target.value)
+                        handleProjectSettingChange(
+                          proj.id,
+                          "alertEmail",
+                          e.target.value,
+                        )
                       }
                       placeholder="Inherits organization alert emails"
                       className="w-full px-3 py-2 bg-background/60 border border-border/30 rounded-xl text-xs font-mono text-foreground placeholder:text-muted-foreground/40 focus:outline-none focus:ring-1 focus:ring-primary"
@@ -263,7 +277,13 @@ export function IntegrationsSettings() {
                 </div>
 
                 {/* Maintenance Window — per project */}
-                <div className="pt-3 mt-1" style={{ borderTop: "0.5px solid var(--border, rgba(255,255,255,0.08))" }}>
+                <div
+                  className="pt-3 mt-1"
+                  style={{
+                    borderTop:
+                      "0.5px solid var(--border, rgba(255,255,255,0.08))",
+                  }}
+                >
                   <MaintenanceSettings
                     projectId={proj.id}
                     projectName={proj.name}
@@ -283,7 +303,9 @@ export function IntegrationsSettings() {
           className="px-6 py-2.5 bg-primary hover:bg-primary/90 text-primary-foreground font-semibold rounded-xl text-xs transition-all cursor-pointer flex items-center gap-2 active:scale-95 shadow-sm disabled:opacity-50"
         >
           <Save className="w-4 h-4" />
-          <span>{saving ? "Saving Changes..." : "Save Integration Settings"}</span>
+          <span>
+            {saving ? "Saving Changes..." : "Save Integration Settings"}
+          </span>
         </button>
       </div>
     </form>
