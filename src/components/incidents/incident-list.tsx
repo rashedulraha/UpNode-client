@@ -72,7 +72,7 @@ export function IncidentList({
           </span>
           <button
             onClick={onRefresh}
-            className="px-2.5 py-1 rounded-none border border-slate-200 dark:border-neutral-800 bg-slate-50 dark:bg-black text-slate-700 dark:text-neutral-400 hover:text-slate-900 dark:hover:text-white hover:border-slate-300 dark:hover:border-neutral-600 transition-colors cursor-pointer text-[10px] uppercase tracking-wider font-bold"
+            className="px-2.5 py-1 rounded-none border border-[var(--border)] bg-[var(--secondary)] text-[var(--foreground)] hover:opacity-80 transition-colors cursor-pointer text-[10px] uppercase tracking-wider font-bold"
             title="Refresh stream"
           >
             {isLoading ? "[SYNCING...]" : "[REFRESH]"}
@@ -81,15 +81,17 @@ export function IncidentList({
 
         {/* Status Filter Chips */}
         <div className="flex items-center gap-1.5 overflow-x-auto pb-1.5 font-mono [&::-webkit-scrollbar]:h-1 [&::-webkit-scrollbar-thumb]:bg-slate-300 dark:[&::-webkit-scrollbar-thumb]:bg-neutral-800 [&::-webkit-scrollbar-track]:bg-transparent">
-          <span className="text-[10px] text-slate-400 dark:text-neutral-500 pr-1 shrink-0 uppercase font-bold">STATUS:</span>
+          <span className="text-[10px] text-[var(--muted-foreground)] pr-1 shrink-0 uppercase font-bold">
+            STATUS:
+          </span>
           {statusOptions.map((st) => (
             <button
               key={st}
               onClick={() => onStatusFilterChange(st)}
               className={`px-2 py-0.5 rounded-none text-[10px] transition-colors shrink-0 cursor-pointer border uppercase tracking-wider ${
                 statusFilter === st
-                  ? "bg-slate-900 dark:bg-neutral-900 text-white border-slate-900 dark:border-neutral-400 font-bold"
-                  : "bg-slate-50 dark:bg-black text-slate-700 dark:text-neutral-400 border-slate-200 dark:border-neutral-800 hover:text-slate-900 dark:hover:text-white hover:border-slate-300 dark:hover:border-neutral-700"
+                  ? "bg-[var(--primary)] text-[var(--primary-foreground)] border-[var(--primary)] font-bold"
+                  : "bg-[var(--card)] text-[var(--muted-foreground)] border-[var(--border)] hover:text-[var(--foreground)]"
               }`}
             >
               {st}
@@ -99,15 +101,17 @@ export function IncidentList({
 
         {/* Severity Filter Chips */}
         <div className="flex items-center gap-1.5 overflow-x-auto pb-1.5 font-mono [&::-webkit-scrollbar]:h-1 [&::-webkit-scrollbar-thumb]:bg-slate-300 dark:[&::-webkit-scrollbar-thumb]:bg-neutral-800 [&::-webkit-scrollbar-track]:bg-transparent">
-          <span className="text-[10px] text-slate-400 dark:text-neutral-500 pr-1 shrink-0 uppercase font-bold">SEVERITY:</span>
+          <span className="text-[10px] text-[var(--muted-foreground)] pr-1 shrink-0 uppercase font-bold">
+            SEVERITY:
+          </span>
           {severityOptions.map((sev) => (
             <button
               key={sev}
               onClick={() => onSeverityFilterChange(sev)}
               className={`px-2 py-0.5 rounded-none text-[10px] transition-colors shrink-0 cursor-pointer border uppercase tracking-wider ${
                 severityFilter === sev
-                  ? "bg-slate-900 dark:bg-neutral-900 text-white border-slate-900 dark:border-neutral-400 font-bold"
-                  : "bg-slate-50 dark:bg-black text-slate-700 dark:text-neutral-400 border-slate-200 dark:border-neutral-800 hover:text-slate-900 dark:hover:text-white hover:border-slate-300 dark:hover:border-neutral-700"
+                  ? "bg-[var(--primary)] text-[var(--primary-foreground)] border-[var(--primary)] font-bold"
+                  : "bg-[var(--card)] text-[var(--muted-foreground)] border-[var(--border)] hover:text-[var(--foreground)]"
               }`}
             >
               {sev}
@@ -146,8 +150,12 @@ export function IncidentList({
           </div>
         ) : error ? (
           <div className="p-6 rounded-none bg-rose-50/50 dark:bg-black border border-rose-200 dark:border-rose-900/60 text-rose-800 dark:text-rose-300 space-y-2 text-center font-mono my-4">
-            <p className="font-bold text-xs">[FAILED_TO_LOAD_TELEMETRY_STREAM]</p>
-            <p className="text-[11px] text-rose-600 dark:text-rose-400">{error.message}</p>
+            <p className="font-bold text-xs">
+              [FAILED_TO_LOAD_TELEMETRY_STREAM]
+            </p>
+            <p className="text-[11px] text-rose-600 dark:text-rose-400">
+              {error.message}
+            </p>
             <button
               onClick={onRefresh}
               className="mt-2 px-3 py-1 bg-rose-600 dark:bg-rose-950 text-white dark:text-rose-200 text-[10px] font-bold uppercase border border-rose-500 hover:opacity-90 transition-opacity cursor-pointer inline-flex items-center gap-1"
@@ -176,7 +184,9 @@ export function IncidentList({
           </motion.div>
         ) : (
           <div className="p-10 text-center rounded-none bg-slate-50/40 dark:bg-neutral-950/40 border border-slate-200 dark:border-neutral-800 space-y-3 font-mono text-slate-500 dark:text-neutral-500 my-4">
-            <p className="text-slate-800 dark:text-neutral-300 font-bold text-xs">[NO_INCIDENTS_FOUND]</p>
+            <p className="text-slate-800 dark:text-neutral-300 font-bold text-xs">
+              [NO_INCIDENTS_FOUND]
+            </p>
             <p className="text-[11px]">
               Adjust telemetry filters or report a new incident.
             </p>

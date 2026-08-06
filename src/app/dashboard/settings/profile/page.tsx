@@ -977,12 +977,12 @@ export default function ProfilePage() {
   ];
 
   return (
-    <div className="min-h-screen bg-slate-50 dark:bg-black text-slate-900 dark:text-neutral-100 font-sans flex flex-col relative selection:bg-slate-800">
+    <div className="min-h-screen bg-[var(--background)] text-[var(--foreground)] font-sans flex flex-col relative selection:bg-slate-800 transition-colors duration-300">
       {/* Background Noise Layer */}
       <div className="fixed inset-0 pointer-events-none opacity-[0.035] z-0 bg-[radial-gradient(#000_1px,transparent_1px)] dark:bg-[radial-gradient(#fff_1px,transparent_1px)] [background-size:16px_16px]" />
 
       {/* Top Minimal Navigation Header */}
-      <header className="border-b border-slate-200 dark:border-neutral-800 bg-white/70 dark:bg-black/70 backdrop-blur-3xl px-6 py-3.5 flex flex-col sm:flex-row sm:items-center justify-between gap-4 sticky top-0 z-20 font-mono text-xs">
+      <header className="border-b border-[var(--border)] bg-[var(--card)] backdrop-blur-3xl px-6 py-3.5 flex flex-col sm:flex-row sm:items-center justify-between gap-4 sticky top-0 z-20 font-mono text-xs text-[var(--foreground)]">
         <div className="flex items-center gap-3">
           <Link
             href="/dashboard"

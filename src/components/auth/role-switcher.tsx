@@ -82,7 +82,7 @@ export function RoleSwitcher() {
             className="fixed inset-0 z-40"
             onClick={() => setIsOpen(false)}
           />
-          <div className="absolute right-0 mt-2 w-64 bg-white dark:bg-black border border-slate-200 dark:border-neutral-800 shadow-2xl z-50 p-2 text-xs space-y-1 font-mono">
+          <div className="absolute right-0 mt-2 w-64 bg-[var(--card)] border border-[var(--border)] text-[var(--foreground)] shadow-2xl z-50 p-2 text-xs space-y-1 font-mono">
             <div className="px-2 py-1.5 text-[10px] text-slate-500 dark:text-neutral-400 uppercase tracking-wider font-bold border-b border-slate-200 dark:border-neutral-800 flex items-center justify-between">
               <span>[SIMULATE ROLE VIEW]</span>
               <button onClick={() => setIsOpen(false)} className="text-slate-400 hover:text-slate-900 dark:hover:text-white cursor-pointer">

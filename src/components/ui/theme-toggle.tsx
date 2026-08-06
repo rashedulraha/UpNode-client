@@ -12,7 +12,7 @@ export function ThemeToggle() {
       <button
         type="button"
         aria-label="Toggle theme"
-        className="h-8 px-2.5 flex items-center justify-center border border-slate-200 dark:border-neutral-800 bg-white dark:bg-black text-slate-400 shrink-0 font-mono text-[10px]"
+        className="h-8 px-2.5 flex items-center justify-center border border-[var(--border)] bg-[var(--secondary)] text-[var(--muted-foreground)] shrink-0 font-mono text-[10px]"
       >
         <Sun className="h-3.5 w-3.5" />
       </button>
@@ -28,19 +28,19 @@ export function ThemeToggle() {
       onClick={toggleTheme}
       title={isLight ? `Switch to ${devThemeName} Developer Theme` : "Switch to Light Theme"}
       aria-label={isLight ? `Switch to ${devThemeName}` : "Switch to Light Theme"}
-      className="h-8 px-2.5 flex items-center gap-1.5 border border-slate-200 dark:border-neutral-800 bg-white dark:bg-black text-slate-800 dark:text-neutral-200 hover:bg-slate-100 dark:hover:bg-neutral-900 transition-all cursor-pointer shrink-0 font-mono text-[10px] tracking-wider rounded-none uppercase group"
+      className="h-8 px-2.5 flex items-center gap-1.5 border border-[var(--border)] bg-[var(--secondary)] text-[var(--foreground)] hover:opacity-90 transition-all cursor-pointer shrink-0 font-mono text-[10px] tracking-wider rounded-none uppercase group"
     >
       {isLight ? (
         <>
           <Sun className="h-3.5 w-3.5 text-amber-500 shrink-0" />
-          <span className="hidden sm:inline-block text-slate-600 dark:text-neutral-400 font-bold">
+          <span className="hidden sm:inline-block font-bold">
             [LIGHT]
           </span>
         </>
       ) : (
         <>
           <Palette className="h-3.5 w-3.5 text-emerald-400 shrink-0 group-hover:rotate-12 transition-transform" />
-          <span className="hidden sm:inline-block text-emerald-500 dark:text-emerald-400 font-bold">
+          <span className="hidden sm:inline-block font-bold" style={{ color: "var(--primary)" }}>
             [{devThemeName.toUpperCase()}]
           </span>
         </>

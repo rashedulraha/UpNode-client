@@ -62,7 +62,7 @@ export function MemberList({ members, isLoading, error }: MemberListProps) {
 
   if (isLoading) {
     return (
-      <div className="p-6 rounded-none bg-white dark:bg-black border border-slate-200 dark:border-neutral-800 text-center font-mono text-xs text-slate-500 dark:text-neutral-500 animate-pulse">
+      <div className="p-6 rounded-none bg-[var(--card)] border border-[var(--border)] text-center font-mono text-xs text-[var(--muted-foreground)] animate-pulse">
         [LOADING_ORGANIZATION_MEMBERS...]
       </div>
     );
@@ -79,7 +79,7 @@ export function MemberList({ members, isLoading, error }: MemberListProps) {
 
   if (!members || members.length === 0) {
     return (
-      <div className="p-8 text-center rounded-none bg-white dark:bg-black border border-slate-200 dark:border-neutral-800 font-mono text-xs text-slate-500 dark:text-neutral-500 italic">
+      <div className="p-8 text-center rounded-none bg-[var(--card)] border border-[var(--border)] font-mono text-xs text-[var(--muted-foreground)] italic">
         [NO MEMBERS FOUND MATCHING SEARCH CRITERIA]
       </div>
     );
@@ -88,12 +88,12 @@ export function MemberList({ members, isLoading, error }: MemberListProps) {
   const getRoleBadgeStyle = (role: MemberRole) => {
     switch (role) {
       case "ADMIN":
-        return "border border-emerald-500/30 bg-emerald-500/10 text-emerald-700 dark:text-emerald-400 font-bold";
+        return "border border-emerald-500/30 bg-emerald-500/10 text-emerald-400 font-bold";
       case "ENGINEER":
-        return "border border-blue-500/30 bg-blue-500/10 text-blue-700 dark:text-blue-400 font-semibold";
+        return "border border-blue-500/30 bg-blue-500/10 text-blue-400 font-semibold";
       case "VIEWER":
       default:
-        return "border border-slate-300 dark:border-neutral-700 bg-slate-100 dark:bg-neutral-900 text-slate-500 dark:text-neutral-400";
+        return "border border-[var(--border)] bg-[var(--secondary)] text-[var(--muted-foreground)]";
     }
   };
 
@@ -109,15 +109,15 @@ export function MemberList({ members, isLoading, error }: MemberListProps) {
 
   return (
     <>
-      <div className="rounded-none bg-white dark:bg-black border border-slate-200 dark:border-neutral-800 overflow-hidden divide-y divide-slate-200/80 dark:divide-neutral-900 font-mono shadow-sm">
+      <div className="rounded-none bg-[var(--card)] border border-[var(--border)] overflow-hidden divide-y divide-[var(--border)] font-mono shadow-sm">
         {members.map((member) => (
           <div
             key={member.id}
-            className="p-4 sm:p-5 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 hover:bg-slate-50 dark:hover:bg-neutral-900/60 transition-colors"
+            className="p-4 sm:p-5 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 hover:bg-[var(--secondary)] transition-colors"
           >
             {/* Left: User Avatar & Basic Info */}
             <div className="flex items-center gap-3.5 min-w-0">
-              <div className="w-9 h-9 rounded-none bg-slate-100 dark:bg-neutral-900 border border-slate-300 dark:border-neutral-700 text-slate-900 dark:text-white font-mono font-bold text-xs flex items-center justify-center shrink-0 uppercase">
+              <div className="w-9 h-9 rounded-none bg-[var(--secondary)] border border-[var(--border)] text-[var(--foreground)] font-mono font-bold text-xs flex items-center justify-center shrink-0 uppercase">
                 {getInitials(member.user?.name, member.user?.email)}
               </div>
 

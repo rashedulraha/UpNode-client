@@ -38,26 +38,31 @@ export default function TeamSettingsPage() {
   const viewerCount = members.filter((m) => m.role === "VIEWER").length;
 
   return (
-    <div className="min-h-screen bg-slate-50 dark:bg-black text-slate-900 dark:text-neutral-100 font-sans flex flex-col relative selection:bg-slate-800">
+    <div className="min-h-screen bg-[var(--background)] text-[var(--foreground)] font-sans flex flex-col relative selection:bg-slate-800 transition-colors duration-300">
       {/* Background Noise Layer */}
       <div className="fixed inset-0 pointer-events-none opacity-[0.035] z-0 bg-[radial-gradient(#000_1px,transparent_1px)] dark:bg-[radial-gradient(#fff_1px,transparent_1px)] [background-size:16px_16px]" />
 
       {/* Top Minimal Header Navigation Bar */}
-      <header className="border-b border-slate-200 dark:border-neutral-800 bg-white/70 dark:bg-black/70 backdrop-blur-3xl px-6 py-3.5 flex items-center justify-between sticky top-0 z-20 font-mono">
-        <div className="flex items-center gap-2 text-xs text-slate-500 dark:text-neutral-400">
-          <Link href="/dashboard" className="hover:text-slate-900 dark:hover:text-white transition-colors">
+      <header className="border-b border-[var(--border)] bg-[var(--card)] backdrop-blur-3xl px-6 py-3.5 flex items-center justify-between sticky top-0 z-20 font-mono text-xs text-[var(--foreground)]">
+        <div className="flex items-center gap-2 text-xs text-[var(--muted-foreground)]">
+          <Link
+            href="/dashboard"
+            className="hover:text-[var(--foreground)] transition-colors"
+          >
             [DASHBOARD]
           </Link>
-          <span className="text-slate-300 dark:text-neutral-700">/</span>
+          <span className="text-[var(--border)]">/</span>
           <span>SETTINGS</span>
-          <span className="text-slate-300 dark:text-neutral-700">/</span>
-          <span className="font-bold text-slate-900 dark:text-white">[TEAM_MANAGEMENT]</span>
+          <span className="text-[var(--border)]">/</span>
+          <span className="font-bold text-[var(--foreground)]">
+            [TEAM_MANAGEMENT]
+          </span>
         </div>
 
         <div className="flex items-center gap-3">
           <button
             onClick={() => refetch()}
-            className="h-8 px-3 text-xs font-mono text-slate-700 dark:text-neutral-300 hover:text-slate-900 dark:hover:text-white bg-slate-100 dark:bg-black border border-slate-200 dark:border-neutral-800 transition-all cursor-pointer uppercase flex items-center shrink-0"
+            className="h-8 px-3 text-xs font-mono text-[var(--foreground)] bg-[var(--secondary)] border border-[var(--border)] transition-all cursor-pointer uppercase flex items-center shrink-0 hover:opacity-80"
           >
             {isLoading ? "[SYNCING...]" : "[REFRESH]"}
           </button>
@@ -68,24 +73,25 @@ export default function TeamSettingsPage() {
       {/* Main Content Area */}
       <main className="flex-1 max-w-6xl w-full mx-auto p-6 sm:p-8 space-y-7 relative z-10 font-mono">
         {/* Minimal Title Header */}
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-slate-200 dark:border-neutral-800 pb-6">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-[var(--border)] pb-6">
           <div className="space-y-1">
             <div className="flex items-center gap-2">
-              <span className="px-2.5 py-0.5 border border-slate-300 dark:border-neutral-700 bg-slate-100 dark:bg-neutral-900 text-slate-800 dark:text-neutral-200 font-mono text-[10px] font-bold uppercase tracking-widest">
+              <span className="px-2.5 py-0.5 border border-[var(--border)] bg-[var(--secondary)] text-[var(--foreground)] font-mono text-[10px] font-bold uppercase tracking-widest">
                 ORGANIZATION // IAM
               </span>
             </div>
-            <h1 className="text-2xl sm:text-3xl font-extralight tracking-tight text-slate-900 dark:text-white font-mono uppercase">
+            <h1 className="text-2xl sm:text-3xl font-extralight tracking-tight text-[var(--foreground)] font-mono uppercase">
               Team Management
             </h1>
-            <p className="text-xs text-slate-500 dark:text-neutral-400 max-w-xl leading-relaxed font-mono">
-              Manage organization members, assign IAM roles (ADMIN, ENGINEER, VIEWER), and send invitations.
+            <p className="text-xs text-[var(--muted-foreground)] max-w-xl leading-relaxed font-mono">
+              Manage organization members, assign IAM roles (ADMIN, ENGINEER,
+              VIEWER), and send invitations.
             </p>
           </div>
 
           <button
             onClick={() => setIsInviteModalOpen(true)}
-            className="px-4 py-2 border border-slate-900 dark:border-white bg-slate-900 dark:bg-white text-white dark:text-slate-900 font-mono font-bold text-xs transition-all cursor-pointer shrink-0 uppercase tracking-wider shadow-sm hover:opacity-90"
+            className="px-4 py-2 border border-[var(--primary)] bg-[var(--primary)] text-[var(--primary-foreground)] font-mono font-bold text-xs transition-all cursor-pointer shrink-0 uppercase tracking-wider shadow-sm hover:opacity-90"
           >
             [+ INVITE_MEMBER]
           </button>
@@ -93,61 +99,73 @@ export default function TeamSettingsPage() {
 
         {/* Minimal Role Stats Grid */}
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 font-mono">
-          <div 
-            onClick={() => setRoleFilter(roleFilter === "ADMIN" ? "ALL" : "ADMIN")}
-            className={`p-4 rounded-none bg-white dark:bg-black border space-y-1 transition-all cursor-pointer ${
+          <div
+            onClick={() =>
+              setRoleFilter(roleFilter === "ADMIN" ? "ALL" : "ADMIN")
+            }
+            className={`p-4 rounded-none bg-[var(--card)] border space-y-1 transition-all cursor-pointer ${
               roleFilter === "ADMIN"
                 ? "border-emerald-500/50 bg-emerald-500/5"
-                : "border-slate-200 dark:border-neutral-800 hover:border-slate-400 dark:hover:border-neutral-700"
+                : "border-[var(--border)] hover:border-[var(--primary)]"
             }`}
           >
             <div className="flex items-center justify-between">
-              <p className="text-[10px] text-slate-500 dark:text-neutral-500 font-bold uppercase tracking-widest">
+              <p className="text-[10px] text-[var(--muted-foreground)] font-bold uppercase tracking-widest">
                 [ADMINISTRATORS]
               </p>
-              <span className="text-[9px] px-1.5 py-0.5 border border-emerald-500/30 bg-emerald-500/10 text-emerald-700 dark:text-emerald-400 font-bold">
+              <span className="text-[9px] px-1.5 py-0.5 border border-emerald-500/30 bg-emerald-500/10 text-emerald-400 font-bold">
                 FULL ACCESS
               </span>
             </div>
-            <h3 className="text-3xl font-light text-slate-900 dark:text-white">{adminCount.toString().padStart(2, "0")}</h3>
+            <h3 className="text-3xl font-light text-[var(--foreground)]">
+              {adminCount.toString().padStart(2, "0")}
+            </h3>
           </div>
 
-          <div 
-            onClick={() => setRoleFilter(roleFilter === "ENGINEER" ? "ALL" : "ENGINEER")}
-            className={`p-4 rounded-none bg-white dark:bg-black border space-y-1 transition-all cursor-pointer ${
+          <div
+            onClick={() =>
+              setRoleFilter(roleFilter === "ENGINEER" ? "ALL" : "ENGINEER")
+            }
+            className={`p-4 rounded-none bg-[var(--card)] border space-y-1 transition-all cursor-pointer ${
               roleFilter === "ENGINEER"
                 ? "border-blue-500/50 bg-blue-500/5"
-                : "border-slate-200 dark:border-neutral-800 hover:border-slate-400 dark:hover:border-neutral-700"
+                : "border-[var(--border)] hover:border-[var(--primary)]"
             }`}
           >
             <div className="flex items-center justify-between">
-              <p className="text-[10px] text-slate-500 dark:text-neutral-500 font-bold uppercase tracking-widest">
+              <p className="text-[10px] text-[var(--muted-foreground)] font-bold uppercase tracking-widest">
                 [ENGINEERS]
               </p>
-              <span className="text-[9px] px-1.5 py-0.5 border border-blue-500/30 bg-blue-500/10 text-blue-700 dark:text-blue-400 font-bold">
+              <span className="text-[9px] px-1.5 py-0.5 border border-blue-500/30 bg-blue-500/10 text-blue-400 font-bold">
                 OPS CONTROL
               </span>
             </div>
-            <h3 className="text-3xl font-light text-slate-900 dark:text-white">{engineerCount.toString().padStart(2, "0")}</h3>
+            <h3 className="text-3xl font-light text-[var(--foreground)]">
+              {engineerCount.toString().padStart(2, "0")}
+            </h3>
           </div>
 
-          <div 
-            onClick={() => setRoleFilter(roleFilter === "VIEWER" ? "ALL" : "VIEWER")}
-            className={`p-4 rounded-none bg-white dark:bg-black border space-y-1 transition-all cursor-pointer ${
+          <div
+            onClick={() =>
+              setRoleFilter(roleFilter === "VIEWER" ? "ALL" : "VIEWER")
+            }
+            className={`p-4 rounded-none bg-[var(--card)] border space-y-1 transition-all cursor-pointer ${
               roleFilter === "VIEWER"
-                ? "border-slate-400 dark:border-neutral-600 bg-slate-100 dark:bg-neutral-900"
-                : "border-slate-200 dark:border-neutral-800 hover:border-slate-400 dark:hover:border-neutral-700"
+                ? "border-[var(--primary)] bg-[var(--secondary)]"
+                : "border-[var(--border)] hover:border-[var(--primary)]"
             }`}
           >
             <div className="flex items-center justify-between">
-              <p className="text-[10px] text-slate-500 dark:text-neutral-500 font-bold uppercase tracking-widest">
+              <p className="text-[10px] text-[var(--muted-foreground)] font-bold uppercase tracking-widest">
                 [VIEWERS]
               </p>
-              <span className="text-[9px] px-1.5 py-0.5 border border-slate-300 dark:border-neutral-700 bg-slate-100 dark:bg-neutral-900 text-slate-500 dark:text-neutral-400 font-bold">
+              <span className="text-[9px] px-1.5 py-0.5 border border-[var(--border)] bg-[var(--secondary)] text-[var(--muted-foreground)] font-bold">
                 READ ONLY
               </span>
             </div>
-            <h3 className="text-3xl font-light text-slate-900 dark:text-white">{viewerCount.toString().padStart(2, "0")}</h3>
+            <h3 className="text-3xl font-light text-[var(--foreground)]">
+              {viewerCount.toString().padStart(2, "0")}
+            </h3>
           </div>
         </div>
 
@@ -160,7 +178,7 @@ export default function TeamSettingsPage() {
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 placeholder="[SEARCH NAME / EMAIL / ROLE]"
-                className="w-full sm:w-80 px-3.5 py-2 bg-white dark:bg-black border border-slate-200 dark:border-neutral-800 rounded-none text-xs text-slate-900 dark:text-white placeholder:text-slate-400 dark:placeholder:text-neutral-600 focus:border-slate-500 dark:focus:border-neutral-500 focus:outline-none transition-all font-mono"
+                className="w-full sm:w-80 px-3.5 py-2 bg-[var(--background)] border border-[var(--border)] rounded-none text-xs text-[var(--foreground)] placeholder:text-[var(--muted-foreground)] focus:border-[var(--primary)] focus:outline-none transition-all font-mono"
               />
 
               {/* Role Filter Pills */}
@@ -171,8 +189,8 @@ export default function TeamSettingsPage() {
                     onClick={() => setRoleFilter(role)}
                     className={`px-2 py-1 text-[10px] font-mono border transition-all cursor-pointer uppercase ${
                       roleFilter === role
-                        ? "border-slate-900 dark:border-white bg-slate-900 dark:bg-white text-white dark:text-slate-900 font-bold"
-                        : "border-slate-200 dark:border-neutral-800 bg-white dark:bg-black text-slate-500 dark:text-neutral-400 hover:text-slate-900 dark:hover:text-white"
+                        ? "border-[var(--primary)] bg-[var(--primary)] text-[var(--primary-foreground)] font-bold"
+                        : "border-[var(--border)] bg-[var(--card)] text-[var(--muted-foreground)] hover:text-[var(--foreground)]"
                     }`}
                   >
                     [{role}]
@@ -181,14 +199,25 @@ export default function TeamSettingsPage() {
               </div>
             </div>
 
-            <div className="text-[11px] text-slate-500 dark:text-neutral-500 font-mono self-end sm:self-center">
-              SHOWING <span className="font-bold text-slate-900 dark:text-white">{filteredMembers.length}</span> OF{" "}
-              <span className="font-bold text-slate-900 dark:text-white">{members.length}</span> MEMBERS
+            <div className="text-[11px] text-[var(--muted-foreground)] font-mono self-end sm:self-center">
+              SHOWING{" "}
+              <span className="font-bold text-[var(--foreground)]">
+                {filteredMembers.length}
+              </span>{" "}
+              OF{" "}
+              <span className="font-bold text-[var(--foreground)]">
+                {members.length}
+              </span>{" "}
+              MEMBERS
             </div>
           </div>
 
           {/* Member List Component */}
-          <MemberList members={filteredMembers} isLoading={isLoading} error={error as Error} />
+          <MemberList
+            members={filteredMembers}
+            isLoading={isLoading}
+            error={error as Error}
+          />
         </div>
       </main>
 

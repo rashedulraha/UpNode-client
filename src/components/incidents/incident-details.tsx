@@ -228,7 +228,7 @@ export function IncidentDetails({
       animate={{ opacity: 1, x: 0 }}
       exit={{ opacity: 0, x: 12 }}
       transition={{ duration: 0.15, ease: "easeOut" }}
-      className="flex flex-col h-full bg-white dark:bg-black rounded-none p-6 sm:p-8 overflow-y-auto space-y-7 font-mono text-xs backdrop-blur-3xl border border-slate-200 dark:border-neutral-800 min-w-0 shadow-xl select-none"
+      className="flex flex-col h-full bg-[var(--card)] text-[var(--foreground)] rounded-none p-6 sm:p-8 overflow-y-auto space-y-7 font-mono text-xs backdrop-blur-3xl border border-[var(--border)] min-w-0 shadow-xl select-none"
     >
       {/* Header with Geometric Status Indicator & Severity */}
       <div className="flex items-start justify-between gap-4 border-b border-slate-200 dark:border-neutral-900 pb-6">

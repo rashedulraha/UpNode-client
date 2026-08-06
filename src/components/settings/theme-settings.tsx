@@ -6,7 +6,6 @@ import { useCustomTheme } from "@/hooks/use-custom-theme";
 import {
   DEVELOPER_THEME_LIST,
   DeveloperThemeId,
-  ThemeDefinition,
 } from "@/lib/theme/theme-config";
 import {
   Palette,
@@ -56,19 +55,19 @@ export function ThemeSettings() {
   };
 
   return (
-    <div className="space-y-6 font-mono text-xs selection:bg-slate-800">
+    <div className="space-y-6 font-mono text-xs selection:bg-slate-800 text-[var(--foreground)]">
       {/* Top Header Navigation & Settings Tabs Bar */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-slate-200 dark:border-neutral-800">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-[var(--border)]">
         <div className="flex items-center gap-3">
           <Link
             href="/dashboard"
-            className="px-3 py-1.5 border border-slate-200 dark:border-neutral-800 bg-white dark:bg-neutral-950 text-slate-700 dark:text-neutral-300 hover:text-slate-900 dark:hover:text-white hover:border-slate-400 dark:hover:border-neutral-600 transition-all text-xs font-mono uppercase flex items-center gap-1.5 shrink-0"
+            className="px-3 py-1.5 border border-[var(--border)] bg-[var(--card)] text-[var(--foreground)] hover:opacity-80 transition-all text-xs font-mono uppercase flex items-center gap-1.5 shrink-0"
           >
             <ArrowLeft className="w-3.5 h-3.5" />
             <span>[BACK_TO_DASHBOARD]</span>
           </Link>
-          <span className="text-slate-300 dark:text-neutral-700">/</span>
-          <span className="font-bold text-slate-900 dark:text-white uppercase">
+          <span className="text-[var(--muted-foreground)]">/</span>
+          <span className="font-bold text-[var(--foreground)] uppercase">
             SETTINGS // THEME_CONSOLE
           </span>
         </div>
@@ -77,7 +76,7 @@ export function ThemeSettings() {
         <div className="flex items-center gap-2 overflow-x-auto text-xs">
           <Link
             href="/dashboard/settings/profile"
-            className="px-3 py-1.5 border border-slate-200 dark:border-neutral-800 bg-white dark:bg-neutral-950 text-slate-600 dark:text-neutral-400 hover:text-slate-900 dark:hover:text-white uppercase transition-colors shrink-0 flex items-center gap-1.5"
+            className="px-3 py-1.5 border border-[var(--border)] bg-[var(--card)] text-[var(--foreground)] hover:opacity-80 uppercase transition-colors shrink-0 flex items-center gap-1.5"
           >
             <User className="w-3.5 h-3.5" />
             <span>[MY_ACCOUNT]</span>
@@ -85,7 +84,7 @@ export function ThemeSettings() {
 
           <Link
             href="/dashboard/settings/theme"
-            className="px-3 py-1.5 border border-emerald-500/40 bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 font-bold uppercase transition-colors shrink-0 flex items-center gap-1.5 shadow-sm"
+            className="px-3 py-1.5 border border-emerald-500/40 bg-emerald-500/10 text-emerald-500 font-bold uppercase transition-colors shrink-0 flex items-center gap-1.5 shadow-sm"
           >
             <Palette className="w-3.5 h-3.5 text-emerald-500" />
             <span>[THEME_CONSOLE]</span>
@@ -93,7 +92,7 @@ export function ThemeSettings() {
 
           <Link
             href="/dashboard/settings/team"
-            className="px-3 py-1.5 border border-slate-200 dark:border-neutral-800 bg-white dark:bg-neutral-950 text-slate-600 dark:text-neutral-400 hover:text-slate-900 dark:hover:text-white uppercase transition-colors shrink-0 flex items-center gap-1.5"
+            className="px-3 py-1.5 border border-[var(--border)] bg-[var(--card)] text-[var(--foreground)] hover:opacity-80 uppercase transition-colors shrink-0 flex items-center gap-1.5"
           >
             <Users className="w-3.5 h-3.5" />
             <span>[TEAM_MANAGEMENT]</span>
@@ -101,7 +100,7 @@ export function ThemeSettings() {
 
           <Link
             href="/dashboard/settings/integrations"
-            className="px-3 py-1.5 border border-slate-200 dark:border-neutral-800 bg-white dark:bg-neutral-950 text-slate-600 dark:text-neutral-400 hover:text-slate-900 dark:hover:text-white uppercase transition-colors shrink-0 flex items-center gap-1.5"
+            className="px-3 py-1.5 border border-[var(--border)] bg-[var(--card)] text-[var(--foreground)] hover:opacity-80 uppercase transition-colors shrink-0 flex items-center gap-1.5"
           >
             <Sliders className="w-3.5 h-3.5" />
             <span>[INTEGRATIONS]</span>
@@ -110,14 +109,14 @@ export function ThemeSettings() {
       </div>
 
       {/* PART 1: Theme Header Selector Bar (Header Buttons for all themes) */}
-      <div className="border border-slate-200 dark:border-neutral-800 bg-white/80 dark:bg-neutral-950/80 p-5 rounded-none space-y-4 backdrop-blur-2xl">
+      <div className="border border-[var(--border)] bg-[var(--card)] p-5 rounded-none space-y-4 shadow-sm">
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
           <div className="space-y-1">
-            <div className="flex items-center gap-2 text-xs text-slate-500 dark:text-neutral-400">
+            <div className="flex items-center gap-2 text-xs text-[var(--muted-foreground)]">
               <Terminal className="w-4 h-4 text-emerald-500" />
               <span>THEME_ENGINE // DYNAMIC_PALETTE_SELECTOR</span>
             </div>
-            <h1 className="text-xl font-bold uppercase tracking-tight text-slate-900 dark:text-white">
+            <h1 className="text-xl font-bold uppercase tracking-tight text-[var(--foreground)]">
               Developer Theme Console
             </h1>
           </div>
@@ -125,14 +124,14 @@ export function ThemeSettings() {
           <div className="flex items-center gap-2 shrink-0">
             <button
               onClick={() => handleSelectTheme("obsidian")}
-              className="px-3 py-1.5 border border-slate-300 dark:border-neutral-700 bg-slate-100 dark:bg-neutral-900 text-slate-700 dark:text-neutral-300 hover:text-slate-900 dark:hover:text-white text-xs uppercase flex items-center gap-1.5 cursor-pointer transition-colors"
+              className="px-3 py-1.5 border border-[var(--border)] bg-[var(--secondary)] text-[var(--foreground)] hover:opacity-80 text-xs uppercase flex items-center gap-1.5 cursor-pointer transition-colors"
               title="Reset to default Obsidian Monochrome"
             >
               <RotateCcw className="w-3.5 h-3.5" />
               <span>[RESET_OBSIDIAN]</span>
             </button>
 
-            <div className="flex items-center gap-2 px-3 py-1.5 border border-emerald-500/30 bg-emerald-500/10 text-emerald-700 dark:text-emerald-400 text-xs font-bold uppercase">
+            <div className="flex items-center gap-2 px-3 py-1.5 border border-emerald-500/30 bg-emerald-500/10 text-emerald-500 text-xs font-bold uppercase">
               <Sparkles className="w-3.5 h-3.5 text-emerald-500" />
               <span>ACTIVE: {mode === "light" ? "LIGHT THEME" : activeDeveloperTheme.name}</span>
             </div>
@@ -140,16 +139,16 @@ export function ThemeSettings() {
         </div>
 
         {/* Global Mode Toggle Buttons */}
-        <div className="flex flex-wrap items-center gap-2 pt-3 border-t border-slate-200 dark:border-neutral-800">
-          <span className="text-xs text-slate-500 dark:text-neutral-400 uppercase font-bold mr-1">
+        <div className="flex flex-wrap items-center gap-2 pt-3 border-t border-[var(--border)]">
+          <span className="text-xs text-[var(--muted-foreground)] uppercase font-bold mr-1">
             MODE_SELECT:
           </span>
           <button
             onClick={() => handleSelectMode("light")}
             className={`px-3 py-1.5 text-xs uppercase flex items-center gap-2 border transition-all cursor-pointer ${
               mode === "light"
-                ? "bg-slate-900 dark:bg-white text-white dark:text-black border-slate-900 dark:border-white font-bold"
-                : "bg-slate-100 dark:bg-neutral-900 text-slate-600 dark:text-neutral-400 border-slate-200 dark:border-neutral-800 hover:text-slate-900 dark:hover:text-white"
+                ? "bg-[var(--primary)] text-[var(--primary-foreground)] border-[var(--primary)] font-bold"
+                : "bg-[var(--secondary)] text-[var(--foreground)] border-[var(--border)] hover:opacity-80"
             }`}
           >
             <Sun className="w-3.5 h-3.5 text-amber-500" />
@@ -161,7 +160,7 @@ export function ThemeSettings() {
             className={`px-3 py-1.5 text-xs uppercase flex items-center gap-2 border transition-all cursor-pointer ${
               mode === "developer"
                 ? "bg-emerald-500 text-slate-950 border-emerald-400 font-bold shadow-[0_0_12px_rgba(16,185,129,0.3)]"
-                : "bg-slate-100 dark:bg-neutral-900 text-slate-600 dark:text-neutral-400 border-slate-200 dark:border-neutral-800 hover:text-slate-900 dark:hover:text-white"
+                : "bg-[var(--secondary)] text-[var(--foreground)] border-[var(--border)] hover:opacity-80"
             }`}
           >
             <Palette className="w-3.5 h-3.5 text-emerald-400" />
@@ -169,9 +168,9 @@ export function ThemeSettings() {
           </button>
         </div>
 
-        {/* Header Action Buttons for ALL Developer Themes */}
-        <div className="space-y-2 pt-2 border-t border-slate-200 dark:border-neutral-800">
-          <span className="text-[10px] text-slate-400 dark:text-neutral-500 uppercase tracking-widest font-bold">
+        {/* Header Action Buttons for ALL 5 Developer Themes */}
+        <div className="space-y-2 pt-2 border-t border-[var(--border)]">
+          <span className="text-[10px] text-[var(--muted-foreground)] uppercase tracking-widest font-bold">
             QUICK_THEME_SWITCH_BUTTONS:
           </span>
           <div className="flex flex-wrap items-center gap-2">
@@ -181,18 +180,18 @@ export function ThemeSettings() {
                 <button
                   key={t.id}
                   onClick={() => handleSelectTheme(t.id as DeveloperThemeId)}
-                  className={`px-3 py-1 text-[11px] uppercase font-mono font-bold tracking-wider transition-all border cursor-pointer flex items-center gap-1.5 ${
+                  className={`px-3 py-1.5 text-[11px] uppercase font-mono font-bold tracking-wider transition-all border cursor-pointer flex items-center gap-2 ${
                     isSelected
-                      ? "bg-emerald-500 text-slate-950 border-emerald-400 shadow-[0_0_8px_rgba(16,185,129,0.4)]"
-                      : "bg-slate-100 dark:bg-neutral-900/90 text-slate-700 dark:text-neutral-300 border-slate-200 dark:border-neutral-800 hover:border-slate-400 dark:hover:border-neutral-600 hover:text-slate-900 dark:hover:text-white"
+                      ? "bg-emerald-500 text-slate-950 border-emerald-400 shadow-[0_0_12px_rgba(16,185,129,0.3)]"
+                      : "bg-[var(--secondary)] text-[var(--foreground)] border-[var(--border)] hover:border-[var(--primary)]"
                   }`}
                 >
                   <span
-                    className="w-2 h-2 rounded-full border border-black/20"
+                    className="w-2.5 h-2.5 rounded-full border border-black/20 shrink-0"
                     style={{ backgroundColor: t.palette.primary }}
                   />
                   <span>[{t.name.toUpperCase()}]</span>
-                  {isSelected && <Check className="w-3 h-3 text-slate-950" />}
+                  {isSelected && <Check className="w-3.5 h-3.5 text-slate-950 ml-1" />}
                 </button>
               );
             })}
@@ -201,13 +200,13 @@ export function ThemeSettings() {
       </div>
 
       {/* PART 2: DYNAMIC THEME-CONTROLLED CONTENT PREVIEW (100% Theme Tokens Driven) */}
-      <div className="space-y-6">
+      <div className="space-y-4">
         <div className="flex items-center justify-between">
-          <h2 className="text-xs font-bold uppercase tracking-widest text-slate-500 dark:text-neutral-400 flex items-center gap-2">
+          <h2 className="text-xs font-bold uppercase tracking-widest text-[var(--muted-foreground)] flex items-center gap-2">
             <Layers className="w-4 h-4 text-emerald-500" />
             <span>DYNAMIC_THEME_PREVIEW // [{activeTheme.name.toUpperCase()}]</span>
           </h2>
-          <span className="text-[10px] text-slate-400 dark:text-neutral-500 uppercase font-mono">
+          <span className="text-[10px] text-[var(--muted-foreground)] uppercase font-mono">
             [100%_THEME_TOKEN_STYLED]
           </span>
         </div>
@@ -220,34 +219,34 @@ export function ThemeSettings() {
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
-              className="border border-slate-200 dark:border-neutral-800 bg-slate-100/50 dark:bg-neutral-950/50 p-6 space-y-5 animate-pulse"
+              className="border border-[var(--border)] bg-[var(--card)] p-6 space-y-5 animate-pulse"
             >
-              <div className="flex items-center justify-between border-b border-slate-200 dark:border-neutral-800 pb-3">
+              <div className="flex items-center justify-between border-b border-[var(--border)] pb-3">
                 <div className="flex items-center gap-2">
                   <span className="w-2 h-2 bg-emerald-500 rounded-full animate-ping" />
-                  <span className="text-xs font-mono font-bold text-slate-400 dark:text-neutral-500 uppercase tracking-widest">
+                  <span className="text-xs font-mono font-bold text-[var(--muted-foreground)] uppercase tracking-widest">
                     [SYNCING_THEME_TOKENS...]
                   </span>
                 </div>
-                <div className="w-24 h-4 bg-slate-200 dark:bg-neutral-800 rounded-none" />
+                <div className="w-24 h-4 bg-[var(--secondary)] rounded-none" />
               </div>
 
               <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
                 {[1, 2, 3].map((i) => (
                   <div
                     key={i}
-                    className="p-4 border border-slate-200 dark:border-neutral-800 bg-slate-200/50 dark:bg-neutral-900/50 space-y-2"
+                    className="p-4 border border-[var(--border)] bg-[var(--secondary)] space-y-2"
                   >
-                    <div className="w-24 h-4 bg-slate-300 dark:bg-neutral-800 rounded-none" />
-                    <div className="w-36 h-3 bg-slate-200 dark:bg-neutral-800 rounded-none" />
-                    <div className="w-20 h-5 bg-slate-300 dark:bg-neutral-800 rounded-none pt-2" />
+                    <div className="w-24 h-4 bg-[var(--border)] rounded-none" />
+                    <div className="w-36 h-3 bg-[var(--border)] rounded-none" />
+                    <div className="w-20 h-5 bg-[var(--border)] rounded-none pt-2" />
                   </div>
                 ))}
               </div>
 
-              <div className="p-4 border border-slate-200 dark:border-neutral-800 bg-slate-200/50 dark:bg-neutral-900/50 space-y-3">
-                <div className="w-48 h-4 bg-slate-300 dark:bg-neutral-800 rounded-none" />
-                <div className="w-full h-12 bg-slate-200 dark:bg-neutral-800 rounded-none" />
+              <div className="p-4 border border-[var(--border)] bg-[var(--secondary)] space-y-3">
+                <div className="w-48 h-4 bg-[var(--border)] rounded-none" />
+                <div className="w-full h-12 bg-[var(--border)] rounded-none" />
               </div>
             </motion.div>
           ) : (

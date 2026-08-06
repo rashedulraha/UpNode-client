@@ -42,8 +42,8 @@ export function IncidentCard({ incident, isSelected, onClick }: IncidentCardProp
       transition={{ duration: 0.1 }}
       className={`p-4 sm:p-5 rounded-none border cursor-pointer space-y-3 font-mono text-xs transition-colors min-w-0 select-none ${
         isSelected
-          ? "bg-slate-100/80 dark:bg-neutral-900/60 text-slate-900 dark:text-white border-slate-400 dark:border-neutral-700 shadow-sm font-semibold"
-          : "bg-white dark:bg-black border-slate-200 dark:border-neutral-800 hover:border-slate-400 dark:hover:border-neutral-600 hover:bg-slate-50 dark:hover:bg-neutral-900/40"
+          ? "bg-[var(--secondary)] text-[var(--foreground)] border-[var(--primary)] shadow-sm font-semibold"
+          : "bg-[var(--card)] border-[var(--border)] hover:border-[var(--primary)] text-[var(--foreground)]"
       }`}
     >
       {/* Top Header Row: Geometric Status Indicator & Severity */}
