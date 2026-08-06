@@ -1,8 +1,10 @@
 "use client";
 
 import React from "react";
+import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { useProjects } from "@/hooks/use-projects";
-import { Plus, Folder, Settings, Building2 } from "lucide-react";
+import { Plus, Folder, Settings, Building2, Users, Shield, Sliders, User, Activity } from "lucide-react";
 import { Project } from "@/services/projects.service";
 import { organizationService, UserOrganization } from "@/services/organization.service";
 import { useAuth } from "@/hooks/use-auth";
@@ -20,6 +22,7 @@ export function ProjectsSidebar({
   onOpenCreateProject,
   onOpenProjectSettings,
 }: ProjectsSidebarProps) {
+  const pathname = usePathname();
   const { user } = useAuth();
   const { data: projects = [], isLoading } = useProjects();
   const [showPromo, setShowPromo] = React.useState<boolean>(true);
@@ -28,33 +31,36 @@ export function ProjectsSidebar({
   React.useEffect(() => {
     const isDismissed = localStorage.getItem("upnode_promo_dismissed");
     if (isDismissed === "true") {
+      setShowPromo(false);
     }
     // Fetch active org name
-    if (user?.role !== "SUPER_ADMIN") {
-      organizationService.getUserOrganizations().then((orgs) => {
-        if (orgs.length > 0) {
-          const activeOrgId = localStorage.getItem("activeOrganizationId");
-          const found = activeOrgId ? orgs.find((o) => o.id === activeOrgId) || orgs[0] : orgs[0];
-          setActiveOrg(found);
-        }
-      }).catch(() => {});
-    }
+    organizationService.getUserOrganizations().then((orgs) => {
+      if (orgs.length > 0) {
+        const activeOrgId = localStorage.getItem("activeOrganizationId");
+        const found = activeOrgId ? orgs.find((o) => o.id === activeOrgId) || orgs[0] : orgs[0];
+        setActiveOrg(found);
+      }
+    }).catch(() => {});
   }, [user]);
 
   const handleDismissPromo = () => {
     setShowPromo(false);
   };
 
+  const isTeamPage = pathname?.includes("/dashboard/settings/team");
+  const isIntegrationsPage = pathname?.includes("/dashboard/settings/integrations");
+  const isProfilePage = pathname?.includes("/dashboard/settings/profile");
+
   return (
     <aside className="w-full lg:w-72 xl:w-80 bg-white dark:bg-black backdrop-blur-3xl flex flex-col justify-between h-auto lg:h-full shrink-0 font-mono border-b lg:border-b-0 lg:border-r border-slate-200 dark:border-neutral-800 overflow-hidden select-none transition-colors">
-      {/* Top Section: Projects navigation */}
+      {/* Top Section: Projects & Organization navigation */}
       <div className="p-4 space-y-5 overflow-y-auto">
         {/* Active Organization Badge */}
         {activeOrg && (
           <div className="flex items-center gap-2 px-3 py-2 border border-slate-200 dark:border-neutral-800 bg-slate-50 dark:bg-neutral-950">
-            <Building2 className="w-3 h-3 shrink-0 text-slate-400 dark:text-neutral-500" />
+            <Building2 className="w-3.5 h-3.5 shrink-0 text-slate-500 dark:text-neutral-400" />
             <div className="flex-1 min-w-0">
-              <p className="text-[9px] text-slate-400 dark:text-neutral-600 uppercase tracking-widest">ACTIVE_ORG</p>
+              <p className="text-[9px] text-slate-400 dark:text-neutral-600 uppercase tracking-widest font-mono">ACTIVE_ORG</p>
               <p className="text-xs font-bold text-slate-900 dark:text-white uppercase truncate">{activeOrg.name}</p>
             </div>
             <span className={`text-[9px] px-1.5 py-0.5 border font-bold uppercase ${
@@ -67,15 +73,16 @@ export function ProjectsSidebar({
           </div>
         )}
 
+        {/* Dashboard Core Navigation */}
         <div>
-          <h2 className="text-[10px] font-mono font-bold text-slate-400 dark:text-neutral-500 uppercase tracking-widest px-1 mb-2.5">
+          <h2 className="text-[10px] font-mono font-bold text-slate-400 dark:text-neutral-500 uppercase tracking-widest px-1 mb-2">
             [NAVIGATION]
           </h2>
           <div className="space-y-1 font-mono text-xs">
             <button
               onClick={() => onSelectProject(null)}
               className={`w-full flex items-center justify-between px-3 py-1.5 rounded-none transition-colors cursor-pointer border ${
-                selectedProjectId === null
+                selectedProjectId === null && !isTeamPage && !isIntegrationsPage && !isProfilePage
                   ? "bg-slate-100 dark:bg-neutral-900/60 text-slate-900 dark:text-white border-slate-300 dark:border-neutral-700 font-bold shadow-sm"
                   : "bg-slate-50 dark:bg-neutral-950 text-slate-700 dark:text-neutral-400 border-slate-200 dark:border-neutral-800 hover:text-slate-900 dark:hover:text-white hover:border-slate-300 dark:hover:border-neutral-700"
               }`}
@@ -87,6 +94,69 @@ export function ProjectsSidebar({
                 </span>
               </div>
             </button>
+          </div>
+        </div>
+
+        {/* Organization IAM & Team Management Nav */}
+        <div>
+          <h2 className="text-[10px] font-mono font-bold text-slate-400 dark:text-neutral-500 uppercase tracking-widest px-1 mb-2">
+            [ORGANIZATION & TEAM]
+          </h2>
+          <div className="space-y-1 font-mono text-xs">
+            <Link
+              href="/dashboard/settings/team"
+              className={`w-full flex items-center justify-between px-3 py-1.5 rounded-none transition-colors cursor-pointer border ${
+                isTeamPage
+                  ? "bg-slate-100 dark:bg-neutral-900/60 text-slate-900 dark:text-white border-slate-300 dark:border-neutral-700 font-bold shadow-sm"
+                  : "bg-slate-50 dark:bg-neutral-950 text-slate-700 dark:text-neutral-400 border-slate-200 dark:border-neutral-800 hover:text-slate-900 dark:hover:text-white hover:border-slate-300 dark:hover:border-neutral-700"
+              }`}
+            >
+              <div className="flex items-center gap-2 min-w-0">
+                <Users className="w-3.5 h-3.5 shrink-0 text-slate-400 dark:text-neutral-500" />
+                <span className="truncate uppercase font-medium">
+                  [TEAM_MANAGEMENT]
+                </span>
+              </div>
+              <span className={`text-[9px] px-1.5 py-0.5 font-mono font-bold uppercase border ${
+                isTeamPage 
+                  ? "border-emerald-500/30 bg-emerald-500/10 text-emerald-700 dark:text-emerald-400" 
+                  : "border-slate-200 dark:border-neutral-800 bg-slate-100 dark:bg-neutral-900 text-slate-500 dark:text-neutral-400"
+              }`}>
+                ADD_ADMIN
+              </span>
+            </Link>
+
+            <Link
+              href="/dashboard/settings/integrations"
+              className={`w-full flex items-center justify-between px-3 py-1.5 rounded-none transition-colors cursor-pointer border ${
+                isIntegrationsPage
+                  ? "bg-slate-100 dark:bg-neutral-900/60 text-slate-900 dark:text-white border-slate-300 dark:border-neutral-700 font-bold shadow-sm"
+                  : "bg-slate-50 dark:bg-neutral-950 text-slate-700 dark:text-neutral-400 border-slate-200 dark:border-neutral-800 hover:text-slate-900 dark:hover:text-white hover:border-slate-300 dark:hover:border-neutral-700"
+              }`}
+            >
+              <div className="flex items-center gap-2 min-w-0">
+                <Sliders className="w-3.5 h-3.5 shrink-0 text-slate-400 dark:text-neutral-500" />
+                <span className="truncate uppercase font-medium">
+                  [INTEGRATIONS]
+                </span>
+              </div>
+            </Link>
+
+            <Link
+              href="/dashboard/settings/profile"
+              className={`w-full flex items-center justify-between px-3 py-1.5 rounded-none transition-colors cursor-pointer border ${
+                isProfilePage
+                  ? "bg-slate-100 dark:bg-neutral-900/60 text-slate-900 dark:text-white border-slate-300 dark:border-neutral-700 font-bold shadow-sm"
+                  : "bg-slate-50 dark:bg-neutral-950 text-slate-700 dark:text-neutral-400 border-slate-200 dark:border-neutral-800 hover:text-slate-900 dark:hover:text-white hover:border-slate-300 dark:hover:border-neutral-700"
+              }`}
+            >
+              <div className="flex items-center gap-2 min-w-0">
+                <User className="w-3.5 h-3.5 shrink-0 text-slate-400 dark:text-neutral-500" />
+                <span className="truncate uppercase font-medium">
+                  [MY_ACCOUNT]
+                </span>
+              </div>
+            </Link>
           </div>
         </div>
 

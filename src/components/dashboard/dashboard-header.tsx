@@ -5,16 +5,14 @@ import Link from "next/link";
 import { useAuth } from "@/hooks/use-auth";
 import { IncidentStreamStatus } from "@/hooks/useIncidentStream";
 import { ThemeToggle } from "@/components/ui/theme-toggle";
-import { Plus, Search, Home } from "lucide-react";
+import { RoleSwitcher } from "@/components/auth/role-switcher";
+import { Plus, Search, Home, Users } from "lucide-react";
 
 interface DashboardHeaderProps {
   streamStatus: IncidentStreamStatus;
   searchQuery: string;
   onSearchChange: (q: string) => void;
   onOpenCreateModal: () => void;
-  isSuperAdmin?: boolean;
-  viewMode?: "super_admin" | "org";
-  onViewModeChange?: (mode: "super_admin" | "org") => void;
 }
 
 export function DashboardHeader({
@@ -22,9 +20,6 @@ export function DashboardHeader({
   searchQuery,
   onSearchChange,
   onOpenCreateModal,
-  isSuperAdmin,
-  viewMode,
-  onViewModeChange,
 }: DashboardHeaderProps) {
   const { user } = useAuth();
 
@@ -48,32 +43,6 @@ export function DashboardHeader({
             v2.6
           </span>
         </div>
-
-        {/* Super Admin Mode Switcher */}
-        {isSuperAdmin && onViewModeChange && (
-          <div className="flex items-center gap-1 p-0.5 bg-slate-100 dark:bg-black rounded-none border border-slate-200 dark:border-neutral-800 font-mono text-[11px] ml-1 sm:ml-2">
-            <button
-              onClick={() => onViewModeChange("super_admin")}
-              className={`px-2.5 py-1 rounded-none transition-all cursor-pointer font-bold uppercase tracking-wider text-[10px] ${
-                viewMode === "super_admin"
-                  ? "bg-rose-600 text-white border border-rose-500 shadow-sm"
-                  : "text-slate-600 dark:text-neutral-400 hover:text-slate-900 dark:hover:text-white"
-              }`}
-            >
-              [ROOT_CONTROL]
-            </button>
-            <button
-              onClick={() => onViewModeChange("org")}
-              className={`px-2.5 py-1 rounded-none transition-all cursor-pointer font-bold uppercase tracking-wider text-[10px] ${
-                viewMode === "org"
-                  ? "bg-slate-900 dark:bg-neutral-900 text-white border border-slate-900 dark:border-neutral-600 shadow-sm"
-                  : "text-slate-600 dark:text-neutral-400 hover:text-slate-900 dark:hover:text-white"
-              }`}
-            >
-              [ORG_DASHBOARD]
-            </button>
-          </div>
-        )}
 
         <div className="hidden lg:flex items-center gap-2 pl-3 border-l border-slate-200 dark:border-neutral-800">
           <span
@@ -108,7 +77,17 @@ export function DashboardHeader({
       </div>
 
       {/* Right: Actions & User Profile */}
-      <div className="flex items-center gap-2 sm:gap-3">
+      <div className="flex items-center gap-2 sm:gap-3 ml-auto">
+        <Link
+          href="/dashboard/settings/team"
+          className="flex items-center gap-1.5 px-2.5 py-1 text-slate-700 dark:text-neutral-300 hover:text-slate-900 dark:hover:text-white bg-slate-100 dark:bg-black hover:bg-slate-200 dark:hover:bg-neutral-900 border border-slate-200 dark:border-neutral-800 transition-colors text-xs font-mono"
+          title="Team Management & Admin Access"
+        >
+          <Users className="w-3.5 h-3.5 text-slate-900 dark:text-white" />
+          <span className="hidden xl:inline text-[11px] font-semibold uppercase">[TEAM & ADMIN]</span>
+        </Link>
+
+        <RoleSwitcher />
         <ThemeToggle />
 
         <button
@@ -122,7 +101,7 @@ export function DashboardHeader({
         <div className="flex items-center gap-2 pl-2 sm:pl-3 border-l border-slate-200 dark:border-neutral-800">
           <Link
             href="/dashboard/settings/profile"
-            className="flex items-center gap-2 px-2.5 py-1 rounded-none bg-slate-100 dark:bg-black border border-slate-200 dark:border-neutral-800 hover:border-slate-400 dark:hover:border-neutral-600 text-xs font-mono text-slate-800 dark:text-neutral-200 transition-colors cursor-pointer"
+            className="flex items-center gap-2 px-2.5 py-1 rounded bg-slate-100 dark:bg-neutral-900 border border-slate-200 dark:border-neutral-800 hover:border-slate-400 dark:hover:border-neutral-600 text-xs font-mono text-slate-800 dark:text-neutral-200 transition-colors cursor-pointer"
             title="Profile & Security Settings"
           >
             <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 dark:bg-white animate-pulse" />
