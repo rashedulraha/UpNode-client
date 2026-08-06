@@ -38,160 +38,249 @@
   --color-input: var(--input);
   --color-ring: var(--ring);
 
-  --color-chart-1: var(--chart-1);
-  --color-chart-2: var(--chart-2);
-  --color-chart-3: var(--chart-3);
-  --color-chart-4: var(--chart-4);
-  --color-chart-5: var(--chart-5);
-
-  --radius-sm: calc(var(--radius) * 0.6);
-  --radius-md: calc(var(--radius) * 0.8);
-  --radius-lg: var(--radius);
-  --radius-xl: calc(var(--radius) * 1.4);
-  --radius-2xl: calc(var(--radius) * 1.8);
-  --radius-3xl: calc(var(--radius) * 2.2);
-
   --color-sidebar: var(--sidebar);
   --color-sidebar-foreground: var(--sidebar-foreground);
-  --color-sidebar-primary: var(--sidebar-primary);
-  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
-  --color-sidebar-accent: var(--sidebar-accent);
-  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
   --color-sidebar-border: var(--sidebar-border);
-  --color-sidebar-ring: var(--sidebar-ring);
-
-  --color-status-up: var(--status-up);
-  --color-status-down: var(--status-down);
-  --color-status-degraded: var(--status-degraded);
-  --color-status-maintenance: var(--status-maintenance);
 
   --shadow-sm: none;
   --shadow-md: none;
   --shadow-lg: none;
   --shadow-xl: none;
   --shadow-2xl: none;
-  --shadow-inner: none;
 }
 
-:root {
-  --background: oklch(0.985 0.003 260);
-  --foreground: oklch(0.14 0.02 260);
-  --card: oklch(1 0 0);
-  --card-foreground: oklch(0.14 0.02 260);
-  --popover: oklch(1 0 0);
-  --popover-foreground: oklch(0.14 0.02 260);
-  --primary: oklch(0.55 0.22 265);
-  --primary-foreground: oklch(0.99 0 0);
-  --secondary: oklch(0.95 0.01 260);
-  --secondary-foreground: oklch(0.2 0.02 260);
-  --muted: oklch(0.95 0.01 260);
-  --muted-foreground: oklch(0.48 0.02 260);
-  --accent: oklch(0.93 0.015 260);
-  --accent-foreground: oklch(0.14 0.02 260);
-  --destructive: oklch(0.58 0.22 25);
-  --destructive-foreground: oklch(0.99 0 0);
-  --border: oklch(0.94 0.005 260);
-  --input: oklch(0.94 0.005 260);
-  --ring: oklch(0.55 0.22 265);
-  --radius: 0.625rem;
+/* Default Root (Light Theme) */
+:root, [data-theme="light"] {
+  --background: #f8fafc;
+  --foreground: #0f172a;
+  --card: #ffffff;
+  --card-foreground: #0f172a;
+  --popover: #ffffff;
+  --popover-foreground: #0f172a;
+  --primary: #0f172a;
+  --primary-foreground: #ffffff;
+  --secondary: #f1f5f9;
+  --secondary-foreground: #0f172a;
+  --muted: #f1f5f9;
+  --muted-foreground: #64748b;
+  --accent: #e2e8f0;
+  --accent-foreground: #0f172a;
+  --border: #e2e8f0;
+  --input: #e2e8f0;
+  --ring: #0f172a;
+  --sidebar: #ffffff;
+  --sidebar-foreground: #0f172a;
+  --sidebar-border: #e2e8f0;
 
-  --chart-1: oklch(0.55 0.22 265);
-  --chart-2: oklch(0.65 0.2 150);
-  --chart-3: oklch(0.75 0.18 85);
-  --chart-4: oklch(0.58 0.22 25);
-  --chart-5: oklch(0.65 0.19 210);
-
-  --sidebar: oklch(0.97 0.005 260);
-  --sidebar-foreground: oklch(0.14 0.02 260);
-  --sidebar-primary: oklch(0.55 0.22 265);
-  --sidebar-primary-foreground: oklch(0.99 0 0);
-  --sidebar-accent: oklch(0.93 0.015 260);
-  --sidebar-accent-foreground: oklch(0.14 0.02 260);
-  --sidebar-border: oklch(0.9 0.01 260);
-  --sidebar-ring: oklch(0.55 0.22 265);
-
-  --status-up: oklch(0.65 0.2 150);
-  --status-down: oklch(0.58 0.22 25);
-  --status-degraded: oklch(0.75 0.18 85);
-  --status-maintenance: oklch(0.65 0.19 210);
-
-  /* ─── Landing Page Theme Tokens (Light Mode) ─── */
-  --lp-bg:           #f8fafc;
-  --lp-bg-alt:       #f1f5f9;
-  --lp-surface:      rgba(255, 255, 255, 0.95);
-  --lp-surface-hover:rgba(241, 245, 249, 0.85);
-  --lp-border:       #e2e8f0;
-  --lp-border-top:   #cbd5e1;
+  --lp-bg: #f8fafc;
+  --lp-bg-alt: #f1f5f9;
+  --lp-surface: rgba(255, 255, 255, 0.95);
+  --lp-surface-hover: rgba(241, 245, 249, 0.85);
+  --lp-border: #e2e8f0;
+  --lp-border-top: #cbd5e1;
   --lp-text-primary: #0f172a;
-  --lp-text-mid:     #475569;
-  --lp-text-dim:     #64748b;
-  --lp-text-faint:   #94a3b8;
-  --lp-dot:          #94a3b8;
-  --lp-scan-line:    rgba(15, 23, 42, 0.08);
-  --lp-cta-bg:       #0f172a;
-  --lp-cta-text:     #ffffff;
-  --lp-nav-bg:       rgba(255, 255, 255, 0.85);
-  --lp-stroke:       #cbd5e1;
+  --lp-text-mid: #475569;
+  --lp-text-dim: #64748b;
+  --lp-text-faint: #94a3b8;
+  --lp-cta-bg: #0f172a;
+  --lp-cta-text: #ffffff;
+  --lp-nav-bg: rgba(255, 255, 255, 0.85);
+  --lp-stroke: #cbd5e1;
 }
 
-.dark {
-  --background: oklch(0.18 0.01 260);
-  --foreground: oklch(0.98 0.002 260);
-  --card: oklch(0.21 0.01 260);
-  --card-foreground: oklch(0.98 0.002 260);
-  --popover: oklch(0.21 0.01 260);
-  --popover-foreground: oklch(0.98 0.002 260);
-  --primary: oklch(0.62 0.22 265);
-  --primary-foreground: oklch(0.99 0 0);
-  --secondary: oklch(0.24 0.01 260);
-  --secondary-foreground: oklch(0.98 0.002 260);
-  --muted: oklch(0.24 0.01 260);
-  --muted-foreground: oklch(0.74 0.008 260);
-  --accent: oklch(0.26 0.01 260);
-  --accent-foreground: oklch(0.98 0.002 260);
-  --destructive: oklch(0.62 0.22 25);
-  --destructive-foreground: oklch(0.99 0 0);
-  --border: oklch(0.28 0.01 260);
-  --input: oklch(0.28 0.01 260);
-  --ring: oklch(0.62 0.22 265);
+/* 1. Obsidian Black & White (Default Deep Dark) */
+.dark, [data-theme="obsidian"] {
+  --background: #000000;
+  --foreground: #ffffff;
+  --card: #0a0a0a;
+  --card-foreground: #ffffff;
+  --popover: #0a0a0a;
+  --popover-foreground: #ffffff;
+  --primary: #ffffff;
+  --primary-foreground: #000000;
+  --secondary: #171717;
+  --secondary-foreground: #ffffff;
+  --muted: #171717;
+  --muted-foreground: #a3a3a3;
+  --accent: #262626;
+  --accent-foreground: #ffffff;
+  --border: #262626;
+  --input: #262626;
+  --ring: #ffffff;
+  --sidebar: #050505;
+  --sidebar-foreground: #ffffff;
+  --sidebar-border: #262626;
 
-  --chart-1: oklch(0.62 0.22 265);
-  --chart-2: oklch(0.72 0.19 150);
-  --chart-3: oklch(0.8 0.18 85);
-  --chart-4: oklch(0.62 0.22 25);
-  --chart-5: oklch(0.7 0.19 210);
+  --lp-bg: #000000;
+  --lp-bg-alt: #0a0a0a;
+  --lp-surface: rgba(23, 23, 23, 0.85);
+  --lp-surface-hover: rgba(38, 38, 38, 0.9);
+  --lp-border: #262626;
+  --lp-border-top: #404040;
+  --lp-text-primary: #ffffff;
+  --lp-text-mid: #a3a3a3;
+  --lp-text-dim: #737373;
+  --lp-text-faint: #525252;
+  --lp-cta-bg: #ffffff;
+  --lp-cta-text: #000000;
+  --lp-nav-bg: rgba(0, 0, 0, 0.85);
+  --lp-stroke: #404040;
+}
 
-  --sidebar: oklch(0.19 0.01 260);
-  --sidebar-foreground: oklch(0.98 0.002 260);
-  --sidebar-primary: oklch(0.62 0.22 265);
-  --sidebar-primary-foreground: oklch(0.99 0 0);
-  --sidebar-accent: oklch(0.24 0.01 260);
-  --sidebar-accent-foreground: oklch(0.98 0.002 260);
-  --sidebar-border: oklch(0.28 0.01 260);
-  --sidebar-ring: oklch(0.62 0.22 265);
+/* 2. GitHub Deep Dark */
+[data-theme="github-dark"] {
+  --background: #0d1117;
+  --foreground: #c9d1d9;
+  --card: #161b22;
+  --card-foreground: #c9d1d9;
+  --popover: #161b22;
+  --popover-foreground: #c9d1d9;
+  --primary: #58a6ff;
+  --primary-foreground: #0d1117;
+  --secondary: #21262d;
+  --secondary-foreground: #c9d1d9;
+  --muted: #21262d;
+  --muted-foreground: #8b949e;
+  --accent: #30363d;
+  --accent-foreground: #c9d1d9;
+  --border: #30363d;
+  --input: #30363d;
+  --ring: #58a6ff;
+  --sidebar: #0d1117;
+  --sidebar-foreground: #c9d1d9;
+  --sidebar-border: #30363d;
 
-  --status-up: oklch(0.72 0.19 150);
-  --status-down: oklch(0.62 0.22 25);
-  --status-degraded: oklch(0.8 0.18 85);
-  --status-maintenance: oklch(0.7 0.19 210);
+  --lp-bg: #0d1117;
+  --lp-bg-alt: #010409;
+  --lp-surface: rgba(22, 27, 34, 0.9);
+  --lp-surface-hover: rgba(33, 38, 45, 0.8);
+  --lp-border: #30363d;
+  --lp-border-top: #58a6ff;
+  --lp-text-primary: #c9d1d9;
+  --lp-text-mid: #58a6ff;
+  --lp-text-dim: #8b949e;
+  --lp-text-faint: #30363d;
+  --lp-cta-bg: #58a6ff;
+  --lp-cta-text: #0d1117;
+  --lp-nav-bg: rgba(13, 17, 23, 0.9);
+  --lp-stroke: #58a6ff;
+}
 
-  /* ─── Landing Page Theme Tokens (Dark Mode - Match Dashboard) ─── */
-  --lp-bg:           #000000;
-  --lp-bg-alt:       #0a0a0a;
-  --lp-surface:      rgba(23, 23, 23, 0.8);
-  --lp-surface-hover:rgba(38, 38, 38, 0.9);
-  --lp-border:       #262626;
-  --lp-border-top:   #404040;
-  --lp-text-primary: #f5f5f5;
-  --lp-text-mid:     #a3a3a3;
-  --lp-text-dim:     #737373;
-  --lp-text-faint:   #525252;
-  --lp-dot:          #525252;
-  --lp-scan-line:    rgba(255, 255, 255, 0.08);
-  --lp-cta-bg:       #ffffff;
-  --lp-cta-text:     #000000;
-  --lp-nav-bg:       rgba(0, 0, 0, 0.85);
-  --lp-stroke:       #404040;
+/* 3. Nord Deep Frost */
+[data-theme="nord"] {
+  --background: #2e3440;
+  --foreground: #eceff4;
+  --card: #3b4252;
+  --card-foreground: #eceff4;
+  --popover: #3b4252;
+  --popover-foreground: #eceff4;
+  --primary: #88c0d0;
+  --primary-foreground: #2e3440;
+  --secondary: #434c5e;
+  --secondary-foreground: #eceff4;
+  --muted: #434c5e;
+  --muted-foreground: #d8dee9;
+  --accent: #4c566a;
+  --accent-foreground: #eceff4;
+  --border: #4c566a;
+  --input: #4c566a;
+  --ring: #88c0d0;
+  --sidebar: #272c36;
+  --sidebar-foreground: #eceff4;
+  --sidebar-border: #4c566a;
+
+  --lp-bg: #2e3440;
+  --lp-bg-alt: #272c36;
+  --lp-surface: rgba(59, 66, 82, 0.9);
+  --lp-surface-hover: rgba(67, 76, 94, 0.8);
+  --lp-border: #4c566a;
+  --lp-border-top: #81a1c1;
+  --lp-text-primary: #eceff4;
+  --lp-text-mid: #88c0d0;
+  --lp-text-dim: #d8dee9;
+  --lp-text-faint: #4c566a;
+  --lp-cta-bg: #88c0d0;
+  --lp-cta-text: #2e3440;
+  --lp-nav-bg: rgba(46, 52, 64, 0.9);
+  --lp-stroke: #81a1c1;
+}
+
+/* 4. Tokyo Night Deep Storm */
+[data-theme="tokyo-night"] {
+  --background: #1a1b26;
+  --foreground: #c0caf5;
+  --card: #24283b;
+  --card-foreground: #c0caf5;
+  --popover: #24283b;
+  --popover-foreground: #c0caf5;
+  --primary: #7aa2f7;
+  --primary-foreground: #1a1b26;
+  --secondary: #292e42;
+  --secondary-foreground: #c0caf5;
+  --muted: #292e42;
+  --muted-foreground: #787c99;
+  --accent: #414868;
+  --accent-foreground: #c0caf5;
+  --border: #414868;
+  --input: #414868;
+  --ring: #7aa2f7;
+  --sidebar: #16161e;
+  --sidebar-foreground: #c0caf5;
+  --sidebar-border: #414868;
+
+  --lp-bg: #1a1b26;
+  --lp-bg-alt: #16161e;
+  --lp-surface: rgba(36, 40, 59, 0.9);
+  --lp-surface-hover: rgba(41, 46, 66, 0.8);
+  --lp-border: #414868;
+  --lp-border-top: #7aa2f7;
+  --lp-text-primary: #c0caf5;
+  --lp-text-mid: #7aa2f7;
+  --lp-text-dim: #787c99;
+  --lp-text-faint: #414868;
+  --lp-cta-bg: #7aa2f7;
+  --lp-cta-text: #1a1b26;
+  --lp-nav-bg: rgba(26, 27, 38, 0.9);
+  --lp-stroke: #7aa2f7;
+}
+
+/* 5. One Dark Deep Pro */
+[data-theme="one-dark"] {
+  --background: #282c34;
+  --foreground: #abb2bf;
+  --card: #21252b;
+  --card-foreground: #abb2bf;
+  --popover: #21252b;
+  --popover-foreground: #abb2bf;
+  --primary: #61afef;
+  --primary-foreground: #282c34;
+  --secondary: #3e4451;
+  --secondary-foreground: #abb2bf;
+  --muted: #3e4451;
+  --muted-foreground: #5c6370;
+  --accent: #4b5263;
+  --accent-foreground: #abb2bf;
+  --border: #4b5263;
+  --input: #4b5263;
+  --ring: #61afef;
+  --sidebar: #1e2227;
+  --sidebar-foreground: #abb2bf;
+  --sidebar-border: #4b5263;
+
+  --lp-bg: #282c34;
+  --lp-bg-alt: #21252b;
+  --lp-surface: rgba(33, 37, 43, 0.9);
+  --lp-surface-hover: rgba(62, 68, 81, 0.8);
+  --lp-border: #4b5263;
+  --lp-border-top: #61afef;
+  --lp-text-primary: #abb2bf;
+  --lp-text-mid: #61afef;
+  --lp-text-dim: #5c6370;
+  --lp-text-faint: #4b5263;
+  --lp-cta-bg: #61afef;
+  --lp-cta-text: #282c34;
+  --lp-nav-bg: rgba(40, 44, 52, 0.9);
+  --lp-stroke: #61afef;
 }
 
 @layer base {
@@ -221,25 +310,4 @@
     letter-spacing: -0.025em;
     font-weight: 700;
   }
-}
-
-/* Custom Frosted Glassmorphism & Apple Top-to-Bottom Gradient Border Utilities */
-.glass-card {
-  backdrop-filter: blur(40px) saturate(180%);
-  -webkit-backdrop-filter: blur(40px) saturate(180%);
-}
-
-.frosted-border {
-  border-top-color: rgba(255, 255, 255, 0.18);
-  border-bottom-color: rgba(255, 255, 255, 0.04);
-}
-
-.glass-card-floating {
-  backdrop-filter: blur(40px) saturate(180%);
-  -webkit-backdrop-filter: blur(40px) saturate(180%);
-  box-shadow: none;
-}
-
-.dark .glass-card-floating {
-  box-shadow: none;
 }

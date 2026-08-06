@@ -36,7 +36,7 @@ export function DashboardHeader({
   const [isUserDropdownOpen, setIsUserDropdownOpen] = useState(false);
 
   return (
-    <header className="h-14 px-4 sm:px-6 bg-white dark:bg-black border-b border-slate-200 dark:border-neutral-800 flex items-center justify-between gap-4 shrink-0 font-mono text-xs z-30 select-none transition-colors">
+    <header className="h-14 px-4 sm:px-6 bg-[var(--card)] border-b border-[var(--border)] text-[var(--foreground)] flex items-center justify-between gap-4 shrink-0 font-mono text-xs z-30 select-none transition-colors duration-300">
       {/* Left: Brand logo & Stream indicator */}
       <div className="flex items-center gap-2.5 sm:gap-3">
         <Link

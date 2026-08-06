@@ -95,7 +95,7 @@ export function DashboardView() {
   }, [paginatedIncidents?.items, searchQuery]);
 
   return (
-    <div className="min-h-screen lg:h-screen lg:max-h-screen w-full max-w-full overflow-x-hidden overflow-y-auto lg:overflow-y-hidden flex flex-col bg-slate-50 dark:bg-black text-slate-900 dark:text-neutral-100 font-sans relative selection:bg-slate-800">
+    <div className="min-h-screen lg:h-screen lg:max-h-screen w-full max-w-full overflow-x-hidden overflow-y-auto lg:overflow-y-hidden flex flex-col bg-[var(--background)] text-[var(--foreground)] font-sans relative selection:bg-slate-800 transition-colors duration-300">
       {/* Role Preview Banner for Admins */}
       <RolePreviewBanner />
 

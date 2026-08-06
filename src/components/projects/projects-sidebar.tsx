@@ -121,7 +121,7 @@ export function ProjectsSidebar({
 
   return (
     <>
-      <aside className="w-full lg:w-72 xl:w-80 bg-white dark:bg-black backdrop-blur-3xl flex flex-col justify-between h-auto lg:h-full shrink-0 font-mono border-b lg:border-b-0 lg:border-r border-slate-200 dark:border-neutral-800 overflow-hidden select-none transition-colors">
+      <aside className="w-full lg:w-72 xl:w-80 bg-[var(--sidebar)] text-[var(--sidebar-foreground)] backdrop-blur-3xl flex flex-col justify-between h-auto lg:h-full shrink-0 font-mono border-b lg:border-b-0 lg:border-r border-[var(--sidebar-border)] overflow-hidden select-none transition-colors duration-300">
         {/* Top Section: Projects & Organization navigation */}
         <div className="p-4 space-y-5 overflow-y-auto">
           {/* Active Organization Switcher & Badge */}
