@@ -79,7 +79,7 @@ export function IncidentList({
         </div>
 
         {/* Status Filter Chips */}
-        <div className="flex items-center gap-1.5 overflow-x-auto pb-1 scrollbar-none font-mono">
+        <div className="flex items-center gap-1.5 overflow-x-auto pb-1.5 font-mono [&::-webkit-scrollbar]:h-1 [&::-webkit-scrollbar-thumb]:bg-slate-300 dark:[&::-webkit-scrollbar-thumb]:bg-neutral-800 [&::-webkit-scrollbar-track]:bg-transparent">
           <span className="text-[10px] text-slate-400 dark:text-neutral-500 pr-1 shrink-0 uppercase font-bold">STATUS:</span>
           {statusOptions.map((st) => (
             <button
@@ -97,7 +97,7 @@ export function IncidentList({
         </div>
 
         {/* Severity Filter Chips */}
-        <div className="flex items-center gap-1.5 overflow-x-auto pb-1 scrollbar-none font-mono">
+        <div className="flex items-center gap-1.5 overflow-x-auto pb-1.5 font-mono [&::-webkit-scrollbar]:h-1 [&::-webkit-scrollbar-thumb]:bg-slate-300 dark:[&::-webkit-scrollbar-thumb]:bg-neutral-800 [&::-webkit-scrollbar-track]:bg-transparent">
           <span className="text-[10px] text-slate-400 dark:text-neutral-500 pr-1 shrink-0 uppercase font-bold">SEVERITY:</span>
           {severityOptions.map((sev) => (
             <button
@@ -134,9 +134,15 @@ export function IncidentList({
             ))}
           </div>
         ) : error ? (
-          <div className="p-6 rounded-none bg-rose-50 dark:bg-black border border-rose-200 dark:border-rose-900/60 text-rose-800 dark:text-rose-300 space-y-2 text-center font-mono">
+          <div className="p-6 rounded-none bg-rose-50/50 dark:bg-black border border-rose-200 dark:border-rose-900/60 text-rose-800 dark:text-rose-300 space-y-2 text-center font-mono">
             <p className="font-bold text-xs">[FAILED_TO_LOAD_TELEMETRY_STREAM]</p>
             <p className="text-[11px] text-rose-600 dark:text-rose-400">{error.message}</p>
+            <button
+              onClick={onRefresh}
+              className="mt-2 px-3 py-1 bg-rose-600 dark:bg-rose-950 text-white dark:text-rose-200 text-[10px] font-bold uppercase border border-rose-500 hover:opacity-90 transition-opacity cursor-pointer inline-flex items-center gap-1"
+            >
+              [RETRY_STREAM]
+            </button>
           </div>
         ) : incidents.length > 0 ? (
           <motion.div

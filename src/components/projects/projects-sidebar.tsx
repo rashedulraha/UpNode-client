@@ -197,7 +197,7 @@ export function ProjectsSidebar({
                           setIsOrgDropdownOpen(false);
                           setIsCreateOrgModalOpen(true);
                         }}
-                        className="w-full text-left px-2.5 py-1.5 text-slate-500 hover:text-slate-900 dark:hover:text-white uppercase flex items-center gap-1 cursor-pointer transition-colors text-[10px]"
+                        className="w-full text-center justify-center font-bold px-2.5 py-1.5 text-slate-700 dark:text-neutral-300 hover:text-slate-900 dark:hover:text-white bg-slate-50 dark:bg-neutral-900/80 hover:bg-slate-100 dark:hover:bg-neutral-800 transition-colors cursor-pointer text-[10px] uppercase flex items-center gap-1"
                       >
                         + [CREATE_ORG]
                       </button>
@@ -205,17 +205,6 @@ export function ProjectsSidebar({
                   </div>
                 </>
               )}
-            </div>
-
-            {/* Small text-only create button without border */}
-            <div className="flex items-center justify-between px-1 font-mono pt-0.5">
-              <button
-                onClick={() => setIsCreateOrgModalOpen(true)}
-                className="text-[10px] font-mono text-slate-500 hover:text-slate-900 dark:hover:text-white uppercase flex items-center gap-1 cursor-pointer transition-colors hover:underline"
-                title="Create a new organization"
-              >
-                + [CREATE_ORG]
-              </button>
             </div>
           </div>
 
