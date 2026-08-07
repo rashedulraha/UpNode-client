@@ -6,7 +6,7 @@ import { usePathname } from "next/navigation";
 import { useAuth } from "@/hooks/use-auth";
 import { IncidentStreamStatus } from "@/hooks/useIncidentStream";
 import { ThemeToggle } from "@/components/ui/theme-toggle";
-import { Plus, Search, Home } from "lucide-react";
+import { Plus, Search, Home, ShieldAlert } from "lucide-react";
 
 interface DashboardHeaderProps {
 	streamStatus: IncidentStreamStatus;
@@ -81,6 +81,17 @@ export function DashboardHeader({
 
 				{/* Right: Streamlined Actions & User Profile */}
 				<div className="flex items-center gap-2 sm:gap-3 ml-auto">
+					{user?.role === "SUPER_ADMIN" && (
+						<Link
+							href="/super-admin"
+							className="h-8 px-3 rounded-none flex items-center gap-1.5 bg-rose-500/10 border border-rose-500/40 text-rose-400 hover:bg-rose-500 hover:text-white text-xs font-mono font-bold transition-all cursor-pointer shadow-sm uppercase tracking-wider shrink-0"
+							title="Super Admin Console"
+						>
+							<ShieldAlert className="w-3.5 h-3.5 text-rose-400" />
+							<span className="hidden md:inline">[SUPER_ADMIN]</span>
+						</Link>
+					)}
+
 					<ThemeToggle />
 
 					{isDashboardRoot && (
