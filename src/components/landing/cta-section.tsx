@@ -96,7 +96,12 @@ export function CtaSection() {
 
 					<div className="relative z-10 max-w-md mx-auto">
 						<form
-							onSubmit={(e) => e.preventDefault()}
+							onSubmit={(e) => {
+								e.preventDefault();
+								window.location.href = ctaEmail
+									? `/register?email=${encodeURIComponent(ctaEmail)}`
+									: "/register";
+							}}
 							className="flex flex-col sm:flex-row items-stretch gap-2"
 						>
 							<input

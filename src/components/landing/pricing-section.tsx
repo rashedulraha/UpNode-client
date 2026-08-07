@@ -34,7 +34,7 @@ export function PricingSection() {
 			unit: "/ forever",
 			featured: false,
 			cta: "Get Started Free",
-			href: "/login?signup=true",
+			href: "/register",
 			icon: <Zap className="w-5 h-5" style={{ color: "var(--lp-text-dim)" }} />,
 			features: [
 				"Up to 5 Projects Included",
@@ -53,7 +53,7 @@ export function PricingSection() {
 			featured: true,
 			badge: "Most Popular",
 			cta: "Start 14-Day Free Trial",
-			href: "/login?signup=true",
+			href: "/register",
 			icon: (
 				<Sparkles
 					className="w-5 h-5 animate-pulse"
