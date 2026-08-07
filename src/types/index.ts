@@ -123,6 +123,7 @@ export interface Member {
 		email: string;
 		image?: string | null;
 		createdAt?: string;
+		emailVerified?: boolean;
 	};
 }
 

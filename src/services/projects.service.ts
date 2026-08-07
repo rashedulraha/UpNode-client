@@ -4,6 +4,7 @@ export interface Project {
 	id: string;
 	name: string;
 	slug?: string;
+	apiKey?: string;
 	description?: string;
 	url?: string;
 	createdAt: string;

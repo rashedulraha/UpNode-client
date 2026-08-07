@@ -16,6 +16,7 @@ import {
 	ChevronDown,
 	X,
 	Loader2,
+	ExternalLink,
 } from "lucide-react";
 import { Project } from "@/services/projects.service";
 import {
@@ -229,8 +230,8 @@ export function ProjectsSidebar({
 									!isTeamPage &&
 									!isIntegrationsPage &&
 									!isProfilePage
-										? "bg-[var(--secondary)] text-[var(--foreground)] border-[var(--primary)] font-bold shadow-sm"
-										: "bg-[var(--card)] text-[var(--muted-foreground)] border-[var(--border)] hover:text-[var(--foreground)] hover:border-[var(--primary)]"
+										? "bg-[var(--secondary)] text-[var(--foreground)] border-transparent font-bold shadow-sm"
+										: "bg-[var(--card)]/40 text-[var(--muted-foreground)] border-transparent hover:bg-[var(--secondary)] hover:text-[var(--foreground)]"
 								}`}
 							>
 								<div className="flex items-center gap-2 min-w-0">
@@ -240,55 +241,6 @@ export function ProjectsSidebar({
 									</span>
 								</div>
 							</button>
-						</div>
-					</div>
-
-					{/* Organization IAM & Team Management Nav */}
-					<div>
-						<h2 className="text-[10px] font-mono font-bold text-[var(--muted-foreground)] uppercase tracking-widest px-1 mb-2">
-							[ORGANIZATION & TEAM]
-						</h2>
-						<div className="space-y-1 font-mono text-xs">
-							<Link
-								href="/dashboard/settings/team"
-								className={`w-full flex items-center justify-between px-3 py-1.5 rounded-none transition-colors cursor-pointer border ${
-									isTeamPage
-										? "bg-[var(--secondary)] text-[var(--foreground)] border-[var(--primary)] font-bold shadow-sm"
-										: "bg-[var(--card)] text-[var(--muted-foreground)] border-[var(--border)] hover:text-[var(--foreground)] hover:border-[var(--primary)]"
-								}`}
-							>
-								<div className="flex items-center gap-2 min-w-0">
-									<Users className="w-3.5 h-3.5 shrink-0 text-[var(--muted-foreground)]" />
-									<span className="truncate uppercase font-medium">
-										[TEAM_MANAGEMENT]
-									</span>
-								</div>
-								<span
-									className={`text-[9px] px-1.5 py-0.5 font-mono font-bold uppercase border ${
-										isTeamPage
-											? "border-emerald-500/30 bg-emerald-500/10 text-emerald-400"
-											: "border-[var(--border)] bg-[var(--secondary)] text-[var(--muted-foreground)]"
-									}`}
-								>
-									ADD_ADMIN
-								</span>
-							</Link>
-
-							<Link
-								href="/dashboard/settings/integrations"
-								className={`w-full flex items-center justify-between px-3 py-1.5 rounded-none transition-colors cursor-pointer border ${
-									isIntegrationsPage
-										? "bg-[var(--secondary)] text-[var(--foreground)] border-[var(--primary)] font-bold shadow-sm"
-										: "bg-[var(--card)] text-[var(--muted-foreground)] border-[var(--border)] hover:text-[var(--foreground)] hover:border-[var(--primary)]"
-								}`}
-							>
-								<div className="flex items-center gap-2 min-w-0">
-									<Sliders className="w-3.5 h-3.5 shrink-0 text-[var(--muted-foreground)]" />
-									<span className="truncate uppercase font-medium">
-										[INTEGRATIONS]
-									</span>
-								</div>
-							</Link>
 						</div>
 					</div>
 
@@ -324,8 +276,8 @@ export function ProjectsSidebar({
 											key={project.id}
 											className={`flex items-center justify-between px-3 py-1.5 rounded-none transition-colors border group ${
 												isSelected
-													? "bg-[var(--secondary)] text-[var(--foreground)] border-[var(--primary)] font-bold shadow-sm"
-													: "bg-[var(--card)] text-[var(--muted-foreground)] border-[var(--border)] hover:text-[var(--foreground)] hover:border-[var(--primary)]"
+													? "bg-[var(--secondary)] text-[var(--foreground)] border-transparent font-bold shadow-sm"
+													: "bg-[var(--card)]/40 text-[var(--muted-foreground)] border-transparent hover:bg-[var(--secondary)] hover:text-[var(--foreground)]"
 											}`}
 										>
 											<button
@@ -336,16 +288,29 @@ export function ProjectsSidebar({
 												<span className="truncate">{project.name}</span>
 											</button>
 
-											<button
-												onClick={(e) => {
-													e.stopPropagation();
-													onOpenProjectSettings(project);
-												}}
-												className="p-1 opacity-0 group-hover:opacity-100 hover:bg-[var(--secondary)] text-[var(--muted-foreground)] hover:text-[var(--foreground)] transition-all cursor-pointer border border-transparent hover:border-[var(--border)]"
-												title="Project Settings"
-											>
-												<Settings className="w-3 h-3" />
-											</button>
+											<div className="flex items-center gap-0.5 opacity-0 group-hover:opacity-100 transition-all shrink-0">
+												<Link
+													href={`/status/${project.slug || project.id}`}
+													target="_blank"
+													rel="noopener noreferrer"
+													onClick={(e) => e.stopPropagation()}
+													className="p-1 hover:bg-[var(--secondary)] text-[var(--muted-foreground)] hover:text-emerald-400 transition-all cursor-pointer border border-transparent hover:border-[var(--border)]"
+													title="Open Public Status Page"
+												>
+													<ExternalLink className="w-3 h-3" />
+												</Link>
+
+												<button
+													onClick={(e) => {
+														e.stopPropagation();
+														onOpenProjectSettings(project);
+													}}
+													className="p-1 hover:bg-[var(--secondary)] text-[var(--muted-foreground)] hover:text-[var(--foreground)] transition-all cursor-pointer border border-transparent hover:border-[var(--border)]"
+													title="Project Settings"
+												>
+													<Settings className="w-3 h-3" />
+												</button>
+											</div>
 										</div>
 									);
 								})

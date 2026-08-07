@@ -3,7 +3,16 @@
 import React, { useState, useEffect } from "react";
 import { useUpdateProject, useDeleteProject } from "@/hooks/use-projects";
 import { Project } from "@/services/projects.service";
-import { Settings, Loader2, Save, Trash2, AlertCircle } from "lucide-react";
+import {
+	Settings,
+	Loader2,
+	Save,
+	Trash2,
+	AlertCircle,
+	Key,
+	Copy,
+	Check,
+} from "lucide-react";
 import { useOrgRole } from "@/hooks/use-org-role";
 
 interface ProjectSettingsModalProps {
@@ -31,6 +40,7 @@ export function ProjectSettingsModal({
 
 	const [errorMessage, setErrorMessage] = useState<string | null>(null);
 	const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
+	const [isCopied, setIsCopied] = useState(false);
 
 	useEffect(() => {
 		if (project) {
@@ -151,6 +161,44 @@ export function ProjectSettingsModal({
 								className="w-full px-3 py-2 bg-[var(--background)] border border-[var(--border)] text-[var(--foreground)] placeholder:text-[var(--muted-foreground)] focus:outline-none focus:border-[var(--primary)] font-mono text-xs rounded-none"
 							/>
 						</div>
+
+						{/* API Key Field */}
+						{project.apiKey && (
+							<div className="space-y-1.5 pt-1 p-2.5 bg-emerald-500/10 border border-emerald-500/30">
+								<label className="block text-[10px] text-emerald-400 uppercase font-mono font-bold flex items-center gap-1.5">
+									<Key className="w-3.5 h-3.5 text-emerald-400 shrink-0" />
+									[PROJECT_API_KEY] (TELEMETRY TOKEN)
+								</label>
+								<div className="flex items-center gap-2">
+									<input
+										type="text"
+										readOnly
+										value={project.apiKey}
+										className="flex-1 px-2.5 py-1.5 bg-[var(--background)] border border-emerald-500/30 text-emerald-400 font-mono text-xs rounded-none font-bold select-all"
+									/>
+									<button
+										type="button"
+										onClick={() => {
+											navigator.clipboard.writeText(project.apiKey || "");
+											setIsCopied(true);
+											setTimeout(() => setIsCopied(false), 2000);
+										}}
+										className="px-3 py-1.5 border border-emerald-500/50 bg-emerald-500/20 text-emerald-300 hover:bg-emerald-500/30 font-mono text-[11px] uppercase font-bold shrink-0 cursor-pointer flex items-center gap-1 active:scale-95 transition-all"
+									>
+										{isCopied ? (
+											<>
+												<Check className="w-3.5 h-3.5 text-emerald-400" />{" "}
+												[COPIED]
+											</>
+										) : (
+											<>
+												<Copy className="w-3.5 h-3.5" /> [COPY]
+											</>
+										)}
+									</button>
+								</div>
+							</div>
+						)}
 
 						<div className="space-y-1">
 							<label className="block text-[10px] text-[var(--muted-foreground)] uppercase font-mono font-bold">
