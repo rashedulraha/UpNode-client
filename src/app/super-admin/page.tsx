@@ -11,6 +11,10 @@ import {
 } from "@/services/admin.service";
 import { AdminNavTabs } from "@/components/admin/admin-nav-tabs";
 import {
+	AdminPageSkeleton,
+	TableSkeletonRows,
+} from "@/components/ui/skeleton-loaders";
+import {
 	ShieldAlert,
 	Users,
 	Building2,
@@ -99,18 +103,7 @@ export default function SuperAdminPage() {
 	};
 
 	if (isAuthLoading || (user && !isSuperAdmin)) {
-		return (
-			<div className="min-h-screen bg-[var(--background)] text-[var(--foreground)] font-mono flex flex-col items-center justify-center p-6 space-y-4">
-				<div className="flex items-center gap-3 text-rose-500 font-bold text-sm uppercase animate-pulse">
-					<ShieldAlert className="w-6 h-6" />
-					<span>[VERIFYING_SUPER_ADMIN_SECURITY_CLEARANCE...]</span>
-				</div>
-				<p className="text-xs text-[var(--muted-foreground)] text-center max-w-md">
-					Restricted platform area. Authorization token and SUPER_ADMIN
-					credentials required.
-				</p>
-			</div>
-		);
+		return <AdminPageSkeleton />;
 	}
 
 	const filteredUsers = usersList.filter(
@@ -496,15 +489,7 @@ export default function SuperAdminPage() {
 								</thead>
 								<tbody className="divide-y divide-[var(--border)] text-[var(--foreground)]">
 									{isLoadingData ? (
-										<tr>
-											<td
-												colSpan={6}
-												className="py-8 text-center text-[var(--muted-foreground)]"
-											>
-												<Loader2 className="w-5 h-5 animate-spin mx-auto mb-2" />
-												<span>Loading platform accounts...</span>
-											</td>
-										</tr>
+										<TableSkeletonRows rows={5} />
 									) : filteredUsers.length === 0 ? (
 										<tr>
 											<td
