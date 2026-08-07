@@ -13,6 +13,7 @@ interface DashboardHeaderProps {
 	searchQuery: string;
 	onSearchChange: (q: string) => void;
 	onOpenCreateModal: () => void;
+	showSearch?: boolean;
 }
 
 export function DashboardHeader({
@@ -20,6 +21,7 @@ export function DashboardHeader({
 	searchQuery,
 	onSearchChange,
 	onOpenCreateModal,
+	showSearch = true,
 }: DashboardHeaderProps) {
 	const { user } = useAuth();
 	const pathname = usePathname();
@@ -97,18 +99,20 @@ export function DashboardHeader({
 				</div>
 
 				{/* Middle: Clean Glassmorphic Search Bar */}
-				<div className="flex-1 max-w-xs sm:max-w-md hidden md:block font-mono">
-					<div className="relative flex items-center h-8">
-						<Search className="absolute left-3 h-3.5 w-3.5 text-[var(--muted-foreground)] pointer-events-none" />
-						<input
-							type="text"
-							placeholder="[SEARCH ORG OR PROJECT]"
-							value={searchQuery}
-							onChange={(e) => onSearchChange(e.target.value)}
-							className="w-full h-8 pl-9 pr-3 rounded-none bg-[var(--background)]/70 border border-[var(--border)] text-xs text-[var(--foreground)] placeholder:text-[var(--muted-foreground)] focus:outline-none focus:border-[var(--primary)] focus:bg-[var(--background)] transition-all font-mono shadow-inner"
-						/>
+				{showSearch && !pathname.startsWith("/super-admin") && (
+					<div className="flex-1 max-w-xs sm:max-w-md hidden md:block font-mono">
+						<div className="relative flex items-center h-8">
+							<Search className="absolute left-3 h-3.5 w-3.5 text-[var(--muted-foreground)] pointer-events-none" />
+							<input
+								type="text"
+								placeholder="[SEARCH ORG OR PROJECT]"
+								value={searchQuery}
+								onChange={(e) => onSearchChange(e.target.value)}
+								className="w-full h-8 pl-9 pr-3 rounded-none bg-[var(--background)]/70 border border-[var(--border)] text-xs text-[var(--foreground)] placeholder:text-[var(--muted-foreground)] focus:outline-none focus:border-[var(--primary)] focus:bg-[var(--background)] transition-all font-mono shadow-inner"
+							/>
+						</div>
 					</div>
-				</div>
+				)}
 
 				{/* Right: Streamlined Actions & User Profile */}
 				<div className="flex items-center gap-2 sm:gap-3 ml-auto">
