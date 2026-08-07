@@ -26,6 +26,19 @@ export interface PlatformUser {
 	};
 }
 
+export interface PlatformOrganization {
+	id: string;
+	name: string;
+	slug: string;
+	isSuspended: boolean;
+	createdAt: string;
+	adminName: string;
+	adminEmail: string;
+	plan: "FREE" | "PRO";
+	membersCount: number;
+	projectsCount: number;
+}
+
 export const adminService = {
 	async getStats(): Promise<PlatformStats> {
 		const response = await api.get<PlatformStats>("/super-admin/stats");
@@ -43,6 +56,23 @@ export const adminService = {
 		const response = await api.post<{ message: string; user: PlatformUser }>(
 			`/super-admin/users/${userId}/toggle-block`,
 		);
+		return response.data;
+	},
+
+	async getOrganizations(): Promise<PlatformOrganization[]> {
+		const response = await api.get<PlatformOrganization[]>(
+			"/super-admin/organizations",
+		);
+		return response.data;
+	},
+
+	async toggleOrganizationSuspend(
+		orgId: string,
+	): Promise<{ message: string; organization: PlatformOrganization }> {
+		const response = await api.post<{
+			message: string;
+			organization: PlatformOrganization;
+		}>(`/super-admin/organizations/${orgId}/toggle-suspend`);
 		return response.data;
 	},
 };

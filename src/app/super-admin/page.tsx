@@ -9,6 +9,7 @@ import {
 	PlatformStats,
 	PlatformUser,
 } from "@/services/admin.service";
+import { AdminNavTabs } from "@/components/admin/admin-nav-tabs";
 import {
 	ShieldAlert,
 	Users,
@@ -179,6 +180,8 @@ export default function SuperAdminPage() {
 						<span>[SUCCESS]: {actionSuccess}</span>
 					</div>
 				)}
+
+				<AdminNavTabs />
 
 				{/* Section Header & View Mode Switcher */}
 				<div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 p-5 bg-[var(--card)]/90 backdrop-blur-xl border border-[var(--border)] shadow-sm">
