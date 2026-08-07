@@ -110,7 +110,7 @@ export type SSEIncidentEvent = {
 	data: Incident;
 };
 
-export type MemberRole = "ADMIN" | "ENGINEER" | "VIEWER";
+export type MemberRole = "SUPER_ADMIN" | "ADMIN" | "ENGINEER" | "VIEWER";
 
 export interface Member {
 	id: string;
