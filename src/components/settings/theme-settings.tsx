@@ -60,9 +60,6 @@ export function ThemeSettings() {
 
 	return (
 		<div className="space-y-6 font-mono text-xs text-[var(--foreground)]">
-			{/* Top Shared Settings Navigation Bar */}
-			<SettingsNav />
-
 			{/* Main Console Header Box */}
 			<div className="border border-[var(--border)] bg-[var(--card)]/90 backdrop-blur-xl p-6 rounded-none space-y-4 shadow-sm">
 				<div className="flex flex-col md:flex-row md:items-center justify-between gap-4">

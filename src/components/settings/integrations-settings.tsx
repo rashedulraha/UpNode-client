@@ -95,7 +95,6 @@ export function IntegrationsSettings() {
 	if (loading) {
 		return (
 			<div className="space-y-6 font-mono animate-pulse">
-				<SettingsNav />
 				<div className="p-8 rounded-none bg-[var(--card)] border border-[var(--border)] text-center text-xs text-[var(--muted-foreground)]">
 					[LOADING_INTEGRATION_SETTINGS...]
 				</div>
@@ -108,8 +107,6 @@ export function IntegrationsSettings() {
 
 	return (
 		<div className="space-y-6 font-mono text-xs select-none text-[var(--foreground)]">
-			<SettingsNav />
-
 			<form onSubmit={handleSave} className="space-y-6">
 				{/* Feedback alerts */}
 				{error && (
