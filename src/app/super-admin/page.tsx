@@ -15,7 +15,6 @@ import {
 	Users,
 	Building2,
 	FolderCheck,
-	Activity,
 	Lock,
 	Unlock,
 	ArrowLeft,
