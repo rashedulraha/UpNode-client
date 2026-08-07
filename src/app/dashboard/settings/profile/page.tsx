@@ -59,6 +59,7 @@ import { organizationService } from "@/services/organization.service";
 import MemberList from "@/components/team/member-list";
 import InviteMemberModal from "@/components/team/invite-member-modal";
 import { useMembers } from "@/hooks/use-team";
+import { useOrgRole } from "@/hooks/use-org-role";
 import { ThemeSettings } from "@/components/settings/theme-settings";
 import IntegrationsSettings from "@/components/settings/integrations-settings";
 
@@ -1261,6 +1262,131 @@ function RoleSimulationSection() {
 	);
 }
 
+function DeleteOrgCard() {
+	const { isAtLeastEngineer, isLoading } = useOrgRole();
+	const [isModalOpen, setIsModalOpen] = useState(false);
+	const [confirmText, setConfirmText] = useState("");
+	const [isDeleting, setIsDeleting] = useState(false);
+	const [deleteError, setDeleteError] = useState<string | null>(null);
+
+	const handleDelete = async () => {
+		if (confirmText !== "DELETE") return;
+		try {
+			setIsDeleting(true);
+			setDeleteError(null);
+			await organizationService.deleteOrganization();
+			localStorage.removeItem("activeOrganizationId");
+			window.location.href = "/dashboard";
+		} catch (err: any) {
+			setDeleteError(
+				err?.response?.data?.error ||
+					err?.message ||
+					"Failed to delete organization.",
+			);
+		} finally {
+			setIsDeleting(false);
+		}
+	};
+
+	if (isLoading) return null;
+
+	return (
+		<div className="mt-8 border border-rose-500/30 bg-rose-500/5 p-5 rounded-none space-y-4">
+			<div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+				<div className="space-y-1">
+					<div className="flex items-center gap-2 text-rose-400 font-bold uppercase text-xs">
+						<AlertCircle className="w-4 h-4 shrink-0 text-rose-500" />
+						<span>[DANGER_ZONE] // ORGANIZATION_DESTRUCTION</span>
+					</div>
+					<p className="text-xs text-[var(--muted-foreground)]">
+						Permanently delete this organization, all registered telemetry
+						projects, incidents, and member access rights.
+					</p>
+				</div>
+
+				{isAtLeastEngineer ? (
+					<button
+						onClick={() => setIsModalOpen(true)}
+						className="px-4 py-2 border border-rose-500 bg-rose-500/10 hover:bg-rose-500 text-rose-400 hover:text-white font-mono text-xs uppercase font-bold tracking-wider transition-all cursor-pointer flex items-center gap-2 shrink-0"
+					>
+						<Trash2 className="w-4 h-4" />
+						<span>[DELETE_ORGANIZATION]</span>
+					</button>
+				) : (
+					<div className="px-3 py-1.5 border border-[var(--border)] bg-[var(--secondary)] text-[var(--muted-foreground)] font-mono text-[11px] uppercase font-bold tracking-wider shrink-0 cursor-not-allowed">
+						[DELETE_DISABLED // VIEWER_ROLE]
+					</div>
+				)}
+			</div>
+
+			{/* Confirmation Modal */}
+			{isModalOpen && (
+				<div className="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4">
+					<div className="w-full max-w-md bg-[var(--card)] border border-rose-500/40 p-6 space-y-5 shadow-2xl font-mono text-xs text-[var(--foreground)]">
+						<div className="space-y-2">
+							<div className="flex items-center gap-2 text-rose-400 font-bold text-sm uppercase">
+								<Trash2 className="w-5 h-5 text-rose-500" />
+								<span>Confirm Organization Deletion</span>
+							</div>
+							<p className="text-[var(--muted-foreground)] text-xs leading-relaxed">
+								This action is{" "}
+								<strong className="text-rose-400">IRREVERSIBLE</strong>. All
+								telemetry streams, incident history, metrics, and team access
+								will be permanently destroyed.
+							</p>
+						</div>
+
+						{deleteError && (
+							<div className="p-3 bg-rose-500/10 border border-rose-500/30 text-rose-400 text-xs">
+								[ERR]: {deleteError}
+							</div>
+						)}
+
+						<div className="space-y-2">
+							<label className="block text-[11px] text-[var(--muted-foreground)] uppercase">
+								Type{" "}
+								<span className="text-[var(--foreground)] font-bold">
+									DELETE
+								</span>{" "}
+								to confirm:
+							</label>
+							<input
+								type="text"
+								value={confirmText}
+								onChange={(e) => setConfirmText(e.target.value)}
+								placeholder="DELETE"
+								className="w-full px-3 py-2 bg-[var(--background)] border border-[var(--border)] focus:border-rose-500 text-[var(--foreground)] outline-none font-bold text-xs uppercase"
+							/>
+						</div>
+
+						<div className="flex items-center justify-end gap-3 pt-2">
+							<button
+								onClick={() => {
+									setIsModalOpen(false);
+									setConfirmText("");
+									setDeleteError(null);
+								}}
+								className="px-4 py-2 border border-[var(--border)] bg-[var(--secondary)] hover:bg-[var(--secondary)]/80 text-[var(--foreground)] font-bold text-xs uppercase transition-all cursor-pointer"
+							>
+								[CANCEL]
+							</button>
+
+							<button
+								disabled={confirmText !== "DELETE" || isDeleting}
+								onClick={handleDelete}
+								className="px-4 py-2 border border-rose-500 bg-rose-500 hover:bg-rose-600 disabled:opacity-40 disabled:cursor-not-allowed text-white font-bold text-xs uppercase transition-all flex items-center gap-2 cursor-pointer"
+							>
+								{isDeleting && <Loader2 className="w-3.5 h-3.5 animate-spin" />}
+								<span>[CONFIRM_DELETE]</span>
+							</button>
+						</div>
+					</div>
+				</div>
+			)}
+		</div>
+	);
+}
+
 function TeamSectionWrapper() {
 	const { data: members = [], isLoading, error } = useMembers();
 	const [isInviteOpen, setIsInviteOpen] = useState(false);
@@ -1286,6 +1412,7 @@ function TeamSectionWrapper() {
 				isOpen={isInviteOpen}
 				onClose={() => setIsInviteOpen(false)}
 			/>
+			<DeleteOrgCard />
 		</Section>
 	);
 }

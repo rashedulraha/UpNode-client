@@ -55,4 +55,9 @@ export const organizationService = {
 		const response = await api.get<UserOrganization[]>("/organization/my");
 		return response.data;
 	},
+
+	async deleteOrganization(): Promise<{ message: string }> {
+		const response = await api.delete<{ message: string }>("/organization");
+		return response.data;
+	},
 };
