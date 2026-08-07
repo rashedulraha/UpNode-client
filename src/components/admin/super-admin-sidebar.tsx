@@ -1,6 +1,6 @@
 "use client";
 
-import React from "react";
+import React, { useState, useEffect } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import {
@@ -9,58 +9,109 @@ import {
 	Users,
 	ArrowLeft,
 	ShieldAlert,
-	Radio,
-	Terminal,
-	FolderCheck,
-	Activity,
+	ChevronLeft,
+	ChevronRight,
+	PanelLeftClose,
+	PanelLeftOpen,
 } from "lucide-react";
 import { useAuth } from "@/hooks/use-auth";
 
 export function SuperAdminSidebar() {
 	const pathname = usePathname();
 	const { user } = useAuth();
+	const [isCollapsed, setIsCollapsed] = useState(false);
+
+	useEffect(() => {
+		const storedValue = localStorage.getItem(
+			"upnode_superadmin_sidebar_collapsed",
+		);
+		if (storedValue === "true") {
+			setIsCollapsed(true);
+		}
+	}, []);
+
+	const toggleCollapse = () => {
+		const nextState = !isCollapsed;
+		setIsCollapsed(nextState);
+		localStorage.setItem(
+			"upnode_superadmin_sidebar_collapsed",
+			String(nextState),
+		);
+	};
 
 	const navItems = [
 		{
 			label: "[OVERVIEW]",
+			shortLabel: "OVERVIEW",
 			href: "/super-admin",
-			icon: <LayoutDashboard className="w-3.5 h-3.5" />,
+			icon: <LayoutDashboard className="w-4 h-4 shrink-0" />,
 			badge: "LIVE",
 		},
 		{
 			label: "[ORGANIZATION_MGMT]",
+			shortLabel: "ORGS",
 			href: "/super-admin/organizations",
-			icon: <Building2 className="w-3.5 h-3.5" />,
+			icon: <Building2 className="w-4 h-4 shrink-0" />,
 		},
 		{
 			label: "[USER_MANAGEMENT]",
+			shortLabel: "USERS",
 			href: "/super-admin/users",
-			icon: <Users className="w-3.5 h-3.5" />,
+			icon: <Users className="w-4 h-4 shrink-0" />,
 		},
 	];
 
 	return (
-		<aside className="w-full lg:w-64 shrink-0 border-r border-[var(--border)] bg-[var(--card)]/90 backdrop-blur-xl flex flex-col justify-between p-4 font-mono text-xs select-none transition-colors duration-300 shadow-sm overflow-y-auto">
-			<div className="space-y-6">
-				{/* Top Console Header Badge */}
-				<div className="p-3 border border-rose-500/30 bg-rose-500/10 space-y-2">
-					<div className="flex items-center justify-between">
-						<div className="flex items-center gap-1.5 text-rose-500 font-bold text-[11px]">
-							<ShieldAlert className="w-4 h-4 animate-pulse" />
-							<span>SUPER_ADMIN</span>
+		<aside
+			className={`h-[calc(100vh-3.5rem)] shrink-0 border-r border-[var(--border)] bg-[var(--card)]/95 backdrop-blur-xl flex flex-col justify-between p-3 font-mono text-xs select-none transition-all duration-300 ease-in-out shadow-sm overflow-y-auto ${
+				isCollapsed ? "w-16 items-center" : "w-64"
+			}`}
+		>
+			<div className="space-y-5 w-full">
+				{/* Sidebar Toggle & Header Badge */}
+				<div className="flex items-center justify-between gap-2 pb-2 border-b border-[var(--border)]">
+					{!isCollapsed && (
+						<div className="flex items-center gap-1.5 text-rose-500 font-bold text-[11px] truncate">
+							<ShieldAlert className="w-4 h-4 animate-pulse shrink-0 text-rose-500" />
+							<span className="truncate">SUPER_ADMIN</span>
 						</div>
-						<span className="w-2 h-2 rounded-full bg-rose-500 animate-ping" />
-					</div>
-					<p className="text-[10px] text-[var(--muted-foreground)] uppercase">
-						Platform Master Console
-					</p>
+					)}
+					<button
+						onClick={toggleCollapse}
+						className={`p-1.5 border border-[var(--border)] bg-[var(--secondary)]/80 text-[var(--muted-foreground)] hover:text-[var(--foreground)] hover:bg-[var(--secondary)] transition-all cursor-pointer ${
+							isCollapsed ? "mx-auto" : ""
+						}`}
+						title={isCollapsed ? "Expand Sidebar" : "Collapse Sidebar"}
+					>
+						{isCollapsed ? (
+							<PanelLeftOpen className="w-4 h-4 text-rose-500" />
+						) : (
+							<PanelLeftClose className="w-4 h-4" />
+						)}
+					</button>
 				</div>
 
-				{/* Platform Management Navigation */}
+				{!isCollapsed && (
+					<div className="p-2.5 border border-rose-500/30 bg-rose-500/10 space-y-1">
+						<div className="flex items-center justify-between">
+							<span className="text-[10px] text-rose-400 font-bold uppercase">
+								MASTER_CONSOLE
+							</span>
+							<span className="w-2 h-2 rounded-full bg-rose-500 animate-ping" />
+						</div>
+						<p className="text-[10px] text-[var(--muted-foreground)] uppercase">
+							Platform Security Root
+						</p>
+					</div>
+				)}
+
+				{/* Navigation Links */}
 				<div>
-					<h2 className="text-[10px] font-mono font-bold text-[var(--muted-foreground)] uppercase tracking-widest px-1 mb-2">
-						[PLATFORM_CONTROL]
-					</h2>
+					{!isCollapsed && (
+						<h2 className="text-[10px] font-mono font-bold text-[var(--muted-foreground)] uppercase tracking-widest px-1 mb-2">
+							[PLATFORM_CONTROL]
+						</h2>
+					)}
 					<div className="space-y-1 font-mono text-xs">
 						{navItems.map((item) => {
 							const isActive = pathname === item.href;
@@ -68,17 +119,26 @@ export function SuperAdminSidebar() {
 								<Link
 									key={item.href}
 									href={item.href}
-									className={`w-full flex items-center justify-between px-3 py-2 transition-colors cursor-pointer border ${
+									title={isCollapsed ? item.shortLabel : undefined}
+									className={`w-full flex items-center ${
+										isCollapsed
+											? "justify-center px-0 py-2.5"
+											: "justify-between px-3 py-2"
+									} transition-colors cursor-pointer border ${
 										isActive
 											? "bg-[var(--primary)] text-[var(--primary-foreground)] border-[var(--primary)] font-bold shadow-sm"
 											: "bg-[var(--card)]/40 text-[var(--muted-foreground)] border-transparent hover:bg-[var(--secondary)] hover:text-[var(--foreground)]"
 									}`}
 								>
-									<div className="flex items-center gap-2 min-w-0">
+									<div className="flex items-center gap-2.5 min-w-0">
 										{item.icon}
-										<span className="truncate uppercase">{item.label}</span>
+										{!isCollapsed && (
+											<span className="truncate uppercase text-[11px]">
+												{item.label}
+											</span>
+										)}
 									</div>
-									{item.badge && (
+									{!isCollapsed && item.badge && (
 										<span className="px-1.5 py-0.2 text-[9px] bg-rose-500/20 text-rose-400 font-bold border border-rose-500/30">
 											{item.badge}
 										</span>
@@ -90,27 +150,32 @@ export function SuperAdminSidebar() {
 				</div>
 
 				{/* Master User Details */}
-				<div className="p-3 bg-[var(--secondary)]/60 border border-[var(--border)] space-y-1">
-					<span className="text-[10px] text-[var(--muted-foreground)] uppercase font-bold">
-						LOGGED_AS_MASTER:
-					</span>
-					<p className="font-bold text-[11px] text-[var(--foreground)] truncate">
-						{user?.name || user?.email}
-					</p>
-					<span className="text-[9px] text-rose-500 font-bold uppercase">
-						[{user?.role}]
-					</span>
-				</div>
+				{!isCollapsed && (
+					<div className="p-2.5 bg-[var(--secondary)]/60 border border-[var(--border)] space-y-1">
+						<span className="text-[10px] text-[var(--muted-foreground)] uppercase font-bold">
+							LOGGED_AS_MASTER:
+						</span>
+						<p className="font-bold text-[11px] text-[var(--foreground)] truncate">
+							{user?.name || user?.email}
+						</p>
+						<span className="text-[9px] text-rose-500 font-bold uppercase">
+							[{user?.role}]
+						</span>
+					</div>
+				)}
 			</div>
 
-			{/* Bottom Action: Back to Normal Dashboard */}
-			<div className="pt-4 border-t border-[var(--border)] mt-6">
+			{/* Bottom Action: Return to App */}
+			<div className="pt-3 border-t border-[var(--border)] mt-4 w-full">
 				<Link
 					href="/dashboard"
-					className="w-full flex items-center justify-center gap-2 px-3 py-2 bg-[var(--secondary)] border border-[var(--border)] text-[var(--foreground)] hover:opacity-80 transition-all font-bold text-xs uppercase cursor-pointer"
+					title={isCollapsed ? "Return to Dashboard" : undefined}
+					className={`w-full flex items-center justify-center gap-2 py-2 bg-[var(--secondary)] border border-[var(--border)] text-[var(--foreground)] hover:opacity-80 transition-all font-bold text-xs uppercase cursor-pointer ${
+						isCollapsed ? "px-0" : "px-3"
+					}`}
 				>
-					<ArrowLeft className="w-3.5 h-3.5 text-rose-500" />
-					<span>[RETURN_TO_APP]</span>
+					<ArrowLeft className="w-3.5 h-3.5 text-rose-500 shrink-0" />
+					{!isCollapsed && <span>[RETURN_TO_APP]</span>}
 				</Link>
 			</div>
 		</aside>
