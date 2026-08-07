@@ -75,4 +75,19 @@ export const adminService = {
 		}>(`/super-admin/organizations/${orgId}/toggle-suspend`);
 		return response.data;
 	},
+
+	async impersonateUser(targetUserId: string): Promise<{
+		message: string;
+		sessionToken: string;
+		user: PlatformUser;
+		activeOrganizationId: string;
+	}> {
+		const response = await api.post<{
+			message: string;
+			sessionToken: string;
+			user: PlatformUser;
+			activeOrganizationId: string;
+		}>(`/super-admin/impersonate/${targetUserId}`);
+		return response.data;
+	},
 };

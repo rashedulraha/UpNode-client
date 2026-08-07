@@ -25,8 +25,39 @@ export function DashboardHeader({
 	const pathname = usePathname();
 	const isDashboardRoot = pathname === "/dashboard";
 
+	const isImpersonating =
+		typeof window !== "undefined" &&
+		sessionStorage.getItem("upnode_impersonating_active") === "true";
+	const impersonatedEmail =
+		typeof window !== "undefined"
+			? sessionStorage.getItem("upnode_impersonated_user_email") || ""
+			: "";
+
+	const handleExitImpersonation = () => {
+		sessionStorage.removeItem("upnode_impersonating_active");
+		sessionStorage.removeItem("upnode_impersonated_user_email");
+		window.location.href = "/super-admin";
+	};
+
 	return (
 		<>
+			{isImpersonating && (
+				<div className="w-full bg-amber-500/10 border-b border-amber-500/30 px-4 py-2 flex items-center justify-between font-mono text-xs text-amber-400 z-50">
+					<div className="flex items-center gap-2">
+						<ShieldAlert className="w-4 h-4 text-amber-500 animate-pulse shrink-0" />
+						<span>
+							[IMPERSONATION_ACTIVE] Currently inspecting workspace as{" "}
+							<strong>{impersonatedEmail || user?.email}</strong>
+						</span>
+					</div>
+					<button
+						onClick={handleExitImpersonation}
+						className="px-3 py-1 border border-amber-500 bg-amber-500 hover:bg-amber-600 text-slate-950 font-bold uppercase text-[11px] transition-all cursor-pointer shadow-sm"
+					>
+						[EXIT_IMPERSONATION]
+					</button>
+				</div>
+			)}
 			<header className="sticky top-0 z-50 h-14 px-4 sm:px-6 backdrop-blur-xl bg-[var(--card)]/85 border-b border-[var(--border)] text-[var(--foreground)] flex items-center justify-between gap-4 shrink-0 font-mono text-xs select-none transition-colors duration-300 shadow-sm">
 				{/* Left: Brand logo & Stream indicator */}
 				<div className="flex items-center gap-3">

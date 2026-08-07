@@ -18,6 +18,8 @@ import {
 	Terminal,
 	RefreshCw,
 	Radio,
+	LogIn,
+	ExternalLink,
 } from "lucide-react";
 
 export default function UserManagementPage() {
@@ -29,10 +31,39 @@ export default function UserManagementPage() {
 	const [actionError, setActionError] = useState<string | null>(null);
 	const [actionSuccess, setActionSuccess] = useState<string | null>(null);
 	const [togglingUserId, setTogglingUserId] = useState<string | null>(null);
+	const [impersonatingUserId, setImpersonatingUserId] = useState<string | null>(
+		null,
+	);
 	const [searchQuery, setSearchQuery] = useState("");
 
-	// Guard check for SUPER_ADMIN role
 	const isSuperAdmin = user?.role === "SUPER_ADMIN";
+
+	const handleImpersonate = async (targetUser: PlatformUser) => {
+		try {
+			setImpersonatingUserId(targetUser.id);
+			setActionError(null);
+			const result = await adminService.impersonateUser(targetUser.id);
+
+			sessionStorage.setItem("upnode_impersonating_active", "true");
+			sessionStorage.setItem(
+				"upnode_impersonated_user_email",
+				result.user.email,
+			);
+			if (result.activeOrganizationId) {
+				localStorage.setItem(
+					"activeOrganizationId",
+					result.activeOrganizationId,
+				);
+			}
+
+			window.location.href = "/dashboard";
+		} catch (err: any) {
+			setActionError(
+				err?.response?.data?.error || "Failed to impersonate user.",
+			);
+			setImpersonatingUserId(null);
+		}
+	};
 
 	useEffect(() => {
 		if (!isAuthLoading) {
@@ -278,24 +309,40 @@ export default function UserManagementPage() {
 															[MASTER_PROTECTED]
 														</span>
 													) : (
-														<button
-															disabled={togglingUserId === u.id}
-															onClick={() => handleToggleBlock(u)}
-															className={`px-3 py-1 border text-[11px] font-bold uppercase transition-all cursor-pointer flex items-center gap-1.5 ml-auto ${
-																u.isBlocked
-																	? "border-emerald-500/50 bg-emerald-500/10 hover:bg-emerald-500 text-emerald-500 hover:text-white"
-																	: "border-rose-500/50 bg-rose-500/10 hover:bg-rose-500 text-rose-500 hover:text-white"
-															}`}
-														>
-															{togglingUserId === u.id ? (
-																<Loader2 className="w-3 h-3 animate-spin" />
-															) : u.isBlocked ? (
-																<Unlock className="w-3 h-3" />
-															) : (
-																<Lock className="w-3 h-3" />
-															)}
-															<span>{u.isBlocked ? "UNBLOCK" : "BLOCK"}</span>
-														</button>
+														<div className="flex items-center justify-end gap-2">
+															<button
+																disabled={impersonatingUserId === u.id}
+																onClick={() => handleImpersonate(u)}
+																className="px-3 py-1 border border-sky-500/50 bg-sky-500/10 hover:bg-sky-500 text-sky-400 hover:text-white text-[11px] font-bold uppercase transition-all cursor-pointer flex items-center gap-1.5 shrink-0"
+																title={`Login as ${u.email}`}
+															>
+																{impersonatingUserId === u.id ? (
+																	<Loader2 className="w-3 h-3 animate-spin" />
+																) : (
+																	<LogIn className="w-3 h-3" />
+																)}
+																<span>[LOGIN_AS_USER]</span>
+															</button>
+
+															<button
+																disabled={togglingUserId === u.id}
+																onClick={() => handleToggleBlock(u)}
+																className={`px-3 py-1 border text-[11px] font-bold uppercase transition-all cursor-pointer flex items-center gap-1.5 ${
+																	u.isBlocked
+																		? "border-emerald-500/50 bg-emerald-500/10 hover:bg-emerald-500 text-emerald-500 hover:text-white"
+																		: "border-rose-500/50 bg-rose-500/10 hover:bg-rose-500 text-rose-500 hover:text-white"
+																}`}
+															>
+																{togglingUserId === u.id ? (
+																	<Loader2 className="w-3 h-3 animate-spin" />
+																) : u.isBlocked ? (
+																	<Unlock className="w-3 h-3" />
+																) : (
+																	<Lock className="w-3 h-3" />
+																)}
+																<span>{u.isBlocked ? "UNBLOCK" : "BLOCK"}</span>
+															</button>
+														</div>
 													)}
 												</td>
 											</tr>

@@ -20,6 +20,7 @@ import {
 	Radio,
 	ShieldCheck,
 	Search,
+	LogIn,
 } from "lucide-react";
 
 export default function OrganizationManagementPage() {
@@ -31,10 +32,32 @@ export default function OrganizationManagementPage() {
 	const [actionError, setActionError] = useState<string | null>(null);
 	const [actionSuccess, setActionSuccess] = useState<string | null>(null);
 	const [togglingOrgId, setTogglingOrgId] = useState<string | null>(null);
+	const [impersonatingOrgId, setImpersonatingOrgId] = useState<string | null>(
+		null,
+	);
 	const [searchQuery, setSearchQuery] = useState("");
 
-	// Guard check for SUPER_ADMIN role
 	const isSuperAdmin = user?.role === "SUPER_ADMIN";
+
+	const handleViewWorkspace = async (org: PlatformOrganization) => {
+		try {
+			setImpersonatingOrgId(org.id);
+			setActionError(null);
+
+			// Switch active organization context directly for Super Admin
+			localStorage.setItem("activeOrganizationId", org.id);
+			sessionStorage.setItem("upnode_impersonating_active", "true");
+			sessionStorage.setItem("upnode_impersonated_user_email", org.adminEmail);
+
+			window.location.href = "/dashboard";
+		} catch (err: any) {
+			setActionError(
+				err?.response?.data?.error ||
+					"Failed to switch organization workspace.",
+			);
+			setImpersonatingOrgId(null);
+		}
+	};
 
 	useEffect(() => {
 		if (!isAuthLoading) {
@@ -296,26 +319,42 @@ export default function OrganizationManagementPage() {
 													)}
 												</td>
 												<td className="py-3.5 px-4 text-right">
-													<button
-														disabled={togglingOrgId === org.id}
-														onClick={() => handleToggleSuspend(org)}
-														className={`px-3 py-1 border text-[11px] font-bold uppercase transition-all cursor-pointer flex items-center gap-1.5 ml-auto ${
-															org.isSuspended
-																? "border-emerald-500/50 bg-emerald-500/10 hover:bg-emerald-500 text-emerald-500 hover:text-white"
-																: "border-rose-500/50 bg-rose-500/10 hover:bg-rose-500 text-rose-500 hover:text-white"
-														}`}
-													>
-														{togglingOrgId === org.id ? (
-															<Loader2 className="w-3 h-3 animate-spin" />
-														) : org.isSuspended ? (
-															<Unlock className="w-3 h-3" />
-														) : (
-															<Lock className="w-3 h-3" />
-														)}
-														<span>
-															{org.isSuspended ? "UNSUSPEND" : "SUSPEND"}
-														</span>
-													</button>
+													<div className="flex items-center justify-end gap-2">
+														<button
+															disabled={impersonatingOrgId === org.id}
+															onClick={() => handleViewWorkspace(org)}
+															className="px-3 py-1 border border-sky-500/50 bg-sky-500/10 hover:bg-sky-500 text-sky-400 hover:text-white text-[11px] font-bold uppercase transition-all cursor-pointer flex items-center gap-1.5 shrink-0"
+															title={`Inspect workspace of ${org.name}`}
+														>
+															{impersonatingOrgId === org.id ? (
+																<Loader2 className="w-3 h-3 animate-spin" />
+															) : (
+																<LogIn className="w-3 h-3" />
+															)}
+															<span>[VIEW_WORKSPACE]</span>
+														</button>
+
+														<button
+															disabled={togglingOrgId === org.id}
+															onClick={() => handleToggleSuspend(org)}
+															className={`px-3 py-1 border text-[11px] font-bold uppercase transition-all cursor-pointer flex items-center gap-1.5 ${
+																org.isSuspended
+																	? "border-emerald-500/50 bg-emerald-500/10 hover:bg-emerald-500 text-emerald-500 hover:text-white"
+																	: "border-rose-500/50 bg-rose-500/10 hover:bg-rose-500 text-rose-500 hover:text-white"
+															}`}
+														>
+															{togglingOrgId === org.id ? (
+																<Loader2 className="w-3 h-3 animate-spin" />
+															) : org.isSuspended ? (
+																<Unlock className="w-3 h-3" />
+															) : (
+																<Lock className="w-3 h-3" />
+															)}
+															<span>
+																{org.isSuspended ? "UNSUSPEND" : "SUSPEND"}
+															</span>
+														</button>
+													</div>
 												</td>
 											</tr>
 										);
