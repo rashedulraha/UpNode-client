@@ -1269,8 +1269,10 @@ function DeleteOrgCard() {
 	const [isDeleting, setIsDeleting] = useState(false);
 	const [deleteError, setDeleteError] = useState<string | null>(null);
 
+	const isConfirmed = confirmText.trim().toUpperCase() === "DELETE";
+
 	const handleDelete = async () => {
-		if (confirmText !== "DELETE") return;
+		if (!isConfirmed) return;
 		try {
 			setIsDeleting(true);
 			setDeleteError(null);
@@ -1372,9 +1374,13 @@ function DeleteOrgCard() {
 							</button>
 
 							<button
-								disabled={confirmText !== "DELETE" || isDeleting}
+								disabled={!isConfirmed || isDeleting}
 								onClick={handleDelete}
-								className="px-4 py-2 border border-rose-500 bg-rose-500 hover:bg-rose-600 disabled:opacity-40 disabled:cursor-not-allowed text-white font-bold text-xs uppercase transition-all flex items-center gap-2 cursor-pointer"
+								className={`px-4 py-2 border font-bold text-xs uppercase transition-all flex items-center gap-2 ${
+									isConfirmed && !isDeleting
+										? "border-rose-500 bg-rose-600 hover:bg-rose-500 text-white shadow-[0_0_15px_rgba(244,63,94,0.4)] cursor-pointer"
+										: "border-rose-500/40 bg-rose-500/20 text-rose-300/40 opacity-50 cursor-not-allowed"
+								}`}
 							>
 								{isDeleting && <Loader2 className="w-3.5 h-3.5 animate-spin" />}
 								<span>[CONFIRM_DELETE]</span>
