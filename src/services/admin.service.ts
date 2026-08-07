@@ -3,8 +3,12 @@ import api from "@/lib/api";
 export interface PlatformStats {
 	totalUsers: number;
 	totalOrganizations: number;
+	totalAdmins: number;
 	totalProjects: number;
+	activeProjects: number;
 	totalIncidents: number;
+	paidSubscribers: number;
+	monthlyRevenue: number;
 	systemStatus: string;
 	timestamp: string;
 }
