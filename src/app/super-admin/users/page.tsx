@@ -6,6 +6,7 @@ import Link from "next/link";
 import { useAuth } from "@/hooks/use-auth";
 import { adminService, PlatformUser } from "@/services/admin.service";
 import { AdminNavTabs } from "@/components/admin/admin-nav-tabs";
+import { ConfirmModal } from "@/components/ui/confirm-modal";
 import {
 	AdminPageSkeleton,
 	TableSkeletonRows,
@@ -23,7 +24,6 @@ import {
 	RefreshCw,
 	Radio,
 	LogIn,
-	ExternalLink,
 } from "lucide-react";
 
 export default function UserManagementPage() {
@@ -39,8 +39,70 @@ export default function UserManagementPage() {
 		null,
 	);
 	const [searchQuery, setSearchQuery] = useState("");
+	const [confirmModal, setConfirmModal] = useState<{
+		isOpen: boolean;
+		type: "block" | "impersonate";
+		targetUser: PlatformUser | null;
+	}>({
+		isOpen: false,
+		type: "block",
+		targetUser: null,
+	});
 
 	const isSuperAdmin = user?.role === "SUPER_ADMIN";
+
+	const handleConfirmAction = async () => {
+		if (!confirmModal.targetUser) return;
+		const targetUser = confirmModal.targetUser;
+
+		if (confirmModal.type === "impersonate") {
+			try {
+				setImpersonatingUserId(targetUser.id);
+				setActionError(null);
+				const result = await adminService.impersonateUser(targetUser.id);
+
+				sessionStorage.setItem("upnode_impersonating_active", "true");
+				sessionStorage.setItem(
+					"upnode_impersonated_user_email",
+					result.user.email,
+				);
+				if (result.activeOrganizationId) {
+					localStorage.setItem(
+						"activeOrganizationId",
+						result.activeOrganizationId,
+					);
+				}
+
+				window.location.href = "/dashboard";
+			} catch (err: any) {
+				setActionError(
+					err?.response?.data?.error || "Failed to impersonate user.",
+				);
+				setImpersonatingUserId(null);
+				setConfirmModal({ isOpen: false, type: "block", targetUser: null });
+			}
+		} else if (confirmModal.type === "block") {
+			try {
+				setTogglingUserId(targetUser.id);
+				setActionError(null);
+				setActionSuccess(null);
+
+				const result = await adminService.toggleUserBlock(targetUser.id);
+				setUsersList((prev) =>
+					prev.map((u) => (u.id === targetUser.id ? result.user : u)),
+				);
+				setActionSuccess(result.message);
+				setTimeout(() => setActionSuccess(null), 4000);
+			} catch (err: any) {
+				setActionError(
+					err?.response?.data?.error || "Failed to update user block status.",
+				);
+			} finally {
+				setTogglingUserId(null);
+				setConfirmModal({ isOpen: false, type: "block", targetUser: null });
+			}
+		}
+	};
 
 	const handleImpersonate = async (targetUser: PlatformUser) => {
 		try {
@@ -297,7 +359,13 @@ export default function UserManagementPage() {
 														<div className="flex items-center justify-end gap-2">
 															<button
 																disabled={impersonatingUserId === u.id}
-																onClick={() => handleImpersonate(u)}
+																onClick={() =>
+																	setConfirmModal({
+																		isOpen: true,
+																		type: "impersonate",
+																		targetUser: u,
+																	})
+																}
 																className="px-3 py-1 border border-sky-500/50 bg-sky-500/10 hover:bg-sky-500 text-sky-400 hover:text-white text-[11px] font-bold uppercase transition-all cursor-pointer flex items-center gap-1.5 shrink-0"
 																title={`Login as ${u.email}`}
 															>
@@ -311,7 +379,13 @@ export default function UserManagementPage() {
 
 															<button
 																disabled={togglingUserId === u.id}
-																onClick={() => handleToggleBlock(u)}
+																onClick={() =>
+																	setConfirmModal({
+																		isOpen: true,
+																		type: "block",
+																		targetUser: u,
+																	})
+																}
 																className={`px-3 py-1 border text-[11px] font-bold uppercase transition-all cursor-pointer flex items-center gap-1.5 ${
 																	u.isBlocked
 																		? "border-emerald-500/50 bg-emerald-500/10 hover:bg-emerald-500 text-emerald-500 hover:text-white"
@@ -339,6 +413,49 @@ export default function UserManagementPage() {
 					</div>
 				</div>
 			</main>
+
+			{/* Confirmation Modal */}
+			<ConfirmModal
+				isOpen={confirmModal.isOpen}
+				title={
+					confirmModal.type === "impersonate"
+						? "Confirm User Impersonation"
+						: confirmModal.targetUser?.isBlocked
+							? "Confirm User Unblock"
+							: "Confirm User Block"
+				}
+				description={
+					confirmModal.type === "impersonate"
+						? `Are you sure you want to temporarily log in as ${confirmModal.targetUser?.name || confirmModal.targetUser?.email}? You will gain full access to their active workspace.`
+						: confirmModal.targetUser?.isBlocked
+							? `Are you sure you want to unblock access for ${confirmModal.targetUser?.email}? They will regain access to their tenant organizations.`
+							: `Are you sure you want to block access for ${confirmModal.targetUser?.email}? They will be immediately logged out and forbidden from accessing the platform.`
+				}
+				targetName={
+					confirmModal.targetUser
+						? `${confirmModal.targetUser.name || "N/A"} (${confirmModal.targetUser.email})`
+						: undefined
+				}
+				confirmText={
+					confirmModal.type === "impersonate"
+						? "[CONFIRM_IMPERSONATE]"
+						: confirmModal.targetUser?.isBlocked
+							? "[CONFIRM_UNBLOCK]"
+							: "[CONFIRM_BLOCK]"
+				}
+				variant={
+					confirmModal.type === "impersonate"
+						? "info"
+						: confirmModal.targetUser?.isBlocked
+							? "warning"
+							: "danger"
+				}
+				isLoading={togglingUserId !== null || impersonatingUserId !== null}
+				onConfirm={handleConfirmAction}
+				onClose={() =>
+					setConfirmModal({ isOpen: false, type: "block", targetUser: null })
+				}
+			/>
 		</div>
 	);
 }

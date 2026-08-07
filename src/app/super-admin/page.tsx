@@ -10,6 +10,7 @@ import {
 	PlatformUser,
 } from "@/services/admin.service";
 import { AdminNavTabs } from "@/components/admin/admin-nav-tabs";
+import { ConfirmModal } from "@/components/ui/confirm-modal";
 import {
 	AdminPageSkeleton,
 	TableSkeletonRows,
@@ -48,9 +49,41 @@ export default function SuperAdminPage() {
 	const [togglingUserId, setTogglingUserId] = useState<string | null>(null);
 	const [searchQuery, setSearchQuery] = useState("");
 	const [activeTab, setActiveTab] = useState<"overview" | "users">("overview");
+	const [confirmModal, setConfirmModal] = useState<{
+		isOpen: boolean;
+		targetUser: PlatformUser | null;
+	}>({
+		isOpen: false,
+		targetUser: null,
+	});
 
 	// Guard check for SUPER_ADMIN role
 	const isSuperAdmin = user?.role === "SUPER_ADMIN";
+
+	const handleConfirmBlock = async () => {
+		if (!confirmModal.targetUser) return;
+		const targetUser = confirmModal.targetUser;
+
+		try {
+			setTogglingUserId(targetUser.id);
+			setActionError(null);
+			setActionSuccess(null);
+
+			const result = await adminService.toggleUserBlock(targetUser.id);
+			setUsersList((prev) =>
+				prev.map((u) => (u.id === targetUser.id ? result.user : u)),
+			);
+			setActionSuccess(result.message);
+			setTimeout(() => setActionSuccess(null), 4000);
+		} catch (err: any) {
+			setActionError(
+				err?.response?.data?.error || "Failed to update user block status.",
+			);
+		} finally {
+			setTogglingUserId(null);
+			setConfirmModal({ isOpen: false, targetUser: null });
+		}
+	};
 
 	useEffect(() => {
 		if (!isAuthLoading) {
@@ -547,7 +580,12 @@ export default function SuperAdminPage() {
 														) : (
 															<button
 																disabled={togglingUserId === u.id}
-																onClick={() => handleToggleBlock(u)}
+																onClick={() =>
+																	setConfirmModal({
+																		isOpen: true,
+																		targetUser: u,
+																	})
+																}
 																className={`px-3 py-1 border text-[11px] font-bold uppercase transition-all cursor-pointer flex items-center gap-1.5 ml-auto ${
 																	u.isBlocked
 																		? "border-emerald-500/50 bg-emerald-500/10 hover:bg-emerald-500 text-emerald-500 hover:text-white"
@@ -575,6 +613,35 @@ export default function SuperAdminPage() {
 					</div>
 				)}
 			</main>
+
+			{/* Confirmation Modal */}
+			<ConfirmModal
+				isOpen={confirmModal.isOpen}
+				title={
+					confirmModal.targetUser?.isBlocked
+						? "Confirm User Unblock"
+						: "Confirm User Block"
+				}
+				description={
+					confirmModal.targetUser?.isBlocked
+						? `Are you sure you want to unblock access for ${confirmModal.targetUser?.email}? They will regain access to their tenant organizations.`
+						: `Are you sure you want to block access for ${confirmModal.targetUser?.email}? They will be immediately logged out and forbidden from accessing the platform.`
+				}
+				targetName={
+					confirmModal.targetUser
+						? `${confirmModal.targetUser.name || "N/A"} (${confirmModal.targetUser.email})`
+						: undefined
+				}
+				confirmText={
+					confirmModal.targetUser?.isBlocked
+						? "[CONFIRM_UNBLOCK]"
+						: "[CONFIRM_BLOCK]"
+				}
+				variant={confirmModal.targetUser?.isBlocked ? "warning" : "danger"}
+				isLoading={togglingUserId !== null}
+				onConfirm={handleConfirmBlock}
+				onClose={() => setConfirmModal({ isOpen: false, targetUser: null })}
+			/>
 		</div>
 	);
 }

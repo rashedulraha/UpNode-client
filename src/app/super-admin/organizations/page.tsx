@@ -6,6 +6,7 @@ import Link from "next/link";
 import { useAuth } from "@/hooks/use-auth";
 import { adminService, PlatformOrganization } from "@/services/admin.service";
 import { AdminNavTabs } from "@/components/admin/admin-nav-tabs";
+import { ConfirmModal } from "@/components/ui/confirm-modal";
 import {
 	AdminPageSkeleton,
 	TableSkeletonRows,
@@ -40,8 +41,67 @@ export default function OrganizationManagementPage() {
 		null,
 	);
 	const [searchQuery, setSearchQuery] = useState("");
+	const [confirmModal, setConfirmModal] = useState<{
+		isOpen: boolean;
+		type: "suspend" | "view";
+		targetOrg: PlatformOrganization | null;
+	}>({
+		isOpen: false,
+		type: "suspend",
+		targetOrg: null,
+	});
 
 	const isSuperAdmin = user?.role === "SUPER_ADMIN";
+
+	const handleConfirmAction = async () => {
+		if (!confirmModal.targetOrg) return;
+		const org = confirmModal.targetOrg;
+
+		if (confirmModal.type === "view") {
+			try {
+				setImpersonatingOrgId(org.id);
+				setActionError(null);
+				localStorage.setItem("activeOrganizationId", org.id);
+				sessionStorage.setItem("upnode_impersonating_active", "true");
+				sessionStorage.setItem(
+					"upnode_impersonated_user_email",
+					org.adminEmail,
+				);
+				window.location.href = "/dashboard";
+			} catch (err: any) {
+				setActionError(
+					err?.response?.data?.error ||
+						"Failed to switch organization workspace.",
+				);
+				setImpersonatingOrgId(null);
+				setConfirmModal({ isOpen: false, type: "suspend", targetOrg: null });
+			}
+		} else if (confirmModal.type === "suspend") {
+			try {
+				setTogglingOrgId(org.id);
+				setActionError(null);
+				setActionSuccess(null);
+
+				const result = await adminService.toggleOrganizationSuspend(org.id);
+				setOrgsList((prev) =>
+					prev.map((o) =>
+						o.id === org.id
+							? { ...o, isSuspended: result.organization.isSuspended }
+							: o,
+					),
+				);
+				setActionSuccess(result.message);
+				setTimeout(() => setActionSuccess(null), 4000);
+			} catch (err: any) {
+				setActionError(
+					err?.response?.data?.error || "Failed to update organization status.",
+				);
+			} finally {
+				setTogglingOrgId(null);
+				setConfirmModal({ isOpen: false, type: "suspend", targetOrg: null });
+			}
+		}
+	};
 
 	const handleViewWorkspace = async (org: PlatformOrganization) => {
 		try {
@@ -307,7 +367,13 @@ export default function OrganizationManagementPage() {
 													<div className="flex items-center justify-end gap-2">
 														<button
 															disabled={impersonatingOrgId === org.id}
-															onClick={() => handleViewWorkspace(org)}
+															onClick={() =>
+																setConfirmModal({
+																	isOpen: true,
+																	type: "view",
+																	targetOrg: org,
+																})
+															}
 															className="px-3 py-1 border border-sky-500/50 bg-sky-500/10 hover:bg-sky-500 text-sky-400 hover:text-white text-[11px] font-bold uppercase transition-all cursor-pointer flex items-center gap-1.5 shrink-0"
 															title={`Inspect workspace of ${org.name}`}
 														>
@@ -321,7 +387,13 @@ export default function OrganizationManagementPage() {
 
 														<button
 															disabled={togglingOrgId === org.id}
-															onClick={() => handleToggleSuspend(org)}
+															onClick={() =>
+																setConfirmModal({
+																	isOpen: true,
+																	type: "suspend",
+																	targetOrg: org,
+																})
+															}
 															className={`px-3 py-1 border text-[11px] font-bold uppercase transition-all cursor-pointer flex items-center gap-1.5 ${
 																org.isSuspended
 																	? "border-emerald-500/50 bg-emerald-500/10 hover:bg-emerald-500 text-emerald-500 hover:text-white"
@@ -350,6 +422,49 @@ export default function OrganizationManagementPage() {
 					</div>
 				</div>
 			</main>
+
+			{/* Confirmation Modal */}
+			<ConfirmModal
+				isOpen={confirmModal.isOpen}
+				title={
+					confirmModal.type === "view"
+						? "Confirm Workspace Switch"
+						: confirmModal.targetOrg?.isSuspended
+							? "Confirm Organization Reactivation"
+							: "Confirm Organization Suspension"
+				}
+				description={
+					confirmModal.type === "view"
+						? `Are you sure you want to switch workspace context to '${confirmModal.targetOrg?.name}'? You will view live telemetry and project status as an administrator.`
+						: confirmModal.targetOrg?.isSuspended
+							? `Are you sure you want to reactivate the organization '${confirmModal.targetOrg?.name}'? Members will regain access.`
+							: `Are you sure you want to suspend '${confirmModal.targetOrg?.name}'? All member access to this workspace will be immediately blocked.`
+				}
+				targetName={
+					confirmModal.targetOrg
+						? `${confirmModal.targetOrg.name} (Admin: ${confirmModal.targetOrg.adminEmail})`
+						: undefined
+				}
+				confirmText={
+					confirmModal.type === "view"
+						? "[CONFIRM_SWITCH]"
+						: confirmModal.targetOrg?.isSuspended
+							? "[CONFIRM_REACTIVATE]"
+							: "[CONFIRM_SUSPEND]"
+				}
+				variant={
+					confirmModal.type === "view"
+						? "info"
+						: confirmModal.targetOrg?.isSuspended
+							? "warning"
+							: "danger"
+				}
+				isLoading={togglingOrgId !== null || impersonatingOrgId !== null}
+				onConfirm={handleConfirmAction}
+				onClose={() =>
+					setConfirmModal({ isOpen: false, type: "suspend", targetOrg: null })
+				}
+			/>
 		</div>
 	);
 }
