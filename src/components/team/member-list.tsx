@@ -5,6 +5,7 @@ import { Member, MemberRole } from "@/types";
 import { useRemoveMember, useUpdateMemberRole } from "@/hooks/use-team";
 import { formatDistanceToNow } from "date-fns";
 import { motion, AnimatePresence } from "framer-motion";
+import useAuth from "@/hooks/use-auth";
 
 interface MemberListProps {
 	members: Member[];
@@ -35,6 +36,8 @@ export function MemberList({ members, isLoading, error }: MemberListProps) {
 
 	const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
 	const [actionError, setActionError] = useState<string | null>(null);
+
+	const { user: currentUser } = useAuth();
 
 	const handleConfirmAction = async () => {
 		if (!modalAction) return;
@@ -113,86 +116,124 @@ export function MemberList({ members, isLoading, error }: MemberListProps) {
 	return (
 		<>
 			<div className="rounded-none bg-[var(--card)] border border-[var(--border)] overflow-hidden divide-y divide-[var(--border)] font-mono shadow-sm">
-				{members.map((member) => (
-					<div
-						key={member.id}
-						className="p-4 sm:p-5 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 hover:bg-[var(--secondary)] transition-colors"
-					>
-						{/* Left: User Avatar & Basic Info */}
-						<div className="flex items-center gap-3.5 min-w-0">
-							<div className="w-9 h-9 rounded-none bg-[var(--secondary)] border border-[var(--border)] text-[var(--foreground)] font-mono font-bold text-xs flex items-center justify-center shrink-0 uppercase">
-								{getInitials(member.user?.name, member.user?.email)}
-							</div>
+				{members.map((member) => {
+					const isCurrentUser = member.userId === currentUser?.id;
+					const isPending = member.user?.emailVerified === false;
 
-							<div className="min-w-0 space-y-0.5 font-sans">
-								<div className="flex items-center gap-2 font-mono">
-									<h4 className="text-xs font-bold text-slate-900 dark:text-white truncate font-sans">
-										{member.user?.name || "UNNAMED"}
-									</h4>
-									<span
-										className={`px-2 py-0.5 rounded-none text-[10px] uppercase tracking-wider ${getRoleBadgeStyle(
-											member.role,
-										)}`}
-									>
-										[{member.role}]
-									</span>
+					return (
+						<div
+							key={member.id}
+							className="p-4 sm:p-5 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 hover:bg-[var(--secondary)] transition-colors"
+						>
+							{/* Left: User Avatar & Basic Info */}
+							<div className="flex items-center gap-3.5 min-w-0">
+								<div className="w-9 h-9 rounded-none bg-[var(--secondary)] border border-[var(--border)] text-[var(--foreground)] font-mono font-bold text-xs flex items-center justify-center shrink-0 uppercase">
+									{getInitials(member.user?.name, member.user?.email)}
 								</div>
-								<p className="text-[11px] font-mono text-slate-500 dark:text-neutral-500 truncate">
-									{member.user?.email}
-								</p>
+
+								<div className="min-w-0 space-y-1 font-sans">
+									<div className="flex items-center gap-2 font-mono flex-wrap">
+										<h4 className="text-xs font-bold text-slate-900 dark:text-white truncate font-sans">
+											{member.user?.name || "UNNAMED"}
+											{isCurrentUser && (
+												<span className="ml-2 text-[10px] text-emerald-500 font-mono tracking-widest uppercase border border-emerald-500/30 px-1 py-0.5 rounded-none">
+													[YOU]
+												</span>
+											)}
+										</h4>
+										<span
+											className={`px-2 py-0.5 rounded-none text-[10px] uppercase tracking-wider ${getRoleBadgeStyle(
+												member.role,
+											)}`}
+										>
+											[{member.role}]
+										</span>
+										{isPending && (
+											<span className="px-2 py-0.5 rounded-none text-[10px] uppercase tracking-wider border border-amber-500/30 bg-amber-500/10 text-amber-400 font-bold">
+												[PENDING INVITATION]
+											</span>
+										)}
+									</div>
+									<div className="flex flex-col gap-0.5">
+										<p className="text-[11px] font-mono text-slate-500 dark:text-neutral-500 truncate">
+											{member.user?.email}
+										</p>
+										{/* Personal Profile Info Status */}
+										{isPending ? (
+											<p className="text-[10px] font-mono text-amber-500/80">
+												Status: Awaiting acceptance since{" "}
+												{member.user?.createdAt
+													? formatDistanceToNow(
+															new Date(member.user.createdAt),
+															{
+																addSuffix: true,
+															},
+														)
+													: "recently"}
+											</p>
+										) : (
+											<p className="text-[10px] font-mono text-emerald-500/80">
+												Status: Active Member
+											</p>
+										)}
+									</div>
+								</div>
 							</div>
-						</div>
 
-						{/* Right: Joined Timestamp, Role Selector, Remove Action */}
-						<div className="flex items-center gap-3.5 w-full sm:w-auto justify-between sm:justify-end shrink-0 font-mono">
-							<span className="text-[10px] text-slate-400 dark:text-neutral-500">
-								{member.user?.createdAt
-									? formatDistanceToNow(new Date(member.user.createdAt), {
-											addSuffix: true,
-										})
-									: "Joined recently"}
-							</span>
+							{/* Right: Joined Timestamp, Role Selector, Remove Action */}
+							<div className="flex items-center gap-3.5 w-full sm:w-auto justify-between sm:justify-end shrink-0 font-mono mt-2 sm:mt-0">
+								<span className="text-[10px] text-slate-400 dark:text-neutral-500 hidden sm:inline-block">
+									{member.user?.createdAt && !isPending
+										? `Joined ${formatDistanceToNow(
+												new Date(member.user.createdAt),
+												{
+													addSuffix: true,
+												},
+											)}`
+										: ""}
+								</span>
 
-							<div className="flex items-center gap-2">
-								<select
-									value={member.role}
-									disabled={updateRoleMutation.isPending}
-									onChange={(e) => {
-										const newRole = e.target.value as MemberRole;
-										if (newRole !== member.role) {
+								<div className="flex items-center gap-2">
+									<select
+										value={member.role}
+										disabled={updateRoleMutation.isPending || isCurrentUser}
+										onChange={(e) => {
+											const newRole = e.target.value as MemberRole;
+											if (newRole !== member.role) {
+												setModalAction({
+													type: "change_role",
+													memberId: member.id,
+													email: member.user?.email || "Team Member",
+													currentRole: member.role,
+													newRole,
+												});
+											}
+										}}
+										className="bg-white dark:bg-black border border-slate-300 dark:border-neutral-800 rounded-none px-2.5 py-1 text-[11px] font-mono text-slate-900 dark:text-white focus:outline-none transition-all cursor-pointer uppercase disabled:opacity-40 disabled:cursor-not-allowed"
+									>
+										<option value="ADMIN">ADMIN</option>
+										<option value="ENGINEER">ENGINEER</option>
+										<option value="VIEWER">VIEWER</option>
+									</select>
+
+									<button
+										onClick={() => {
 											setModalAction({
-												type: "change_role",
+												type: "remove_member",
 												memberId: member.id,
 												email: member.user?.email || "Team Member",
-												currentRole: member.role,
-												newRole,
 											});
-										}
-									}}
-									className="bg-white dark:bg-black border border-slate-300 dark:border-neutral-800 rounded-none px-2.5 py-1 text-[11px] font-mono text-slate-900 dark:text-white focus:outline-none transition-all cursor-pointer uppercase"
-								>
-									<option value="ADMIN">ADMIN</option>
-									<option value="ENGINEER">ENGINEER</option>
-									<option value="VIEWER">VIEWER</option>
-								</select>
-
-								<button
-									onClick={() => {
-										setModalAction({
-											type: "remove_member",
-											memberId: member.id,
-											email: member.user?.email || "Team Member",
-										});
-									}}
-									disabled={removeMutation.isPending}
-									className="px-2.5 py-1 border border-slate-300 dark:border-neutral-700 bg-white dark:bg-black text-slate-600 dark:text-neutral-400 text-[11px] hover:text-rose-600 dark:hover:text-rose-400 hover:border-rose-500/50 hover:shadow-[0_0_12px_rgba(244,63,94,0.25)] transition-all cursor-pointer uppercase disabled:opacity-50"
-								>
-									[REMOVE]
-								</button>
+										}}
+										disabled={removeMutation.isPending || isCurrentUser}
+										className="px-2.5 py-1 border border-slate-300 dark:border-neutral-700 bg-white dark:bg-black text-slate-600 dark:text-neutral-400 text-[11px] hover:text-rose-600 dark:hover:text-rose-400 hover:border-rose-500/50 hover:shadow-[0_0_12px_rgba(244,63,94,0.25)] transition-all cursor-pointer uppercase disabled:opacity-40 disabled:cursor-not-allowed disabled:hover:shadow-none disabled:hover:border-slate-300 dark:disabled:hover:border-neutral-700 disabled:hover:text-slate-600 dark:disabled:hover:text-neutral-400"
+									>
+										[REMOVE]
+									</button>
+								</div>
 							</div>
 						</div>
-					</div>
-				))}
+					);
+				})}
 			</div>
 
 			{/* CONFIRMATION ACTION MODAL */}

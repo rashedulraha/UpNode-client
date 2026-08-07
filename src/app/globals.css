@@ -92,197 +92,237 @@
 /* 1. Obsidian Black & White (Default Deep Dark) */
 .dark,
 [data-theme="obsidian"] {
-	--background: #000000;
+	--background: #08090d;
 	--foreground: #ffffff;
-	--card: #0a0a0a;
+	--card: #121520;
 	--card-foreground: #ffffff;
-	--popover: #0a0a0a;
+	--popover: #121520;
 	--popover-foreground: #ffffff;
 	--primary: #ffffff;
-	--primary-foreground: #000000;
-	--secondary: #171717;
+	--primary-foreground: #08090d;
+	--secondary: #191d2c;
 	--secondary-foreground: #ffffff;
-	--muted: #171717;
-	--muted-foreground: #a3a3a3;
-	--accent: #262626;
+	--muted: #191d2c;
+	--muted-foreground: #8a95ab;
+	--accent: #23283b;
 	--accent-foreground: #ffffff;
-	--border: #262626;
-	--input: #262626;
+	--border: #23283b;
+	--input: #23283b;
 	--ring: #ffffff;
-	--sidebar: #050505;
+	--sidebar: #090b12;
 	--sidebar-foreground: #ffffff;
-	--sidebar-border: #262626;
+	--sidebar-border: #23283b;
 
-	--lp-bg: #000000;
-	--lp-bg-alt: #0a0a0a;
-	--lp-surface: rgba(23, 23, 23, 0.85);
-	--lp-surface-hover: rgba(38, 38, 38, 0.9);
-	--lp-border: #262626;
-	--lp-border-top: #404040;
+	--lp-bg: #08090d;
+	--lp-bg-alt: #121520;
+	--lp-surface: rgba(18, 21, 32, 0.75);
+	--lp-surface-hover: rgba(25, 29, 44, 0.85);
+	--lp-border: #23283b;
+	--lp-border-top: #353d5a;
 	--lp-text-primary: #ffffff;
 	--lp-text-mid: #a3a3a3;
 	--lp-text-dim: #737373;
 	--lp-text-faint: #525252;
 	--lp-cta-bg: #ffffff;
-	--lp-cta-text: #000000;
-	--lp-nav-bg: rgba(0, 0, 0, 0.85);
-	--lp-stroke: #404040;
+	--lp-cta-text: #08090d;
+	--lp-nav-bg: rgba(8, 9, 13, 0.85);
+	--lp-stroke: #353d5a;
 }
 
-/* 2. GitHub Deep Dark */
+/* 2. GitHub Deep Dark - Soft Modern */
 [data-theme="github-dark"] {
-	--background: #0d1117;
-	--foreground: #c9d1d9;
-	--card: #161b22;
-	--card-foreground: #c9d1d9;
-	--popover: #161b22;
-	--popover-foreground: #c9d1d9;
-	--primary: #58a6ff;
-	--primary-foreground: #0d1117;
-	--secondary: #21262d;
-	--secondary-foreground: #c9d1d9;
-	--muted: #21262d;
-	--muted-foreground: #8b949e;
-	--accent: #30363d;
-	--accent-foreground: #c9d1d9;
-	--border: #30363d;
-	--input: #30363d;
-	--ring: #58a6ff;
-	--sidebar: #0d1117;
-	--sidebar-foreground: #c9d1d9;
-	--sidebar-border: #30363d;
+	color-scheme: dark;
 
-	--lp-bg: #0d1117;
-	--lp-bg-alt: #010409;
-	--lp-surface: rgba(22, 27, 34, 0.9);
-	--lp-surface-hover: rgba(33, 38, 45, 0.8);
-	--lp-border: #30363d;
+	--background: #0c1017;
+	--foreground: #c9d1d9;
+
+	--card: #161b26;
+	--card-foreground: #c9d1d9;
+
+	--popover: #161b26;
+	--popover-foreground: #c9d1d9;
+
+	--primary: #58a6ff;
+	--primary-foreground: #0c1017;
+
+	--secondary: #1f2635;
+	--secondary-foreground: #c9d1d9;
+
+	--muted: #1f2635;
+	--muted-foreground: #8b949e;
+
+	--accent: #2b3240;
+	--accent-foreground: #c9d1d9;
+
+	--border: #2b3240;
+	--input: #2b3240;
+	--ring: #58a6ff;
+
+	--sidebar: #0b0e13;
+	--sidebar-foreground: #c9d1d9;
+	--sidebar-border: #2b3240;
+
+	--lp-bg: #0c1017;
+	--lp-bg-alt: #0b0e13;
+	--lp-surface: rgba(22, 27, 38, 0.75);
+	--lp-surface-hover: rgba(31, 38, 53, 0.85);
+	--lp-border: #2b3240;
 	--lp-border-top: #58a6ff;
 	--lp-text-primary: #c9d1d9;
 	--lp-text-mid: #58a6ff;
 	--lp-text-dim: #8b949e;
-	--lp-text-faint: #30363d;
+	--lp-text-faint: #2b3240;
 	--lp-cta-bg: #58a6ff;
-	--lp-cta-text: #0d1117;
-	--lp-nav-bg: rgba(13, 17, 23, 0.9);
+	--lp-cta-text: #0c1017;
+	--lp-nav-bg: rgba(12, 16, 23, 0.85);
 	--lp-stroke: #58a6ff;
 }
 
-/* 3. Nord Deep Frost */
+/* 3. Nord Deep Frost - Soft Modern */
 [data-theme="nord"] {
-	--background: #2e3440;
-	--foreground: #eceff4;
-	--card: #3b4252;
-	--card-foreground: #eceff4;
-	--popover: #3b4252;
-	--popover-foreground: #eceff4;
-	--primary: #88c0d0;
-	--primary-foreground: #2e3440;
-	--secondary: #434c5e;
-	--secondary-foreground: #eceff4;
-	--muted: #434c5e;
-	--muted-foreground: #d8dee9;
-	--accent: #4c566a;
-	--accent-foreground: #eceff4;
-	--border: #4c566a;
-	--input: #4c566a;
-	--ring: #88c0d0;
-	--sidebar: #272c36;
-	--sidebar-foreground: #eceff4;
-	--sidebar-border: #4c566a;
+	color-scheme: dark;
 
-	--lp-bg: #2e3440;
-	--lp-bg-alt: #272c36;
-	--lp-surface: rgba(59, 66, 82, 0.9);
-	--lp-surface-hover: rgba(67, 76, 94, 0.8);
-	--lp-border: #4c566a;
+	--background: #202530;
+	--foreground: #eceff4;
+
+	--card: #2d3342;
+	--card-foreground: #eceff4;
+
+	--popover: #2d3342;
+	--popover-foreground: #eceff4;
+
+	--primary: #88c0d0;
+	--primary-foreground: #202530;
+
+	--secondary: #373e50;
+	--secondary-foreground: #eceff4;
+
+	--muted: #373e50;
+	--muted-foreground: #9aa5b8;
+
+	--accent: #424b5e;
+	--accent-foreground: #eceff4;
+
+	--border: #424b5e;
+	--input: #424b5e;
+	--ring: #88c0d0;
+
+	--sidebar: #1c202a;
+	--sidebar-foreground: #eceff4;
+	--sidebar-border: #424b5e;
+
+	--lp-bg: #202530;
+	--lp-bg-alt: #1c202a;
+	--lp-surface: rgba(45, 51, 66, 0.75);
+	--lp-surface-hover: rgba(55, 62, 80, 0.85);
+	--lp-border: #424b5e;
 	--lp-border-top: #81a1c1;
 	--lp-text-primary: #eceff4;
 	--lp-text-mid: #88c0d0;
-	--lp-text-dim: #d8dee9;
-	--lp-text-faint: #4c566a;
+	--lp-text-dim: #9aa5b8;
+	--lp-text-faint: #424b5e;
 	--lp-cta-bg: #88c0d0;
-	--lp-cta-text: #2e3440;
-	--lp-nav-bg: rgba(46, 52, 64, 0.9);
+	--lp-cta-text: #202530;
+	--lp-nav-bg: rgba(32, 37, 48, 0.85);
 	--lp-stroke: #81a1c1;
 }
 
-/* 4. Tokyo Night Deep Storm */
+/* 4. Tokyo Night Deep Storm - Soft Modern */
 [data-theme="tokyo-night"] {
-	--background: #1a1b26;
-	--foreground: #c0caf5;
-	--card: #24283b;
-	--card-foreground: #c0caf5;
-	--popover: #24283b;
-	--popover-foreground: #c0caf5;
-	--primary: #7aa2f7;
-	--primary-foreground: #1a1b26;
-	--secondary: #292e42;
-	--secondary-foreground: #c0caf5;
-	--muted: #292e42;
-	--muted-foreground: #787c99;
-	--accent: #414868;
-	--accent-foreground: #c0caf5;
-	--border: #414868;
-	--input: #414868;
-	--ring: #7aa2f7;
-	--sidebar: #16161e;
-	--sidebar-foreground: #c0caf5;
-	--sidebar-border: #414868;
+	color-scheme: dark;
 
-	--lp-bg: #1a1b26;
-	--lp-bg-alt: #16161e;
-	--lp-surface: rgba(36, 40, 59, 0.9);
-	--lp-surface-hover: rgba(41, 46, 66, 0.8);
-	--lp-border: #414868;
+	--background: #141420;
+	--foreground: #c0caf5;
+
+	--card: #212334;
+	--card-foreground: #c0caf5;
+
+	--popover: #212334;
+	--popover-foreground: #c0caf5;
+
+	--primary: #7aa2f7;
+	--primary-foreground: #141420;
+
+	--secondary: #2c2f45;
+	--secondary-foreground: #c0caf5;
+
+	--muted: #2c2f45;
+	--muted-foreground: #7a82ac;
+
+	--accent: #373a56;
+	--accent-foreground: #c0caf5;
+
+	--border: #373a56;
+	--input: #373a56;
+	--ring: #7aa2f7;
+
+	--sidebar: #11111a;
+	--sidebar-foreground: #c0caf5;
+	--sidebar-border: #373a56;
+
+	--lp-bg: #141420;
+	--lp-bg-alt: #11111a;
+	--lp-surface: rgba(33, 35, 52, 0.75);
+	--lp-surface-hover: rgba(44, 47, 69, 0.85);
+	--lp-border: #373a56;
 	--lp-border-top: #7aa2f7;
 	--lp-text-primary: #c0caf5;
 	--lp-text-mid: #7aa2f7;
-	--lp-text-dim: #787c99;
-	--lp-text-faint: #414868;
+	--lp-text-dim: #7a82ac;
+	--lp-text-faint: #373a56;
 	--lp-cta-bg: #7aa2f7;
-	--lp-cta-text: #1a1b26;
-	--lp-nav-bg: rgba(26, 27, 38, 0.9);
+	--lp-cta-text: #141420;
+	--lp-nav-bg: rgba(20, 20, 32, 0.85);
 	--lp-stroke: #7aa2f7;
 }
 
-/* 5. One Dark Deep Pro */
+/* 5. One Dark Deep Pro - Soft Modern */
 [data-theme="one-dark"] {
-	--background: #282c34;
-	--foreground: #abb2bf;
-	--card: #21252b;
-	--card-foreground: #abb2bf;
-	--popover: #21252b;
-	--popover-foreground: #abb2bf;
-	--primary: #61afef;
-	--primary-foreground: #282c34;
-	--secondary: #3e4451;
-	--secondary-foreground: #abb2bf;
-	--muted: #3e4451;
-	--muted-foreground: #5c6370;
-	--accent: #4b5263;
-	--accent-foreground: #abb2bf;
-	--border: #4b5263;
-	--input: #4b5263;
-	--ring: #61afef;
-	--sidebar: #1e2227;
-	--sidebar-foreground: #abb2bf;
-	--sidebar-border: #4b5263;
+	color-scheme: dark;
 
-	--lp-bg: #282c34;
-	--lp-bg-alt: #21252b;
-	--lp-surface: rgba(33, 37, 43, 0.9);
-	--lp-surface-hover: rgba(62, 68, 81, 0.8);
-	--lp-border: #4b5263;
-	--lp-border-top: #61afef;
+	--background: #1f222a;
+	--foreground: #abb2bf;
+
+	--card: #2a2e38;
+	--card-foreground: #abb2bf;
+
+	--popover: #2a2e38;
+	--popover-foreground: #abb2bf;
+
+	--primary: #69aef0;
+	--primary-foreground: #1f222a;
+
+	--secondary: #333845;
+	--secondary-foreground: #abb2bf;
+
+	--muted: #333845;
+	--muted-foreground: #7f848e;
+
+	--accent: #3f4554;
+	--accent-foreground: #abb2bf;
+
+	--border: #3f4554;
+	--input: #3f4554;
+	--ring: #69aef0;
+
+	--sidebar: #1b1d24;
+	--sidebar-foreground: #abb2bf;
+	--sidebar-border: #3f4554;
+
+	--lp-bg: #1f222a;
+	--lp-bg-alt: #1b1d24;
+	--lp-surface: rgba(42, 46, 56, 0.75);
+	--lp-surface-hover: rgba(51, 56, 69, 0.85);
+	--lp-border: #3f4554;
+	--lp-border-top: #69aef0;
 	--lp-text-primary: #abb2bf;
-	--lp-text-mid: #61afef;
-	--lp-text-dim: #5c6370;
-	--lp-text-faint: #4b5263;
-	--lp-cta-bg: #61afef;
-	--lp-cta-text: #282c34;
-	--lp-nav-bg: rgba(40, 44, 52, 0.9);
-	--lp-stroke: #61afef;
+	--lp-text-mid: #69aef0;
+	--lp-text-dim: #7f848e;
+	--lp-text-faint: #3f4554;
+	--lp-cta-bg: #69aef0;
+	--lp-cta-text: #1f222a;
+	--lp-nav-bg: rgba(31, 34, 42, 0.85);
+	--lp-stroke: #69aef0;
 }
 
 @layer base {
